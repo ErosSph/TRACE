@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-register-arithmetic-infinite-loop",
+  "backend": "actual repaired-source AST, nine-round full LFP and original reset/rising/falling scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; repaired derived DUT, not unmodified upstream",
+  "verification_scope": "ADD/SUB x1,x1,x2 at PC0 and JAL x0,-4 at PC4, real reset and unbounded execution. Original zero RF seed makes x2 remain zero in this exact loop; not a nonzero-RS2 test. Producer theorem uses arbitrary fresh ISA operands. Full original architecture relation, not arbitrary programs/all21/38",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUDataOpJALLoopDomain.words (BzeenoLoadUseJalRegisterArithmeticProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalRegisterArithmeticInfiniteITree", "Ex.External.BzeenoLoadUseJalNineProgramTarget", "Ex.External.CPUDataOpJALLoopDomain", "Ex.External.BzeenoLoadUseJalRegisterArithmeticProgram", "Ex.External.BzeenoLoadUseJalRegisterArithmeticControl"],
+    "open_modules": ["CPUCommitBoundaryTarget"],
+    "binders": "(op : BzeenoLoadUseJalRegisterArithmeticControl.Op)",
+    "arguments": ["op"],
+    "provider_application_imports": {
+      "BzeenoLoadUseJalCertifiedSequentialLoop.checked_certificate": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalCertifiedSequentialLoop", "Ex.External.BzeenoLoadUseJalCertifiedDataOpLoop", "Ex.External.BzeenoLoadUseJalNineProgramTarget", "Ex.External.CPUDataOpJALLoopDomain", "Ex.External.BzeenoLoadUseJalRegisterArithmeticProgram", "Ex.External.BzeenoLoadUseJalRegisterArithmeticControl", "Ex.External.BzeenoLoadUseJalRegisterArithmeticPhysicalReachable"]
+    },
+    "provider_applications": {
+      "BzeenoLoadUseJalCertifiedSequentialLoop.checked_certificate": [
+        {"symbol": "BzeenoLoadUseJalRegisterArithmeticProgram.metadata", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalRegisterArithmeticPhysicalReachable.sequential_checked", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalCertifiedDataOpLoop.Build_PhysicalHistory", "arguments": [
+          {"symbol": "BzeenoLoadUseJalRegisterArithmeticProgram.metadata", "arguments": [{"binder": "op"}]},
+          {"symbol": "BzeenoLoadUseJalRegisterArithmeticPhysicalReachable.actual_physical_history", "arguments": [{"binder": "op"}]}
+        ]}
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalRegisterArithmeticInfiniteITree.v"],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalImmediateLogicInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalComparisonInfiniteITree.v"],
+  "bindings": {
+    "architecture": "unchanged original ProgramArchRelated, complete RF and all128 RAM bytes",
+    "state": "same PhysicalHistory/FullCut, with checked sequential opcode51 and actual dual-source forwarding",
+    "program_limitation": "zero-seeded two-word loop leaves x2 zero; no seed or JAL destination change"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalRegisterArithmeticInfiniteITree.checked_certificate",
+    "infinite": "BzeenoLoadUseJalRegisterArithmeticInfiniteITree.actual_infinite_refinement"
+  }
+}

@@ -1,0 +1,19 @@
+{
+ "name": "misalign_wrapper",
+ "kind": "proof_strategy",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {
+  "function": "p_engine_havoc",
+  "description": "controller facts from the havoc executor carry the RTL misalignment guard URedOr(3 & target) around the jump/branch next pc; the generator recognises the wrapper syntactically (W44/W105J/W112 builders) and removes it with mx0 from ipc mod 4 = 0 (TmplLiftIsa.isa_pc_ok); one script lifts all 29 class facts to the ISA outcome"
+ },
+ "content": {"generator": "tools/cpu_tmpl_nvop.py"},
+ "instantiate": {"type": "generator_text", "note": "design ids of the roots are inputs of the generator (ctl provider statements); promotion of the generator needs a role file (framework/lift-roles/nerv.json) instead of the constants ROOTS/R106"},
+ "match": [],
+ "covers": ["lift", "op_step"],
+ "learned_from": "nerv",
+ "learned_at": "2026-11-04T20:00",
+ "learned_evidence": ["results/r-tmpl-nerv-op-closure-20261104-a1 (29 <C>_out, op_step)"],
+ "reused_by": [],
+ "gate": {},
+ "origin": "NERV closure (Continuation 4)"
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "design": "darkriscv-three-stage",
+  "backend": "ExtendedSV physical-phase semantics",
+  "translation_equivalence": "not_mechanized_from_original_rtl; generated AST hashes and original RTL regressions recorded",
+  "verification_scope": "checked infinite imported-DarkRISCV-model refinement for pinned two-ADDI/JAL-loop ROM, legal zero power-on RF, ACK1/DATAI0 and no data-memory transactions; NOT all38 or arbitrary-program refinement; original RTL-to-AST translation remains unmechanized",
+  "pinned_target": "DarkRISCVDesignTarget.actual_target",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.DarkRISCVDesignTarget"],
+    "open_modules": ["CPUDesignTarget"], "binders": "", "arguments": []
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/dark-array-final", "namespace": "DarkArray"},
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/DarkRISCVDesignTarget.v",
+    "src/Ex/External/DarkRISCVFixedProgramRefinement.v",
+    "src/Ex/External/DarkRISCVXORIFixedProgramRefinement.v",
+    "src/Ex/External/DarkRISCVNativePhaseCertificates.v",
+    "src/Ex/External/DarkRISCVStartupContract.v",
+    "src/Ex/External/DarkRISCVInitialRF.v",
+    "src/Ex/External/DarkRISCVBootCone.v",
+    "src/Ex/External/DarkRISCVResetSequence.v",
+    "src/Ex/External/DarkRISCVResetPC.v"
+  ],
+  "preserve_roots": ["src/Ex/External/DarkRISCVPhaseRF.v"],
+  "bindings": {
+    "actual_ast": "DarkArray.DarkRISCVArrayAST.dark_program",
+    "actual_initialization": "ExtendedSV.initialize dark_program seed",
+    "isa_initial_candidate": "DarkRISCVInitialRF.initial_isa seed imem dmem",
+    "full_target_status": "pinned-program actual native graph checked; no all-program claim",
+    "cycle": "DarkRISCVFixedProgramRefinement.target_step",
+    "commits": "DarkRISCVFixedProgramRefinement.target_observe",
+    "boot": "DarkRISCVFixedProgramRefinement.actual_boot"
+  },
+  "proof_providers": {
+    "initialization_nonzero_rf": "DarkRISCVInitialRF.actual_initialize_nonzero_rf_related",
+    "initial_full_rf_with_explicit_x0_condition": "DarkRISCVInitialRF.actual_initialize_isa_rf_provider",
+    "reset_sampling": "DarkRISCVStartupContract.actual_phase_reset_sample",
+    "actual_first_reset_pc": "DarkRISCVResetPC.actual_first_reset_phase_pc",
+    "certificate": "DarkRISCVDesignTarget.checked_certificate",
+    "cycle": "CPUCheckedCycleGraph.graph_cycle_safety over actual seven-node graph",
+    "progress": "CPUCheckedCycleGraph.graph_progress with actual pipeline rank",
+    "infinite": "DarkRISCVFixedProgramRefinement.actual_fixed_program_source_certified_refinement"
+  }
+}

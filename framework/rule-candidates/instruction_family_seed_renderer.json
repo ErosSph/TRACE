@@ -1,0 +1,48 @@
+{
+  "name": "instruction_family_seed_renderer",
+  "kind": "proof_strategy",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_class_table",
+    "description": "Exact class partition and scalar ISA/role substitution over explicit narrow Coq seeds; 29-class outcomes tested on three designs. The renderer, not every proof schema, transfers."
+  },
+  "content": {
+    "generator": "tools/cpu_seed_families.py"
+  },
+  "instantiate": {
+    "type": "generator",
+    "cmd": [
+      "tools/cpu_seed_families.py",
+      "{schema}",
+      "--out",
+      "{out}"
+    ]
+  },
+  "match": [
+    {
+      "generator": "cpu_seed_families"
+    }
+  ],
+  "covers": [
+    "outcome"
+  ],
+  "learned_from": "nerv",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "results/handoff-gpt-20261106-b1/nerv-outcome",
+    "results/handoff-gpt-20261106-b1/pipeline-outcome"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/handoff-gpt-20261106-b1/steel-outcome"
+    }
+  ],
+  "held_out_evidence": [
+    "results/handoff-gpt-20261106-b1/steel-outcome"
+  ],
+  "residual_llm_work": "Design-local helper proofs and seeds remain: NERV 12, pipeline 12, held-out Steel 5 adapted seeds for outcome. Decoder 2 and misalignment 3 pipeline-only seeds. Existing seeds migrated, no new narrow authorship claimed. Extends the five-class binary renderer; do not add their overlapping coverage.",
+  "gate": {
+    "validated_output": "results/handoff-gpt-20261106-b1/nerv-outcome"
+  }
+}

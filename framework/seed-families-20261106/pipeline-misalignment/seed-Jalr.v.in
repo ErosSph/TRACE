@@ -1,0 +1,14 @@
+Theorem ob_mis_@CLASS@ : OBL.Ob_mis_@CLASS@.
+Proof. intros @ARGS@ t g w [HL [H237 [HE [Hpc [Hipc Hok]]]]] HD.
+ pose proof (CI.inv_@CLASS@ w @ARGS@ HD) as [[_ [Ha1 Ha2]] _].
+ destruct HE as (E227 & E222 & _ & _ & _ & _ & E214 & E218 & _).
+ cbn [opc dimm] in E222, E218. cbn [LI.ipc] in Hipc. cbn [LI.jalr_ok] in Hok. rewrite Ha2 in Hipc.
+ rewrite <- Ha1, Hok, V.view_zero in E214. pose proof (low2_pc _ _ E214 eq_refl) as E214'. unfold TG.rd.
+ destruct (jalr_low _ _ E218 Hipc) as [Hb|Hb].
+ - assert (HF : FHold t [(222%nat,11%nat,64); (214%nat,2%nat,0); (218%nat,2%nat,0)]).
+   { apply fhold_cons; [exact E222|]. apply fhold_cons; [exact E214'|]. apply fhold_cons; [exact Hb|]. apply fhold_nil. }
+   cw CY.b_410 CY.r_410 [(222%nat,11%nat,64); (214%nat,2%nat,0); (218%nat,2%nat,0)].
+ - assert (HF : FHold t [(222%nat,11%nat,64); (214%nat,2%nat,0); (218%nat,2%nat,1)]).
+   { apply fhold_cons; [exact E222|]. apply fhold_cons; [exact E214'|]. apply fhold_cons; [exact Hb|]. apply fhold_nil. }
+   cw CY.b_410 CY.r_410 [(222%nat,11%nat,64); (214%nat,2%nat,0); (218%nat,2%nat,1)].
+Qed.

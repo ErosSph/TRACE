@@ -1,0 +1,774 @@
+{
+ "design": "nerv",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "external_llm_api_calls": 0,
+ "library": "framework/rule-library.json",
+ "matched": [
+  {
+   "rule": "fe_while_unroll",
+   "kind": "normalization",
+   "evidence": "18 <while> in the XML; frontend report unrolled 21"
+  },
+  {
+   "rule": "fe_x_to_zero",
+   "kind": "normalization",
+   "evidence": "10 x constants in the XML (frontend rewrites them to 0; every use must be guarded)"
+  },
+  {
+   "rule": "fe_casez",
+   "kind": "normalization",
+   "evidence": "12 wildcard constants (casez items) in the XML"
+  },
+  {
+   "rule": "fe_literal_index",
+   "kind": "normalization",
+   "evidence": "16 variable-offset packed writes inside while loops; report counter reads replaced 1072"
+  },
+  {
+   "rule": "reset_level",
+   "kind": "normalization",
+   "evidence": "active-high reset: 15 synchronous reset tests (15 active-high), e.g. process_1"
+  },
+  {
+   "rule": "lfp_nolatch_cert",
+   "kind": "layer_generator",
+   "evidence": "530 blocking-only comb processes, lfp_fuel 1"
+  },
+  {
+   "rule": "lfp_lazy_exhaustive",
+   "kind": "generic_lemma",
+   "evidence": "64 wide case scrutinees, e.g. process_354 width 32"
+  },
+  {
+   "rule": "edge_derived_clock",
+   "kind": "layer_generator",
+   "evidence": "18 sequential processes; event nets [15] trace to inputs 0/1"
+  },
+  {
+   "rule": "edge_fast_filter",
+   "kind": "proof_strategy",
+   "evidence": "18 sequential x 550 processes = 9900 >= 3000"
+  },
+  {
+   "rule": "stage_seqtree",
+   "kind": "layer_generator",
+   "evidence": "1 of 18 rising processes are single decision trees"
+  },
+  {
+   "rule": "nb_symexec",
+   "kind": "generic_lemma",
+   "evidence": "multi-statement sequential bodies with ifs: [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]"
+  },
+  {
+   "rule": "frame_fall_hold",
+   "kind": "layer_generator",
+   "evidence": "0 sequential processes fire on the fall"
+  },
+  {
+   "rule": "class_table",
+   "kind": "generic_lemma",
+   "evidence": "instruction word 43"
+  },
+  {
+   "rule": "immediate_shapes",
+   "kind": "generic_lemma",
+   "evidence": "44 sign-replicate / sign-extend / concat-of-slices nodes over the instruction word cone"
+  },
+  {
+   "rule": "engine_symexec_chain",
+   "kind": "proof_strategy",
+   "evidence": "instruction word 43, decode cone 385 signals"
+  },
+  {
+   "rule": "engine_fast4",
+   "kind": "proof_strategy",
+   "evidence": "2 and/or nodes mixing decode-cone and other operands"
+  },
+  {
+   "rule": "engine_overlay",
+   "kind": "proof_strategy",
+   "evidence": "self-reading comb processes [149, 354]"
+  },
+  {
+   "rule": "engine_overlay4",
+   "kind": "proof_strategy",
+   "evidence": "havoc + self-reading processes"
+  },
+  {
+   "rule": "engine_havoc",
+   "kind": "proof_strategy",
+   "evidence": "comb processes (index, roots, undecided tests) [(354, 58, 2)]"
+  },
+  {
+   "rule": "slice_exec",
+   "kind": "generic_lemma",
+   "evidence": "slice-written roots {57: 5, 58: 5, 435: 30, 177: 32, 306: 32, 56: 2}"
+  },
+  {
+   "rule": "slice_root_fact",
+   "kind": "generic_lemma",
+   "evidence": "slice-written roots {57: 5, 58: 5, 435: 30, 177: 32, 306: 32, 56: 2}"
+  },
+  {
+   "rule": "lift_isa",
+   "kind": "layer_generator",
+   "evidence": "design-independent ISA lemmas (TmplLiftIsa)"
+  },
+  {
+   "rule": "lift_expr_provider",
+   "kind": "layer_generator",
+   "evidence": "provider engine -> lift builder expr_provider"
+  },
+  {
+   "rule": "closure_state_inv",
+   "kind": "proof_strategy",
+   "evidence": "single-issue core, commit decided on the RTL state (FSM / reset register), Runtime = State"
+  }
+ ],
+ "pattern_errors": [],
+ "derived": {
+  "design": "nerv",
+  "fields": {
+   "rst_idle": 1,
+   "_reset_variant": "asserted_level_plus_reset_layer",
+   "_rst_rule": "reset_level[asserted_level_plus_reset_layer] (active-high reset: 15 synchronous reset tests (15 active-high), e.g. process_1)"
+  },
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl_lazy.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "lfp_nolatch_cert",
+     "lfp_lazy_exhaustive"
+    ],
+    "runnable": true,
+    "evidence": "530 blocking-only comb processes, lfp_fuel 1"
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "edge_derived_clock",
+     "edge_fast_filter"
+    ],
+    "runnable": true,
+    "evidence": "18 sequential processes; event nets [15] trace to inputs 0/1"
+   },
+   {
+    "name": "reset",
+    "layer": "reset",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "reset_events_layer",
+     "edge_fast_filter"
+    ],
+    "runnable": true,
+    "evidence": "variant asserted_level_plus_reset_layer of reset_level"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "stage_seqtree"
+    ],
+    "runnable": true,
+    "evidence": "1 of 18 rising processes are single decision trees",
+    "derived": {
+     "rise_procs": [
+      2
+     ]
+    }
+   },
+   {
+    "name": "frame",
+    "layer": "frame",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--frame",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "frame_fall_hold"
+    ],
+    "runnable": true,
+    "evidence": "0 sequential processes fire on the fall"
+   }
+  ],
+  "proposals": [],
+  "residual": [
+   {
+    "layer": "target",
+    "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+    "hint": []
+   },
+   {
+    "layer": "cycle",
+    "reason": "cycle composition / register values on the driven state",
+    "hint": []
+   },
+   {
+    "layer": "fetch",
+    "reason": "fetch link (instruction memory read = ROM word)",
+    "hint": []
+   },
+   {
+    "layer": "ctl",
+    "reason": "per-class control and datapath facts",
+    "hint": [
+     "engine_havoc:ExtendedSVSymExecHavoc",
+     "engine_overlay4:ExtendedSVSymExecOverlay4",
+     "engine_overlay:ExtendedSVSymExecOverlay",
+     "engine_fast4:ExtendedSVFast4",
+     "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain",
+     "slice_exec:ExtendedSVSliceExec",
+     "slice_root_fact:ExtendedSVSliceRootFact"
+    ]
+   },
+   {
+    "layer": "domain",
+    "reason": "domain premises (misaligned / trap = 0 from check_program)",
+    "hint": []
+   },
+   {
+    "layer": "lift",
+    "reason": "ISA lift of the provider facts",
+    "hint": [
+     "lift_isa",
+     "lift_expr_provider"
+    ]
+   },
+   {
+    "layer": "closure",
+    "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+    "hint": [
+     "closure_state_inv"
+    ]
+   }
+  ],
+  "engines": [
+   {
+    "rule": "nb_symexec",
+    "layers": [
+     "stage",
+     "rf"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecNb"
+    ],
+    "priority": 0,
+    "evidence": "multi-statement sequential bodies with ifs: [0, 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]"
+   },
+   {
+    "rule": "engine_symexec_chain",
+    "layers": [
+     "ctl",
+     "wire"
+    ],
+    "libraries": [
+     "ExtendedSVSymExec",
+     "ExtendedSVFactChain"
+    ],
+    "priority": 0,
+    "evidence": "instruction word 43, decode cone 385 signals"
+   },
+   {
+    "rule": "engine_fast4",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVFast4"
+    ],
+    "priority": 1,
+    "evidence": "2 and/or nodes mixing decode-cone and other operands"
+   },
+   {
+    "rule": "engine_overlay",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecOverlay"
+    ],
+    "priority": 2,
+    "evidence": "self-reading comb processes [149, 354]"
+   },
+   {
+    "rule": "engine_overlay4",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecOverlay4"
+    ],
+    "priority": 3,
+    "evidence": "havoc + self-reading processes"
+   },
+   {
+    "rule": "engine_havoc",
+    "layers": [
+     "ctl",
+     "wire"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecHavoc"
+    ],
+    "priority": 4,
+    "evidence": "comb processes (index, roots, undecided tests) [(354, 58, 2)]"
+   },
+   {
+    "rule": "slice_exec",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSliceExec"
+    ],
+    "priority": 0,
+    "evidence": "slice-written roots {57: 5, 58: 5, 435: 30, 177: 32, 306: 32, 56: 2}"
+   },
+   {
+    "rule": "slice_root_fact",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSliceRootFact"
+    ],
+    "priority": 0,
+    "evidence": "slice-written roots {57: 5, 58: 5, 435: 30, 177: 32, 306: 32, 56: 2}"
+   }
+  ],
+  "frontend": [
+   {
+    "rule": "fe_while_unroll",
+    "option": "static-trip-count while unroll",
+    "evidence": "18 <while> in the XML; frontend report unrolled 21"
+   },
+   {
+    "rule": "fe_x_to_zero",
+    "option": "x constants to 0",
+    "evidence": "10 x constants in the XML (frontend rewrites them to 0; every use must be guarded)"
+   },
+   {
+    "rule": "fe_casez",
+    "option": "casez lowering",
+    "evidence": "12 wildcard constants (casez items) in the XML"
+   },
+   {
+    "rule": "fe_literal_index",
+    "option": "literal loop indices",
+    "evidence": "16 variable-offset packed writes inside while loops; report counter reads replaced 1072"
+   }
+  ],
+  "closure": {
+   "rule": "closure_state_inv",
+   "shape": "state_inv",
+   "cmd": [
+    "tools/cpu_tmpl_closure.py",
+    "--design",
+    "{design}",
+    "--out",
+    "{out}"
+   ],
+   "runnable": true,
+   "evidence": "single-issue core, commit decided on the RTL state (FSM / reset register), Runtime = State"
+  },
+  "lift": [
+   {
+    "rule": "lift_isa",
+    "kind": "shared",
+    "runnable": true,
+    "evidence": "design-independent ISA lemmas (TmplLiftIsa)"
+   },
+   {
+    "rule": "lift_expr_provider",
+    "kind": "expr_provider",
+    "runnable": false,
+    "evidence": "provider engine -> lift builder expr_provider"
+   }
+  ],
+  "notes": []
+ },
+ "validation": [
+  {
+   "field": "rst_idle",
+   "manifest": 1,
+   "derived": 1,
+   "status": "match",
+   "detail": "reset_level[asserted_level_plus_reset_layer] (active-high reset: 15 synchronous reset tests (15 active-high), e.g. process_1)"
+  },
+  {
+   "field": "stage lfp",
+   "manifest": "tools/cpu_tmpl_lfpnl_lazy.py --design {design} --module {module} --out {out}",
+   "derived": "tools/cpu_tmpl_lfpnl_lazy.py --design {design} --module {module} --out {out}",
+   "status": "match",
+   "detail": "rules lfp_nolatch_cert,lfp_lazy_exhaustive"
+  },
+  {
+   "field": "stage target",
+   "manifest": "tools/cpu_tmpl_copy.py --src framework/template-sources/NervTmplTarget.v.in --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer target with tools/cpu_tmpl_copy.py (provenance llm_written)"
+  },
+  {
+   "field": "stage edge",
+   "manifest": "tools/cpu_tmpl_edge.py --design {design} --module {module} --fast-filter --out {out}",
+   "derived": "tools/cpu_tmpl_edge.py --design {design} --module {module} --fast-filter --out {out}",
+   "status": "match",
+   "detail": "rules edge_derived_clock,edge_fast_filter"
+  },
+  {
+   "field": "stage edger",
+   "manifest": "tools/cpu_tmpl_edge.py --design {design} --module {module} --fast-filter --reset-events {mod:edge} --out {out}",
+   "derived": "tools/cpu_tmpl_edge.py --design {design} --module {module} --fast-filter --reset-events {mod:edge} --out {out}",
+   "status": "match",
+   "detail": "rules reset_events_layer,edge_fast_filter"
+  },
+  {
+   "field": "stage stage",
+   "manifest": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edge {mod:edge} --out {out}",
+   "derived": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edge {mod:edge} --out {out}",
+   "status": "match",
+   "detail": "rules stage_seqtree"
+  },
+  {
+   "field": "stage rise",
+   "manifest": "tools/cpu_tmpl_nvrise.py gen --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer stage with tools/cpu_tmpl_nvrise.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage wire",
+   "manifest": "tools/cpu_tmpl_nvwire.py gen --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer wire with tools/cpu_tmpl_nvwire.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage ctlpre",
+   "manifest": "tools/cpu_tmpl_nvctl.py gen-pre --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer ctl with tools/cpu_tmpl_nvctl.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage ctl",
+   "manifest": "tools/cpu_tmpl_nvctl.py gen-cls --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer ctl with tools/cpu_tmpl_nvctl.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage frame",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edge {mod:edge} --frame --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['frame_fall_hold']: 0 sequential processes fire on the fall; not built yet"
+  }
+ ],
+ "apply_cfg": {
+  "date": "20261104",
+  "rst_idle": 1,
+  "env": {},
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "module": "NervLfp",
+    "namespace": "TmplNervLfp",
+    "ref": "results/r-tmpl-nerv-lfp-20261104-a3",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl_lazy.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_lfpnl_lazy.py",
+    "rules": [
+     "lfp_nolatch_cert",
+     "lfp_lazy_exhaustive"
+    ],
+    "note": "rule-derived (lfp_nolatch_cert,lfp_lazy_exhaustive)"
+   },
+   {
+    "name": "target",
+    "layer": "target",
+    "module": "NervTmplTarget",
+    "namespace": "TmplNervTarget",
+    "cmd": [
+     "tools/cpu_tmpl_copy.py",
+     "--src",
+     "framework/template-sources/NervTmplTarget.v.in",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-target-20261104-a1",
+    "provenance": "llm_written",
+    "generator": "tools/cpu_tmpl_copy.py framework/template-sources/NervTmplTarget.v.in",
+    "residual": true
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "module": "NervTmplEdge",
+    "namespace": "TmplNervEdge",
+    "ref": "results/r-tmpl-nerv-edge-20261104-a1",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py",
+    "rules": [
+     "edge_derived_clock",
+     "edge_fast_filter"
+    ],
+    "note": "rule-derived (edge_derived_clock,edge_fast_filter)"
+   },
+   {
+    "name": "edger",
+    "layer": "reset",
+    "module": "NervTmplEdgeR",
+    "namespace": "TmplNervEdgeR",
+    "ref": "results/r-tmpl-nerv-edger-20261104-a2",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py",
+    "rules": [
+     "reset_events_layer",
+     "edge_fast_filter"
+    ],
+    "note": "rule-derived (reset_events_layer,edge_fast_filter)"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "module": "NervTmplStage",
+    "namespace": "TmplNervStage",
+    "ref": "results/r-tmpl-nerv-stage-20261104-a1",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py",
+    "rules": [
+     "stage_seqtree"
+    ],
+    "note": "rule-derived (stage_seqtree)"
+   },
+   {
+    "name": "rise",
+    "layer": "stage",
+    "module": "NervTmplRise",
+    "namespace": "TmplNervRise",
+    "cmd": [
+     "tools/cpu_tmpl_nvrise.py",
+     "gen",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-rise-20261104-a3",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvrise.py",
+    "residual": true
+   },
+   {
+    "name": "wire",
+    "layer": "wire",
+    "module": "NervTmplWire",
+    "namespace": "TmplNervWire",
+    "cmd": [
+     "tools/cpu_tmpl_nvwire.py",
+     "gen",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-wire-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvwire.py",
+    "residual": true
+   },
+   {
+    "name": "ctlpre",
+    "layer": "ctl",
+    "module": "NervTmplCtlPre",
+    "namespace": "TmplNervCtlPre",
+    "cmd": [
+     "tools/cpu_tmpl_nvctl.py",
+     "gen-pre",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-ctlpre-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvctl.py gen-pre",
+    "residual": true
+   },
+   {
+    "name": "ctl",
+    "layer": "ctl",
+    "module": "NervTmplCtl",
+    "namespace": "TmplNervCtl",
+    "cmd": [
+     "tools/cpu_tmpl_nvctl.py",
+     "gen-cls",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-ctl-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvctl.py gen-cls",
+    "residual": true
+   }
+  ],
+  "rule_applied": true,
+  "residual_stages": [
+   "target",
+   "rise",
+   "wire",
+   "ctlpre",
+   "ctl"
+  ],
+  "rule_stages": [
+   "lfp",
+   "edge",
+   "edger",
+   "stage"
+  ],
+  "residual_obligations": [
+   {
+    "layer": "target",
+    "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+    "hint": []
+   },
+   {
+    "layer": "cycle",
+    "reason": "cycle composition / register values on the driven state",
+    "hint": []
+   },
+   {
+    "layer": "fetch",
+    "reason": "fetch link (instruction memory read = ROM word)",
+    "hint": []
+   },
+   {
+    "layer": "ctl",
+    "reason": "per-class control and datapath facts",
+    "hint": [
+     "engine_havoc:ExtendedSVSymExecHavoc",
+     "engine_overlay4:ExtendedSVSymExecOverlay4",
+     "engine_overlay:ExtendedSVSymExecOverlay",
+     "engine_fast4:ExtendedSVFast4",
+     "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain",
+     "slice_exec:ExtendedSVSliceExec",
+     "slice_root_fact:ExtendedSVSliceRootFact"
+    ]
+   },
+   {
+    "layer": "domain",
+    "reason": "domain premises (misaligned / trap = 0 from check_program)",
+    "hint": []
+   },
+   {
+    "layer": "lift",
+    "reason": "ISA lift of the provider facts",
+    "hint": [
+     "lift_isa",
+     "lift_expr_provider"
+    ]
+   },
+   {
+    "layer": "closure",
+    "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+    "hint": [
+     "closure_state_inv"
+    ]
+   }
+  ]
+ }
+}

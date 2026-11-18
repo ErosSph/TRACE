@@ -1,0 +1,71 @@
+{
+  "design": "CV32E40P (extended AST, no DUT bug); stage tags stages_sq2, arch = HistoryFinalGlobal, obligation StagedObligationRH; HU = CoverRemaining2 = the leaf families still without a proved cover (version 2: Bridge2/Dispatch2/All2, Cover4)",
+  "module": "CV32E40PSkeletonM2",
+  "mode": "rh",
+  "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+  "requires": [
+    "Lang.ExtendedSV",
+    "coqutil.Word.Interface",
+    "Ex.External.CV32E40PFull38RetirementAdapter",
+    "Ex.External.CV32E40PProgramDomainCertificate",
+    "Ex.External.CV32E40PFull38HistoryFinalJoint",
+    "Ex.External.CV32E40PFull38WriteAckAwareWaitRank",
+    "Ex.External.CV32E40PAddiInitialRelated",
+    "Ex.External.CV32E40PSquash2",
+    "Ex.External.CV32E40PCoverAll2"
+  ],
+  "imports": [
+    "ExtendedSV",
+    "CV32E40PFull38RetirementAdapter",
+    "CV32E40PProgramDomainCertificate.CV32E40PProgramDomainCertificate",
+    "CV32E40PFull38HistoryFinalJoint.CV32E40PFull38HistoryFinalJoint",
+    "CV32E40PFull38WriteAckAwareWaitRank",
+    "CV32E40PAddiInitialRelated.CV32E40PAddiInitialRelated",
+    "CV32E40PSquash2.CV32E40PSquash2",
+    "CV32E40PCoverAll2.CV32E40PCoverAll2"
+  ],
+  "prelude": [
+    "Local Open Scope Z_scope.",
+    "Local Opaque advance_full38_monitor full38_observed_commits."
+  ],
+  "params": "(image:list Z)(cert:ProgramDomainCertificate image)(HU:CoverRemaining2 image cert)",
+  "args": "image cert HU",
+  "runtime": "Full38Observation",
+  "token": "Z",
+  "fields": {
+    "step": "advance_full38_monitor image",
+    "commits": "full38_observed_commits image",
+    "effect": "checked_pc_effect",
+    "pc": "fun pc=>pc",
+    "effect_sound": "checked_pc_effect_sound",
+    "stages": "stages_sq2 image",
+    "arch": "HistoryFinalGlobal image cert",
+    "front": "fun _ f=>domain_state image cert f",
+    "stage": "fun _ _ _ _=>True"
+  },
+  "rank": "fun o _=>write_ack_aware_wait_rank image o",
+  "boot": "full38_cycles image 4 full38_reset",
+  "initial": "initial_isa image",
+  "reset": "full38_reset",
+  "fill": {
+    "requires": [
+      "Ex.External.CV32E40PCoverDispatch2",
+      "Ex.External.CV32E40PCoverBridge2",
+      "Ex.External.CV32E40PCoverFinal2",
+      "Ex.External.CV32E40PFull38HistoryFinalRefinement"
+    ],
+    "imports": [
+      "CV32E40PCoverDispatch2.CV32E40PCoverDispatch2",
+      "CV32E40PCoverBridge2.CV32E40PCoverBridge2",
+      "CV32E40PCoverFinal2.CV32E40PCoverFinal2",
+      "CV32E40PFull38HistoryFinalRefinement.CV32E40PFull38HistoryFinalRefinement"
+    ],
+    "goals": {
+      "obligation": "cv_obligation image cert(fun o isa=>cover4_of_hyps image cert(hyps2_of_remaining image cert HU)o isa)",
+      "rank": "cv2_rank image cert",
+      "boot": "cv2_boot image cert",
+      "startup": "cv2_startup image"
+    },
+    "reference": "actual_reset_infinite_rtl_isa_refinement image cert"
+  }
+}

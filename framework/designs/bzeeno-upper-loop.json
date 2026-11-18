@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-upper-infinite-loop",
+  "backend": "actual repaired-source AST, nine-round full LFP and original reset/rising/falling scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; original cumulative AUIPC/load-use/JAL repaired derived DUT, not unmodified upstream",
+  "verification_scope": "LUI/AUIPC x1,4096 (ISA immediate already shifted) at PC0, JAL x0,-4 at PC4, real reset and unbounded execution. Original zero RF seed/env preserved; this instance AUIPC PC=0, not arbitrary PCs/programs/all21/38. Actual producer proves the real PC source and arbitrary retained A for LUI. Original whole architecture relation",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUDataOpJALLoopDomain.words (BzeenoLoadUseJalUpperProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalCertifiedEvidenceLoop", "Ex.External.BzeenoLoadUseJalNineProgramTarget", "Ex.External.CPUDataOpJALLoopDomain", "Ex.External.BzeenoLoadUseJalUpperProgram", "Ex.External.BzeenoLoadUseJalUpperControl", "Ex.External.BzeenoLoadUseJalUpperPhysicalReachable"],
+    "open_modules": ["CPUCommitBoundaryTarget"],
+    "binders": "(op : BzeenoLoadUseJalUpperControl.Op)",
+    "arguments": ["op"],
+    "provider_applications": {
+      "BzeenoLoadUseJalCertifiedEvidenceLoop.checked_certificate": [
+        {"symbol": "BzeenoLoadUseJalUpperProgram.metadata", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalUpperProgram.sequential_checked", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalUpperPhysicalReachable.actual_physical_history", "arguments": [{"binder": "op"}]}
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalUpperPhysicalReachable.v", "src/Ex/External/BzeenoLoadUseJalCertifiedEvidenceLoop.v"],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalRegisterArithmeticInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalRegisterComparePhysicalReachable.v"],
+  "bindings": {
+    "architecture": "unchanged ProgramArchRelated: PC nextPC full RF ROM all128 RAM bytes",
+    "control": "actual MemoryCodeCert and SequentialCodeCert, not a widened opcode whitelist",
+    "producer": "LUI ALU12 ignores retained A, AUIPC uses actual EX PC; closed same-Joint history"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalCertifiedEvidenceLoop.checked_certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

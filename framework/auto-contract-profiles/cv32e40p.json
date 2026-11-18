@@ -1,0 +1,55 @@
+{
+  "scalar_guard_roots": [337],
+  "scalar_guard_library": "src/Ex/Generated/CV32E40PGeneratedIFIDGuardBindings.v",
+  "rf_port_library": "src/Ex/Generated/CV32E40PGeneratedRFPorts.v",
+  "bank_library": "src/Ex/Generated/CV32E40PGeneratedBank.v",
+  "api": "cycle",
+  "coq_load_paths": [],
+  "evidence_origin": "existing_hand_proved_global_evidence",
+  "source_xml": "proof-optimization-log/results/four-core-template-transfer-final-offline/cv32e40p/elaborated.xml",
+  "source_xml_sha256": "0bb9f1d7c64d43f47118172427f6ef970331ae6846d19c1ce7d8ad39c453fcb0",
+  "imports": ["Ex.External.CV32E40PDesignContract"],
+  "open_modules": ["CV32E40PFull38HistoryFinalSafety", "CV32E40PFull38HistoryFinalJoint.CV32E40PFull38HistoryFinalJoint", "CV32E40PFull38WriteAckAwareWaitRank.CV32E40PFull38WriteAckAwareWaitRank", "CV32E40PFull38RetirementAdapter.CV32E40PFull38RetirementAdapter", "CV32E40PProgramDomainCertificate.CV32E40PProgramDomainCertificate", "CV32E40PAddiInitialRelated.CV32E40PAddiInitialRelated", "CV32E40PFull38StartupITree.CV32E40PFull38StartupITree", "CV32E40PFull38StartupSilent.CV32E40PFull38StartupSilent"],
+  "binders": "image (cert : ProgramDomainCertificate image)",
+  "arguments": ["image", "cert"],
+  "fields": {
+    "state": "Full38Observation",
+    "cycle": "advance_full38_monitor image",
+    "commits": "full38_observed_commits image",
+    "reset": "full38_reset",
+    "boot": "full38_cycles image 4 full38_reset",
+    "isa_initial": "initial_isa image",
+    "joint": "HistoryFinalGlobal image cert",
+    "wait_rank": "fun o _ => write_ack_aware_wait_rank image o"
+  },
+  "evidence": {
+    "startup_checked": "apply full38_rtl_silent_cycles. intros k Hk. apply actual_full38_first_five_cycles_are_silent. lia.",
+    "initial_checked": "exact (history_final_global_reset image cert).",
+    "cycle_checked": "exact (actual_history_final_ordered_cycle_safety image cert).",
+    "progress_checked": "exact (history_final_global_wait_decreases image cert)."
+  },
+  "joint_binding": {
+    "evidence_origin": "existing_local_component_proofs",
+    "proof_selection": "type_search",
+    "lemma_candidates": ["CV32E40PGeneratedJoint.physical_architecture", "CV32E40PGeneratedJoint.actual_startup", "eq_refl", "CV32E40PGeneratedJoint.actual_boot_physical", "CV32E40PGeneratedJoint.actual_local_streaming", "CV32E40PGeneratedJoint.actual_bounded_progress"],
+    "transfer_mode": "streaming",
+    "imports": ["Ex.External.CV32E40PGeneratedJoint"],
+    "open_modules": ["CV32E40PProgramDomainCertificate.CV32E40PProgramDomainCertificate"],
+    "coq_sources": ["src/Ex/External/CV32E40PGeneratedJoint.v"],
+    "binders": "image (cert : ProgramDomainCertificate image)",
+    "arguments": ["image", "cert"],
+    "target": {"symbol": "CV32E40PGeneratedJoint.target", "arguments": [{"binder": "image"}, {"binder": "cert"}]},
+    "pending": {"symbol": "CV32E40PGeneratedJoint.pending_runtime"},
+    "physical": {"symbol": "CV32E40PGeneratedJoint.Physical", "arguments": [{"binder": "image"}, {"binder": "cert"}]},
+    "search_fuel": 10,
+    "proofs": {
+      "architecture": {"symbol": "CV32E40PGeneratedJoint.physical_architecture", "arguments": [{"binder": "image"}, {"binder": "cert"}]},
+      "startup": {"symbol": "CV32E40PGeneratedJoint.actual_startup", "arguments": [{"binder": "image"}]},
+      "empty_queue": {"symbol": "eq_refl"},
+      "boot": {"symbol": "CV32E40PGeneratedJoint.actual_boot_physical", "arguments": [{"binder": "image"}, {"binder": "cert"}]},
+      "local_transfer": {"symbol": "CV32E40PGeneratedJoint.actual_local_streaming", "arguments": [{"binder": "image"}, {"binder": "cert"}]},
+      "bounded_progress": {"symbol": "CV32E40PGeneratedJoint.actual_bounded_progress", "arguments": [{"binder": "image"}, {"binder": "cert"}]}
+    }
+  },
+  "ast": {"module": "Ex.Generated.CV32E40PExtendedAST", "file": "src/Ex/Generated/CV32E40PExtendedAST.v", "program": "CV32E40PExtendedAST.cv32e40p_program", "signals": 1800, "processes": 2001, "rf_root": 902, "rf_writer_indices": [44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75]}
+}

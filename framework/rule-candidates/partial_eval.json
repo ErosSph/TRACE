@@ -1,0 +1,40 @@
+{
+ "name": "partial_eval",
+ "kind": "generic_lemma",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {
+  "function": "p_partial_eval",
+  "description": "partial evaluation under concrete control facts + and/or mask normal form (pe_sound, mfold_sound)"
+ },
+ "content": {
+  "libraries": [
+   "src/Lang/ExtendedSVPartialEval.v"
+  ]
+ },
+ "instantiate": {
+  "type": "library",
+  "used_by_generators": [
+   "tools/cpu_tmpl_a5aluout.py",
+   "tools/cpu_tmpl_a5decout.py",
+   "tools/cpu_tmpl_a5step.py"
+  ]
+ },
+ "match": [
+  {
+   "library": "ExtendedSVPartialEval"
+  }
+ ],
+ "covers": [
+  "op_step"
+ ],
+ "learned_from": "angelo5fix",
+ "learned_at": "2026-11-04T19:00",
+ "learned_evidence": [
+  "src/Lang/ExtendedSVPartialEval.v (angelo5fix closure, proof-optimization-log/20261104-template-angelo5fix.md Continuation 11)"
+ ],
+ "reused_by": [],
+ "gate": {
+  "library_module": "Lang.ExtendedSVPartialEval"
+ },
+ "origin": "angelo5fix closure (Continuation 11)"
+}

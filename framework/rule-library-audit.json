@@ -1,0 +1,676 @@
+{
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "external_llm_api_calls": 0,
+ "date": "2026-11-04T15:21",
+ "rules": [
+  {
+   "rule": "fe_rebased_bank",
+   "kind": "normalization",
+   "learned_from": "steel",
+   "generic": false,
+   "generic_fails": {
+    "angelo5_import.py": [
+     "design names in code/strings: ['Angelo5AST', 'Angelo5FixedAST', 'Angelo5Translator', 'angelo5', 'angelo5_top']"
+    ]
+   },
+   "generic_warnings": {
+    "steel_array_frontend.py": [
+     "file name steel_array_frontend.py names a design (rename recommended when promoted)"
+    ],
+    "srv32_frontend.py": [
+     "file name srv32_frontend.py names a design (rename recommended when promoted)"
+    ],
+    "angelo5_import.py": [
+     "file name angelo5_import.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "fe_while_unroll",
+   "kind": "normalization",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "steel_array_frontend.py": [
+     "file name steel_array_frontend.py names a design (rename recommended when promoted)"
+    ],
+    "srv32_frontend.py": [
+     "file name srv32_frontend.py names a design (rename recommended when promoted)"
+    ],
+    "nerv_frontend.py": [
+     "file name nerv_frontend.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "fe_x_to_zero",
+   "kind": "normalization",
+   "learned_from": "nerv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "nerv_frontend.py": [
+     "file name nerv_frontend.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "fe_casez",
+   "kind": "normalization",
+   "learned_from": "nerv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "nerv_frontend.py": [
+     "file name nerv_frontend.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "fe_generate_instances",
+   "kind": "normalization",
+   "learned_from": "angelo5fix",
+   "generic": false,
+   "generic_fails": {
+    "angelo5_import.py": [
+     "design names in code/strings: ['Angelo5AST', 'Angelo5FixedAST', 'Angelo5Translator', 'angelo5', 'angelo5_top']"
+    ]
+   },
+   "generic_warnings": {
+    "angelo5_import.py": [
+     "file name angelo5_import.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "fe_literal_index",
+   "kind": "normalization",
+   "learned_from": "nerv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "nerv_frontend_lit.py": [
+     "file name nerv_frontend_lit.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "reset_level",
+   "kind": "normalization",
+   "learned_from": "steel",
+   "generic": null,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lfp_nolatch_cert",
+   "kind": "layer_generator",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_lfpnl.py": [
+     "argparse default design ['steel'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lfp_lazy_exhaustive",
+   "kind": "generic_lemma",
+   "learned_from": "nerv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "edge_derived_clock",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_edge.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "edge_fast_filter",
+   "kind": "proof_strategy",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_edge.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "reset_events_layer",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_edge.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "rf_fall_glue",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_edge.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "reset_phase_layers",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "stage_seqtree",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "seqtree_flat",
+   "kind": "generic_lemma",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "seqtree2",
+   "kind": "layer_generator",
+   "learned_from": "angelo5fix",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage2.py": [
+     "argparse default design ['angelo5fix'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "seqtree2_slice",
+   "kind": "generic_lemma",
+   "learned_from": "angelo5fix",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage2.py": [
+     "argparse default design ['angelo5fix'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "nb_symexec",
+   "kind": "generic_lemma",
+   "learned_from": "nerv",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_nvrise.py": [
+     "literal signal ids inside Coq text: [16, 17, 109]",
+     "7 integer literals equal to nerv signal ids (e.g. [17, 18, 38, 41, 42, 45, 109], lines [15, 73])",
+     "design names in code/strings: ['NERV', 'nerv']"
+    ]
+   },
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "frame_fall_hold",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "ram_hold_role",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_stage.py": [
+     "argparse default design ['bzeeno'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "rf_plain_bank",
+   "kind": "layer_generator",
+   "learned_from": "darkriscv",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_rf.py": [
+     "design names in code/strings: ['Bzeeno', 'Dark38', 'DarkRISCV38DerivedAST', 'DarkRISCV38DerivedCycle', 'DarkRISCV38DerivedLFP', 'DarkRISCV38DerivedTarget', 'DarkTmplCycle', 'DarkTmplRF']"
+    ]
+   },
+   "generic_warnings": {
+    "cpu_tmpl_rf.py": [
+     "argparse default design ['darkriscv'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "rf_rebased_bank",
+   "kind": "layer_generator",
+   "learned_from": "srv32",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_rf.py": [
+     "design names in code/strings: ['Bzeeno', 'Dark38', 'DarkRISCV38DerivedAST', 'DarkRISCV38DerivedCycle', 'DarkRISCV38DerivedLFP', 'DarkRISCV38DerivedTarget', 'DarkTmplCycle', 'DarkTmplRF']"
+    ]
+   },
+   "generic_warnings": {
+    "cpu_tmpl_rf.py": [
+     "argparse default design ['darkriscv'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "bank_write_blk",
+   "kind": "generic_lemma",
+   "learned_from": "srv32",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "copy_chains",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_bzcopy.py": [
+     "design names in code/strings: ['bzeeno']"
+    ]
+   },
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "role_param_cores",
+   "kind": "layer_generator",
+   "learned_from": "darkriscv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "class_table",
+   "kind": "generic_lemma",
+   "learned_from": "darkriscv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "immediate_shapes",
+   "kind": "generic_lemma",
+   "learned_from": "darkriscv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "engine_symexec_chain",
+   "kind": "proof_strategy",
+   "learned_from": "cv32e40p",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": null,
+   "note": "learned on cv32e40p (not one of the six route designs)"
+  },
+  {
+   "rule": "engine_fast4",
+   "kind": "proof_strategy",
+   "learned_from": "cv32e40p",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": null,
+   "note": "learned on cv32e40p (not one of the six route designs)"
+  },
+  {
+   "rule": "engine_overlay",
+   "kind": "proof_strategy",
+   "learned_from": "cv32e40p",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": null,
+   "note": "learned on cv32e40p (not one of the six route designs)"
+  },
+  {
+   "rule": "engine_overlay4",
+   "kind": "proof_strategy",
+   "learned_from": "nerv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "engine_havoc",
+   "kind": "proof_strategy",
+   "learned_from": "nerv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "engine_symalias_nba",
+   "kind": "proof_strategy",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "slice_exec",
+   "kind": "generic_lemma",
+   "learned_from": "cv32e40p",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": null,
+   "note": "learned on cv32e40p (not one of the six route designs)"
+  },
+  {
+   "rule": "slice_root_fact",
+   "kind": "generic_lemma",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "comparison_atoms",
+   "kind": "proof_strategy",
+   "learned_from": "cv32e40p",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_a5fwd.py": [
+     "argparse default design ['angelo5fix'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": null,
+   "note": "learned on cv32e40p (not one of the six route designs)"
+  },
+  {
+   "rule": "case_mux",
+   "kind": "generic_lemma",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "subsign33",
+   "kind": "generic_lemma",
+   "learned_from": "srv32",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lift_isa",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_lift.py": [
+     "design names in code/strings: ['bzeeno']"
+    ]
+   },
+   "generic_warnings": {
+    "cpu_tmpl_lift.py": [
+     "argparse default design ['steel'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lift_wire_provider",
+   "kind": "layer_generator",
+   "learned_from": "bzeeno",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_lift.py": [
+     "design names in code/strings: ['bzeeno']"
+    ]
+   },
+   "generic_warnings": {
+    "cpu_tmpl_lift.py": [
+     "argparse default design ['steel'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lift_ctl_provider",
+   "kind": "layer_generator",
+   "learned_from": "steel",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_lift.py": [
+     "design names in code/strings: ['bzeeno', 'take_trap']"
+    ]
+   },
+   "generic_warnings": {
+    "cpu_tmpl_lift.py": [
+     "argparse default design ['steel'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lift_ex_provider",
+   "kind": "layer_generator",
+   "learned_from": "srv32",
+   "generic": false,
+   "generic_fails": {
+    "cpu_tmpl_lift.py": [
+     "design names in code/strings: ['bzeeno']"
+    ]
+   },
+   "generic_warnings": {
+    "cpu_tmpl_lift.py": [
+     "argparse default design ['steel'] (callers pass --design)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lift_overlay_provider",
+   "kind": "layer_generator",
+   "learned_from": "angelo5fix",
+   "generic": null,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "lift_expr_provider",
+   "kind": "layer_generator",
+   "learned_from": "nerv",
+   "generic": null,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "closure_counter",
+   "kind": "proof_strategy",
+   "learned_from": "darkriscv",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "closure_staged",
+   "kind": "proof_strategy",
+   "learned_from": "bzeeno",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "closure_state_inv",
+   "kind": "proof_strategy",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "closure_pulse",
+   "kind": "proof_strategy",
+   "learned_from": "srv32",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "rebased_operand_ports",
+   "kind": "layer_generator",
+   "learned_from": "srv32",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {
+    "cpu_tmpl_srv32_op.py": [
+     "argparse default design ['srv32'] (callers pass --design)",
+     "file name cpu_tmpl_srv32_op.py names a design (rename recommended when promoted)"
+    ]
+   },
+   "pattern_matches_origin": true,
+   "note": null
+  },
+  {
+   "rule": "bank_rebase_rst",
+   "kind": "generic_lemma",
+   "learned_from": "steel",
+   "generic": true,
+   "generic_fails": {},
+   "generic_warnings": {},
+   "pattern_matches_origin": true,
+   "note": null
+  }
+ ]
+}

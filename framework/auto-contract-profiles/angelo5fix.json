@@ -1,0 +1,1426 @@
+{
+ "pipeline_roles": {
+  "ast": {
+   "file": "experiments/framework/generated/angelo5-fixed/Angelo5FixedAST.v",
+   "module": "Angelo5.Angelo5FixedAST",
+   "program": "Angelo5FixedAST.angelo5_program",
+   "signal_table": "experiments/framework/generated/angelo5-fixed/report.json"
+  },
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "angelo5_top.i_clk"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "angelo5_top.i_rst_n"
+   },
+   "rising_process": "process_2",
+   "provenance": {
+    "source": "discovered",
+    "rule": "primary clock/reset = sources of the sequential event lists (copy chains)"
+   }
+  },
+  "fetch_slot": {
+   "word": {
+    "id": 136,
+    "width": 32,
+    "path": "angelo5_top.core.m1.o_inst"
+   },
+   "pc": {
+    "id": 134,
+    "width": 32,
+    "path": "angelo5_top.core.m1.o_pc"
+   },
+   "valid": {
+    "id": 143,
+    "width": 1,
+    "path": "angelo5_top.core.m1.o_ce"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "fetch-stage output register pair (o_inst, o_pc); there is no valid bit, the stage CE (o_ce) plays that role; decided by Claude from the fetch module (rv32i_fetch) and the phase-A logs"
+   }
+  },
+  "rf_write": {
+   "bank": {
+    "id": 128,
+    "width": 1024,
+    "path": "angelo5_top.core.m0.base_regfile"
+   },
+   "process": "process_2",
+   "index": {
+    "id": 121,
+    "width": 5,
+    "path": "angelo5_top.core.m0.i_rd_addr"
+   },
+   "data": {
+    "id": 122,
+    "width": 32,
+    "path": "angelo5_top.core.m0.i_rd"
+   },
+   "guard": {
+    "id": 129,
+    "width": 1,
+    "path": "angelo5_top.core.m0.write_to_basereg"
+   },
+   "write_edge": "rise",
+   "rebase": 1,
+   "provenance": {
+    "source": "discovered",
+    "rule": "array part-select assigned in a sequential process; index (rd - 1)*32; guard wire = enclosing if-condition"
+   }
+  },
+  "stages": [
+   {
+    "name": "fetch",
+    "process": "process_3",
+    "tag_carrier": {
+     "id": 136,
+     "width": 32,
+     "path": "angelo5_top.core.m1.o_inst"
+    },
+    "pc": {
+     "id": 134,
+     "width": 32,
+     "path": "angelo5_top.core.m1.o_pc"
+    },
+    "ce": {
+     "id": 143,
+     "width": 1,
+     "path": "angelo5_top.core.m1.o_ce"
+    },
+    "clock": {
+     "id": 131,
+     "width": 1,
+     "path": "angelo5_top.core.m1.i_clk"
+    },
+    "reset": {
+     "id": 132,
+     "width": 1,
+     "path": "angelo5_top.core.m1.i_rst_n"
+    }
+   },
+   {
+    "name": "decode",
+    "process": "process_8",
+    "tag_carrier": {
+     "id": 168,
+     "width": 11,
+     "path": "angelo5_top.core.m2.o_opcode"
+    },
+    "pc": {
+     "id": 159,
+     "width": 32,
+     "path": "angelo5_top.core.m2.o_pc"
+    },
+    "ce": {
+     "id": 171,
+     "width": 1,
+     "path": "angelo5_top.core.m2.o_ce"
+    },
+    "clock": {
+     "id": 155,
+     "width": 1,
+     "path": "angelo5_top.core.m2.i_clk"
+    },
+    "reset": {
+     "id": 156,
+     "width": 1,
+     "path": "angelo5_top.core.m2.i_rst_n"
+    }
+   },
+   {
+    "name": "execute",
+    "process": "process_9",
+    "tag_carrier": {
+     "id": 222,
+     "width": 11,
+     "path": "angelo5_top.core.m3.o_opcode"
+    },
+    "pc": {
+     "id": 227,
+     "width": 32,
+     "path": "angelo5_top.core.m3.o_pc"
+    },
+    "ce": {
+     "id": 237,
+     "width": 1,
+     "path": "angelo5_top.core.m3.o_ce"
+    },
+    "clock": {
+     "id": 208,
+     "width": 1,
+     "path": "angelo5_top.core.m3.i_clk"
+    },
+    "reset": {
+     "id": 209,
+     "width": 1,
+     "path": "angelo5_top.core.m3.i_rst_n"
+    }
+   },
+   {
+    "name": "memory",
+    "process": "process_10",
+    "tag_carrier": {
+     "id": 284,
+     "width": 11,
+     "path": "angelo5_top.core.m4.o_opcode"
+    },
+    "pc": {
+     "id": 286,
+     "width": 32,
+     "path": "angelo5_top.core.m4.o_pc"
+    },
+    "ce": {
+     "id": 305,
+     "width": 1,
+     "path": "angelo5_top.core.m4.o_ce"
+    },
+    "clock": {
+     "id": 277,
+     "width": 1,
+     "path": "angelo5_top.core.m4.i_clk"
+    },
+    "reset": {
+     "id": 278,
+     "width": 1,
+     "path": "angelo5_top.core.m4.i_rst_n"
+    }
+   }
+  ],
+  "stages_provenance": {
+   "source": "llm",
+   "rule": "five-stage chain fetch(m1) -> decode(m2) -> execute(m3) -> memoryaccess(m4) -> writeback(m5, combinational) with CE chains; the AST gives the stage processes, the order is the module wiring of rv32i_core"
+  },
+  "observer": {
+   "commit_valid": {
+    "id": 90,
+    "width": 1,
+    "path": "angelo5_top.core.writeback_ce"
+   },
+   "commit_pc": {
+    "id": 76,
+    "width": 32,
+    "path": "angelo5_top.core.memoryaccess_pc"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "phase-A observation: commit = writeback_ce in the pre-edge state, pc = memoryaccess_pc"
+   }
+  }
+ },
+ "template_roles": {
+  "kind": "pipelined_derived_clock",
+  "rf": {
+   "bank": {
+    "id": 128,
+    "width": 1024,
+    "path": "angelo5_top.core.m0.base_regfile"
+   },
+   "write_process": "process_2",
+   "read_ports": [
+    {
+     "id": 124,
+     "width": 32,
+     "path": "angelo5_top.core.m0.o_rs1",
+     "index": 126,
+     "zero_mux": true,
+     "rebase": 1
+    },
+    {
+     "id": 125,
+     "width": 32,
+     "path": "angelo5_top.core.m0.o_rs2",
+     "index": 127,
+     "zero_mux": true,
+     "rebase": 1
+    }
+   ],
+   "port_address_registers": {
+    "126": {
+     "id": 119,
+     "width": 5,
+     "path": "angelo5_top.core.m0.i_rs1_addr"
+    },
+    "127": {
+     "id": 120,
+     "width": 5,
+     "path": "angelo5_top.core.m0.i_rs2_addr"
+    }
+   },
+   "read_delay_cycles": 1,
+   "write_guard_nonzero_rd": true,
+   "obligations": [
+    "address 0 never written: write_to_basereg = i_wr && i_rd_addr != 0",
+    "port read of address 0 muxed to 0",
+    "cell 31 is a phantom (rebase by 1)"
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "rf_write rule above + read-port rule (zero mux over bank part-select)"
+   }
+  },
+  "control_chain": {
+   "ce": [
+    {
+     "id": 54,
+     "width": 1,
+     "path": "angelo5_top.core.decoder_ce"
+    },
+    {
+     "id": 71,
+     "width": 1,
+     "path": "angelo5_top.core.alu_ce"
+    },
+    {
+     "id": 82,
+     "width": 1,
+     "path": "angelo5_top.core.memoryaccess_ce"
+    },
+    {
+     "id": 90,
+     "width": 1,
+     "path": "angelo5_top.core.writeback_ce"
+    }
+   ],
+   "stall": [
+    {
+     "id": 97,
+     "width": 1,
+     "path": "angelo5_top.core.stall_decoder"
+    },
+    {
+     "id": 98,
+     "width": 1,
+     "path": "angelo5_top.core.stall_alu"
+    },
+    {
+     "id": 99,
+     "width": 1,
+     "path": "angelo5_top.core.stall_memoryaccess"
+    },
+    {
+     "id": 100,
+     "width": 1,
+     "path": "angelo5_top.core.stall_writeback"
+    }
+   ],
+   "flush": [
+    {
+     "id": 55,
+     "width": 1,
+     "path": "angelo5_top.core.decoder_flush"
+    },
+    {
+     "id": 72,
+     "width": 1,
+     "path": "angelo5_top.core.alu_flush"
+    },
+    {
+     "id": 83,
+     "width": 1,
+     "path": "angelo5_top.core.memoryaccess_flush"
+    },
+    {
+     "id": 91,
+     "width": 1,
+     "path": "angelo5_top.core.writeback_flush"
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "copy-wire chains core.<stage>_{ce,flush} <- m*.o_{ce,flush}, core.stall_<stage> <- m*.o_stall; stage order by LLM"
+   }
+  },
+  "forwarding": {
+   "unit": "core.operand_forwarding",
+   "inputs_alu": [
+    {
+     "id": 111,
+     "width": 32,
+     "path": "angelo5_top.core.operand_forwarding.i_alu_rd"
+    }
+   ],
+   "inputs_mem": [
+    {
+     "id": 113,
+     "width": 5,
+     "path": "angelo5_top.core.operand_forwarding.i_memoryaccess_rd_addr"
+    }
+   ],
+   "inputs_wb": [
+    {
+     "id": 115,
+     "width": 32,
+     "path": "angelo5_top.core.operand_forwarding.i_writeback_rd"
+    }
+   ],
+   "outputs": [
+    {
+     "id": 106,
+     "width": 32,
+     "path": "angelo5_top.core.operand_forwarding.o_rs1"
+    },
+    {
+     "id": 107,
+     "width": 32,
+     "path": "angelo5_top.core.operand_forwarding.o_rs2"
+    }
+   ],
+   "stall_out": {
+    "id": 105,
+    "width": 1,
+    "path": "angelo5_top.core.operand_forwarding.o_alu_force_stall"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "module instance operand_forwarding (basereg-read synchronous; forwards ALU/MEM/WB results); roles by name, checked by Coq when used"
+   }
+  },
+  "redirect": {
+   "writeback_change_pc": {
+    "id": 89,
+    "width": 1,
+    "path": "angelo5_top.core.writeback_change_pc"
+   },
+   "writeback_next_pc": {
+    "id": 88,
+    "width": 32,
+    "path": "angelo5_top.core.writeback_next_pc"
+   },
+   "alu_change_pc": {
+    "id": 65,
+    "width": 1,
+    "path": "angelo5_top.core.alu_change_pc"
+   },
+   "alu_next_pc": {
+    "id": 64,
+    "width": 32,
+    "path": "angelo5_top.core.alu_next_pc"
+   },
+   "csr_go_to_trap": {
+    "id": 95,
+    "width": 1,
+    "path": "angelo5_top.core.csr_go_to_trap"
+   },
+   "csr_return_from_trap": {
+    "id": 96,
+    "width": 1,
+    "path": "angelo5_top.core.csr_return_from_trap"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "PC redirect sources: ALU branch/jump at EX, writeback (trap/mret) at WB; CSR trap signals must be shown 0 in the domain (domain obligation)"
+   }
+  },
+  "environment": {
+   "imem": {
+    "addr": {
+     "id": 3,
+     "width": 32,
+     "path": "angelo5_top.iaddr"
+    },
+    "data": {
+     "id": 6,
+     "width": 32,
+     "path": "angelo5_top.inst"
+    },
+    "ack": {
+     "id": 5,
+     "width": 1,
+     "path": "angelo5_top.ack_inst"
+    },
+    "stb": {
+     "id": 4,
+     "width": 1,
+     "path": "angelo5_top.stb_inst"
+    }
+   },
+   "dmem": {
+    "addr": {
+     "id": 10,
+     "width": 32,
+     "path": "angelo5_top.wb_addr"
+    },
+    "wdata": {
+     "id": 11,
+     "width": 32,
+     "path": "angelo5_top.wb_wdata"
+    },
+    "we": {
+     "id": 9,
+     "width": 1,
+     "path": "angelo5_top.wb_we"
+    },
+    "sel": {
+     "id": 12,
+     "width": 4,
+     "path": "angelo5_top.wb_sel"
+    },
+    "ack": {
+     "id": 13,
+     "width": 1,
+     "path": "angelo5_top.wb_ack"
+    },
+    "rdata": {
+     "id": 14,
+     "width": 32,
+     "path": "angelo5_top.wb_rdata"
+    },
+    "cyc": {
+     "id": 7,
+     "width": 1,
+     "path": "angelo5_top.wb_cyc"
+    },
+    "stb": {
+     "id": 8,
+     "width": 1,
+     "path": "angelo5_top.wb_stb"
+    }
+   },
+   "memory": {
+    "id": 2,
+    "width": 4096,
+    "path": "angelo5_top.mem"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "wrapper angelo5_top: one combined memory with registered reads and ack = request registered (phase-A documented environment)"
+   }
+  },
+  "instruction_word": {
+   "holder": {
+    "id": 157,
+    "width": 32,
+    "path": "angelo5_top.core.m2.i_inst"
+   },
+   "alias": [
+    {
+     "id": 42,
+     "width": 32,
+     "path": "angelo5_top.core.fetch_inst"
+    },
+    {
+     "id": 136,
+     "width": 32,
+     "path": "angelo5_top.core.m1.o_inst"
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "cpu_isa_trace anchor (157/42/136)"
+   }
+  },
+  "decoder": {
+   "word": {
+    "id": 157,
+    "width": 32,
+    "path": "angelo5_top.core.m2.i_inst"
+   },
+   "processes": [
+    "process_28",
+    "process_29",
+    "process_251",
+    "process_252"
+   ],
+   "opcode_wire": {
+    "id": 177,
+    "width": 7,
+    "path": "angelo5_top.core.m2.opcode"
+   },
+   "funct3_wire": {
+    "id": 176,
+    "width": 3,
+    "path": "angelo5_top.core.m2.funct3_d"
+   },
+   "imm": {
+    "id": 178,
+    "width": 32,
+    "path": "angelo5_top.core.m2.imm_d"
+   },
+   "registered_by": "process_8",
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb processes writing the decoder wires opcode/funct3 (single-assign slices of the word) and the processes that read them and write the alu/opcode flags and imm_d (module m2)"
+   }
+  },
+  "primary_clock": {
+   "id": 0,
+   "width": 1,
+   "path": "angelo5_top.i_clk"
+  },
+  "primary_reset": {
+   "id": 1,
+   "width": 1,
+   "path": "angelo5_top.i_rst_n"
+  },
+  "sequential_processes": [
+   {
+    "process": "process_0",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 5,
+      "width": 1,
+      "path": "angelo5_top.ack_inst"
+     },
+     {
+      "id": 6,
+      "width": 32,
+      "path": "angelo5_top.inst"
+     },
+     {
+      "id": 13,
+      "width": 1,
+      "path": "angelo5_top.wb_ack"
+     },
+     {
+      "id": 14,
+      "width": 32,
+      "path": "angelo5_top.wb_rdata"
+     }
+    ]
+   },
+   {
+    "process": "process_1",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 2,
+      "width": 4096,
+      "path": "angelo5_top.mem"
+     }
+    ]
+   },
+   {
+    "process": "process_2",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 117,
+       "width": 1,
+       "path": "angelo5_top.core.m0.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 126,
+      "width": 5,
+      "path": "angelo5_top.core.m0.rs1_addr_q"
+     },
+     {
+      "id": 127,
+      "width": 5,
+      "path": "angelo5_top.core.m0.rs2_addr_q"
+     },
+     {
+      "id": 128,
+      "width": 1024,
+      "path": "angelo5_top.core.m0.base_regfile"
+     }
+    ]
+   },
+   {
+    "process": "process_3",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 131,
+       "width": 1,
+       "path": "angelo5_top.core.m1.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 132,
+       "width": 1,
+       "path": "angelo5_top.core.m1.i_rst_n"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "angelo5_top.i_rst_n"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 150,
+      "width": 1,
+      "path": "angelo5_top.core.m1.ce"
+     }
+    ]
+   },
+   {
+    "process": "process_4",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 131,
+       "width": 1,
+       "path": "angelo5_top.core.m1.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 132,
+       "width": 1,
+       "path": "angelo5_top.core.m1.i_rst_n"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "angelo5_top.i_rst_n"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 133,
+      "width": 32,
+      "path": "angelo5_top.core.m1.o_iaddr"
+     },
+     {
+      "id": 134,
+      "width": 32,
+      "path": "angelo5_top.core.m1.o_pc"
+     },
+     {
+      "id": 136,
+      "width": 32,
+      "path": "angelo5_top.core.m1.o_inst"
+     },
+     {
+      "id": 143,
+      "width": 1,
+      "path": "angelo5_top.core.m1.o_ce"
+     },
+     {
+      "id": 147,
+      "width": 32,
+      "path": "angelo5_top.core.m1.prev_pc"
+     },
+     {
+      "id": 148,
+      "width": 32,
+      "path": "angelo5_top.core.m1.stalled_inst"
+     },
+     {
+      "id": 149,
+      "width": 32,
+      "path": "angelo5_top.core.m1.stalled_pc"
+     },
+     {
+      "id": 153,
+      "width": 1,
+      "path": "angelo5_top.core.m1.stall_q"
+     }
+    ]
+   },
+   {
+    "process": "process_8",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 155,
+       "width": 1,
+       "path": "angelo5_top.core.m2.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 156,
+       "width": 1,
+       "path": "angelo5_top.core.m2.i_rst_n"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "angelo5_top.i_rst_n"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 159,
+      "width": 32,
+      "path": "angelo5_top.core.m2.o_pc"
+     },
+     {
+      "id": 161,
+      "width": 5,
+      "path": "angelo5_top.core.m2.o_rs1_addr_q"
+     },
+     {
+      "id": 163,
+      "width": 5,
+      "path": "angelo5_top.core.m2.o_rs2_addr_q"
+     },
+     {
+      "id": 164,
+      "width": 5,
+      "path": "angelo5_top.core.m2.o_rd_addr"
+     },
+     {
+      "id": 165,
+      "width": 32,
+      "path": "angelo5_top.core.m2.o_imm"
+     },
+     {
+      "id": 166,
+      "width": 3,
+      "path": "angelo5_top.core.m2.o_funct3"
+     },
+     {
+      "id": 167,
+      "width": 14,
+      "path": "angelo5_top.core.m2.o_alu"
+     },
+     {
+      "id": 168,
+      "width": 11,
+      "path": "angelo5_top.core.m2.o_opcode"
+     },
+     {
+      "id": 169,
+      "width": 4,
+      "path": "angelo5_top.core.m2.o_exception"
+     },
+     {
+      "id": 171,
+      "width": 1,
+      "path": "angelo5_top.core.m2.o_ce"
+     }
+    ]
+   },
+   {
+    "process": "process_9",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 208,
+       "width": 1,
+       "path": "angelo5_top.core.m3.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 209,
+       "width": 1,
+       "path": "angelo5_top.core.m3.i_rst_n"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "angelo5_top.i_rst_n"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 212,
+      "width": 5,
+      "path": "angelo5_top.core.m3.o_rs1_addr"
+     },
+     {
+      "id": 214,
+      "width": 32,
+      "path": "angelo5_top.core.m3.o_rs1"
+     },
+     {
+      "id": 216,
+      "width": 32,
+      "path": "angelo5_top.core.m3.o_rs2"
+     },
+     {
+      "id": 218,
+      "width": 12,
+      "path": "angelo5_top.core.m3.o_imm"
+     },
+     {
+      "id": 220,
+      "width": 3,
+      "path": "angelo5_top.core.m3.o_funct3"
+     },
+     {
+      "id": 222,
+      "width": 11,
+      "path": "angelo5_top.core.m3.o_opcode"
+     },
+     {
+      "id": 224,
+      "width": 4,
+      "path": "angelo5_top.core.m3.o_exception"
+     },
+     {
+      "id": 225,
+      "width": 32,
+      "path": "angelo5_top.core.m3.o_y"
+     },
+     {
+      "id": 227,
+      "width": 32,
+      "path": "angelo5_top.core.m3.o_pc"
+     },
+     {
+      "id": 230,
+      "width": 1,
+      "path": "angelo5_top.core.m3.o_wr_rd"
+     },
+     {
+      "id": 232,
+      "width": 5,
+      "path": "angelo5_top.core.m3.o_rd_addr"
+     },
+     {
+      "id": 233,
+      "width": 32,
+      "path": "angelo5_top.core.m3.o_rd"
+     },
+     {
+      "id": 234,
+      "width": 1,
+      "path": "angelo5_top.core.m3.o_rd_valid"
+     },
+     {
+      "id": 235,
+      "width": 1,
+      "path": "angelo5_top.core.m3.o_stall_from_alu"
+     },
+     {
+      "id": 237,
+      "width": 1,
+      "path": "angelo5_top.core.m3.o_ce"
+     }
+    ]
+   },
+   {
+    "process": "process_10",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 277,
+       "width": 1,
+       "path": "angelo5_top.core.m4.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 278,
+       "width": 1,
+       "path": "angelo5_top.core.m4.i_rst_n"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "angelo5_top.i_rst_n"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 282,
+      "width": 3,
+      "path": "angelo5_top.core.m4.o_funct3"
+     },
+     {
+      "id": 284,
+      "width": 11,
+      "path": "angelo5_top.core.m4.o_opcode"
+     },
+     {
+      "id": 286,
+      "width": 32,
+      "path": "angelo5_top.core.m4.o_pc"
+     },
+     {
+      "id": 288,
+      "width": 1,
+      "path": "angelo5_top.core.m4.o_wr_rd"
+     },
+     {
+      "id": 290,
+      "width": 5,
+      "path": "angelo5_top.core.m4.o_rd_addr"
+     },
+     {
+      "id": 292,
+      "width": 32,
+      "path": "angelo5_top.core.m4.o_rd"
+     },
+     {
+      "id": 293,
+      "width": 1,
+      "path": "angelo5_top.core.m4.o_wb_cyc_data"
+     },
+     {
+      "id": 294,
+      "width": 1,
+      "path": "angelo5_top.core.m4.o_wb_stb_data"
+     },
+     {
+      "id": 295,
+      "width": 1,
+      "path": "angelo5_top.core.m4.o_wb_we_data"
+     },
+     {
+      "id": 296,
+      "width": 32,
+      "path": "angelo5_top.core.m4.o_wb_addr_data"
+     },
+     {
+      "id": 297,
+      "width": 32,
+      "path": "angelo5_top.core.m4.o_wb_data_data"
+     },
+     {
+      "id": 298,
+      "width": 4,
+      "path": "angelo5_top.core.m4.o_wb_sel_data"
+     },
+     {
+      "id": 302,
+      "width": 32,
+      "path": "angelo5_top.core.m4.o_data_load"
+     },
+     {
+      "id": 305,
+      "width": 1,
+      "path": "angelo5_top.core.m4.o_ce"
+     },
+     {
+      "id": 313,
+      "width": 1,
+      "path": "angelo5_top.core.m4.pending_request"
+     }
+    ]
+   },
+   {
+    "process": "process_12",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 338,
+       "width": 1,
+       "path": "angelo5_top.core.m6.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "angelo5_top.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 339,
+       "width": 1,
+       "path": "angelo5_top.core.m6.i_rst_n"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "angelo5_top.i_rst_n"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 353,
+      "width": 32,
+      "path": "angelo5_top.core.m6.o_csr_out"
+     },
+     {
+      "id": 356,
+      "width": 32,
+      "path": "angelo5_top.core.m6.o_return_address"
+     },
+     {
+      "id": 357,
+      "width": 32,
+      "path": "angelo5_top.core.m6.o_trap_address"
+     },
+     {
+      "id": 358,
+      "width": 1,
+      "path": "angelo5_top.core.m6.o_go_to_trap_q"
+     },
+     {
+      "id": 359,
+      "width": 1,
+      "path": "angelo5_top.core.m6.o_return_from_trap_q"
+     },
+     {
+      "id": 418,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mstatus_mie"
+     },
+     {
+      "id": 419,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mstatus_mpie"
+     },
+     {
+      "id": 420,
+      "width": 2,
+      "path": "angelo5_top.core.m6.mstatus_mpp"
+     },
+     {
+      "id": 421,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mie_meie"
+     },
+     {
+      "id": 422,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mie_mtie"
+     },
+     {
+      "id": 423,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mie_msie"
+     },
+     {
+      "id": 424,
+      "width": 30,
+      "path": "angelo5_top.core.m6.mtvec_base"
+     },
+     {
+      "id": 425,
+      "width": 2,
+      "path": "angelo5_top.core.m6.mtvec_mode"
+     },
+     {
+      "id": 426,
+      "width": 32,
+      "path": "angelo5_top.core.m6.mscratch"
+     },
+     {
+      "id": 427,
+      "width": 32,
+      "path": "angelo5_top.core.m6.mepc"
+     },
+     {
+      "id": 428,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mcause_intbit"
+     },
+     {
+      "id": 429,
+      "width": 4,
+      "path": "angelo5_top.core.m6.mcause_code"
+     },
+     {
+      "id": 430,
+      "width": 32,
+      "path": "angelo5_top.core.m6.mtval"
+     },
+     {
+      "id": 431,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mip_meip"
+     },
+     {
+      "id": 432,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mip_mtip"
+     },
+     {
+      "id": 433,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mip_msip"
+     },
+     {
+      "id": 434,
+      "width": 64,
+      "path": "angelo5_top.core.m6.mcycle"
+     },
+     {
+      "id": 435,
+      "width": 64,
+      "path": "angelo5_top.core.m6.minstret"
+     },
+     {
+      "id": 436,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mcountinhibit_cy"
+     },
+     {
+      "id": 437,
+      "width": 1,
+      "path": "angelo5_top.core.m6.mcountinhibit_ir"
+     }
+    ]
+   }
+  ],
+  "fires_on_rise": [
+   "process_0",
+   "process_1",
+   "process_2",
+   "process_3",
+   "process_4",
+   "process_8",
+   "process_9",
+   "process_10",
+   "process_12"
+  ],
+  "fires_on_fall": [],
+  "rf_write_edge": "rise",
+  "provenance": {
+   "source": "discovered",
+   "rule": "sequential process event specs (Posedge clk, Negedge resetn); clock/reset nets traced through copy/not comb wires to the primary inputs (tools/cpu_tmpl_edge.py nets); fire lists computed by simulating the polarities"
+  },
+  "edge_provenance": {
+   "source": "discovered",
+   "rule": "sequential process event specs (Posedge clk, Negedge resetn); clock/reset nets traced through copy/not comb wires to the primary inputs (tools/cpu_tmpl_edge.py nets); fire lists computed by simulating the polarities"
+  }
+ },
+ "route": {
+  "date": "20261104",
+  "rst_idle": 1,
+  "note": "angelo5fix: async active-low reset (rst_idle=1), 5-stage. NOT yet on the driver (generators without a text-mode CLI or writing a directory): stage2 variants (stage2, stage2s, stage2csr, stage2scsr: cpu_tmpl_stage2.py --procs/--slices), fwd (cpu_tmpl_a5fwd.py, differs by the --dec module path), ovl jobs fetch/wb/ex/csr/mem (cpu_tmpl_a5ovl.py --job writes a directory), copy (cpu_tmpl_bzcopy.py). Missing layers (not built for the design): cycle/value, INV.",
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "module": "A5TmplLfp",
+    "namespace": "TmplA5Lfp",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--rounds",
+     "8",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-lfp-20261104-b8",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_lfpnl.py --rounds 8"
+   },
+   {
+    "name": "target",
+    "layer": "target",
+    "module": "A5TmplTarget",
+    "namespace": "TmplA5Target",
+    "cmd": [
+     "tools/cpu_tmpl_a5target.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-target-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_a5target.py"
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "module": "A5TmplEdge",
+    "namespace": "TmplA5Edge",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-edge-20261104-a2",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py"
+   },
+   {
+    "name": "reset",
+    "layer": "reset",
+    "module": "A5TmplReset",
+    "namespace": "TmplA5Reset",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-reset-20261104-a2",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py --reset-events"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "module": "A5TmplStage",
+    "namespace": "TmplA5Stage",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-stage-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py"
+   },
+   {
+    "name": "rf",
+    "layer": "rf",
+    "module": "A5TmplRF",
+    "namespace": "TmplA5RF",
+    "cmd": [
+     "tools/cpu_tmpl_rf.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--rebased",
+     "{modq:edge}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-rf-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_rf.py --rebased"
+   },
+   {
+    "name": "dec",
+    "layer": "ctl",
+    "module": "A5TmplDec",
+    "namespace": "TmplA5Dec",
+    "cmd": [
+     "tools/cpu_tmpl_a5dec.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-dec-20261104-a3",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_a5dec.py"
+   },
+   {
+    "name": "alu",
+    "layer": "ctl",
+    "module": "A5TmplAlu",
+    "namespace": "TmplA5Alu",
+    "cmd": [
+     "tools/cpu_tmpl_a5alu.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-alu-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_a5alu.py"
+   }
+  ]
+ }
+}

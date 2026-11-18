@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-six-branch-infinite-loop",
+  "backend": "Actual repaired RTL AST, nine-round full LFP and original reset/rising/falling scheduler",
+  "translation_equivalence": "External RTL-to-AST translation remains unmechanized; cumulative repaired derived DUT, not an unmodified-upstream compliance claim",
+  "verification_scope": "Six BEQ/BNE/BLT/BGE/BLTU/BGEU x1,x2,0 at PC0 and JAL x0,-4 at PC4, original zero RF seed and response environment. Taken branch really self-redirects with flush; not-taken reaches JAL. Actual same physical/frontend joint and complete PC nextPC RF ROM RAM relation. Not arbitrary programs, nonzero-source regression, each direction for each literal, or all38. Local comparison and decision providers retain symbolic operands.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUBranchJALLoopDomain.words (BzeenoLoadUseJalBranchProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": [
+      "Ex.External.CPUCommitBoundaryTarget",
+      "Ex.External.BzeenoLoadUseJalBranchInfiniteITree",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.CPUBranchJALLoopDomain",
+      "Ex.External.BzeenoLoadUseJalBranchProgram",
+      "Ex.External.BzeenoLoadUseJalBranchISA"
+    ],
+    "open_modules": ["CPUCommitBoundaryTarget"],
+    "binders": "(op : BzeenoLoadUseJalBranchISA.Op)",
+    "arguments": ["op"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/BzeenoLoadUseJalBranchJoint.v",
+    "src/Ex/External/BzeenoLoadUseJalBranchLoopSupport.v",
+    "src/Ex/External/BzeenoLoadUseJalBranchInfiniteITree.v"
+  ],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalCertifiedEvidenceLoop.v"],
+  "bindings": {
+    "architecture": "Unchanged ProgramArchRelated: PC nextPC full RF ROM all128 RAM bytes",
+    "control": "Actual same-Joint forwarded sources determine real branch decision, flush and redirect; no SequentialCodeCert for opcode99",
+    "assembly": "Common CPUCommitBoundaryTarget certificate and unchanged static acceptance tool"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalBranchInfiniteITree.checked_certificate",
+    "infinite": "BzeenoLoadUseJalBranchInfiniteITree.actual_infinite_refinement"
+  }
+}

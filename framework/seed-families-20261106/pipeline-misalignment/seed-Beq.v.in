@@ -1,0 +1,16 @@
+Theorem ob_mis_@CLASS@ : OBL.Ob_mis_@CLASS@.
+Proof. intros @ARGS@ t g w [HL [H237 [HE [Hpc [Hipc _]]]]] HD.
+ pose proof (CI.inv_@CLASS@ w @ARGS@ HD) as [[_ [_ Ha2]] _].
+ destruct HE as (E227 & E222 & _ & _ & _ & _ & _ & E218 & EY).
+ cbn [opc dimm ybit taken] in E222, E218, EY. cbn [LI.ipc] in Hipc.
+ set (tk := BRC.isa_branch_guard (Decode.@CLASS@ @ARGS@) (SR.formal_register_word g a0) (SR.formal_register_word g a1)) in *.
+ rewrite Ha2 in Hipc. unfold TG.rd.
+ destruct tk; cbv iota in Hipc; cbn [bz] in EY.
+ - assert (HF : FHold t [(222%nat,11%nat,16); (225%nat,1%nat,1); (227%nat,2%nat,0); (218%nat,2%nat,0)]).
+   { apply fhold_cons; [exact E222|]. apply fhold_cons; [exact EY|]. apply fhold_cons; [exact (low2_pc _ _ E227 Hpc)|].
+     apply fhold_cons; [exact (low2_imm _ _ _ E218 Hpc Hipc)|]. apply fhold_nil. }
+   cw CY.b_410 CY.r_410 [(222%nat,11%nat,16); (225%nat,1%nat,1); (227%nat,2%nat,0); (218%nat,2%nat,0)].
+ - assert (HF : FHold t [(222%nat,11%nat,16); (225%nat,1%nat,0)]).
+   { apply fhold_cons; [exact E222|]. apply fhold_cons; [exact EY|]. apply fhold_nil. }
+   cw CY.b_410 CY.r_410 [(222%nat,11%nat,16); (225%nat,1%nat,0)].
+Qed.

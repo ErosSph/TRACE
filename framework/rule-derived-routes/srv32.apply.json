@@ -1,0 +1,302 @@
+{
+ "date": "20261104",
+ "rst_idle": 1,
+ "env": {},
+ "stages": [
+  {
+   "name": "lfp",
+   "layer": "lfp",
+   "module": "Srv32Lfp",
+   "namespace": "TmplSrv32Lfp",
+   "ref": "results/r-tmpl-srv32-lfp-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_lfpnl.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "rules": [
+    "lfp_nolatch_cert"
+   ],
+   "note": "rule-derived (lfp_nolatch_cert)",
+   "text_sub": [
+    [
+     "ExtendedSVPhaseLength.\nModule",
+     "ExtendedSVPhaseLength Srv32AST.\nModule"
+    ]
+   ]
+  },
+  {
+   "name": "edge",
+   "layer": "edge",
+   "module": "Srv32TmplEdge",
+   "namespace": "TmplSrv32Edge",
+   "ref": "results/r-tmpl-srv32-edge-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_edge.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "rules": [
+    "edge_derived_clock"
+   ],
+   "note": "rule-derived (edge_derived_clock)"
+  },
+  {
+   "name": "stage",
+   "layer": "stage",
+   "module": "Srv32TmplStage",
+   "namespace": "TmplSrv32Stage",
+   "ref": "results/r-tmpl-srv32-stage-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "stage_seqtree"
+   ],
+   "note": "rule-derived (stage_seqtree)"
+  },
+  {
+   "name": "frame",
+   "layer": "frame",
+   "module": "Srv32TmplFrame",
+   "namespace": "TmplSrv32Frame",
+   "ref": "results/r-tmpl-srv32-frame-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--frame",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "frame_fall_hold"
+   ],
+   "note": "rule-derived (frame_fall_hold)"
+  },
+  {
+   "name": "base",
+   "layer": "cycle",
+   "module": "Srv32Base",
+   "namespace": "TmplSrv32Base",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_step.py",
+    "base",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-srv32-base-20261104-a2",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_srv32_step.py base",
+   "residual": true
+  },
+  {
+   "name": "rf",
+   "layer": "rf",
+   "module": "Srv32Rf",
+   "namespace": "TmplSrv32Rf",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_rf.py",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-srv32-rf-20261104-a1",
+   "provenance": "llm_adapted",
+   "generator": "tools/cpu_tmpl_srv32_rf.py",
+   "residual": true
+  },
+  {
+   "name": "ex",
+   "layer": "ctl",
+   "module": "Srv32Ex",
+   "namespace": "TmplSrv32Ex",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_ex.py",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-srv32-ex-20261104-a4",
+   "provenance": "llm_adapted",
+   "generator": "tools/cpu_tmpl_srv32_ex.py",
+   "residual": true
+  },
+  {
+   "name": "cap",
+   "layer": "ctl",
+   "module": "Srv32Cap",
+   "namespace": "TmplSrv32Cap",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_cap.py",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-srv32-cap-20261104-a1",
+   "provenance": "llm_written",
+   "generator": "tools/cpu_tmpl_srv32_cap.py",
+   "residual": true
+  },
+  {
+   "name": "wire",
+   "layer": "wire",
+   "module": "Srv32Wire",
+   "namespace": "TmplSrv32Wire",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_wire.py",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-srv32-wire-20261104-a2",
+   "provenance": "llm_adapted",
+   "generator": "tools/cpu_tmpl_srv32_wire.py",
+   "residual": true
+  },
+  {
+   "name": "nx",
+   "layer": "next",
+   "module": "Srv32Nx",
+   "namespace": "TmplSrv32Nx",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_nx.py",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-srv32-nx-20261104-a1",
+   "provenance": "llm_written",
+   "generator": "tools/cpu_tmpl_srv32_nx.py",
+   "residual": true
+  },
+  {
+   "name": "op",
+   "layer": "rf",
+   "module": "Srv32Op",
+   "namespace": "TmplSrv32Op",
+   "cmd": [
+    "tools/cpu_tmpl_srv32_op.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_srv32_op.py",
+   "rules": [
+    "rebased_operand_ports"
+   ],
+   "note": "rule-derived (rebased_operand_ports)"
+  }
+ ],
+ "rule_applied": true,
+ "residual_stages": [
+  "base",
+  "rf",
+  "ex",
+  "cap",
+  "wire",
+  "nx"
+ ],
+ "rule_stages": [
+  "lfp",
+  "edge",
+  "stage",
+  "frame",
+  "op"
+ ],
+ "operands": {
+  "bank": 244,
+  "ports": [
+   {
+    "dst": 245,
+    "rs": 252
+   },
+   {
+    "dst": 246,
+    "rs": 253
+   }
+  ]
+ },
+ "hand_fields_kept": [
+  "lfp.text_sub"
+ ],
+ "residual_obligations": [
+  {
+   "layer": "rf",
+   "reason": "rf_rebased_bank: write shape blk1 has no generic generator",
+   "hint": [
+    "ExtendedSVBankWriteBlk"
+   ],
+   "rule": "rf_rebased_bank"
+  },
+  {
+   "layer": "target",
+   "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+   "hint": []
+  },
+  {
+   "layer": "cycle",
+   "reason": "cycle composition / register values on the driven state",
+   "hint": []
+  },
+  {
+   "layer": "fetch",
+   "reason": "fetch link (instruction memory read = ROM word)",
+   "hint": []
+  },
+  {
+   "layer": "ctl",
+   "reason": "per-class control and datapath facts",
+   "hint": [
+    "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain"
+   ]
+  },
+  {
+   "layer": "domain",
+   "reason": "domain premises (misaligned / trap = 0 from check_program)",
+   "hint": []
+  },
+  {
+   "layer": "lift",
+   "reason": "lift builder needs framework/lift-roles/<D>.json (provider module, wire roles)",
+   "hint": [
+    "lift_isa",
+    "lift_ex_provider"
+   ]
+  },
+  {
+   "layer": "closure",
+   "reason": "INV + rank + D step + final theorem",
+   "hint": [
+    "closure_pulse (not runnable yet)"
+   ]
+  }
+ ]
+}

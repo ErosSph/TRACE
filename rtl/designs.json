@@ -1,0 +1,861 @@
+{
+ "darkriscv": {
+  "repository": "https://github.com/darklife/darkriscv",
+  "commit": "4aa437997cd35253c9111f10a449de13ccaeee78",
+  "license": "BSD-3-Clause",
+  "top_module": "darkriscv",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Wno-BLKANDNBLK",
+   "-Wno-PINCONNECTEMPTY",
+   "-Irtl"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cv32e40p_extended_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "rtl/darkriscv.v",
+    "local": "rtl/darkriscv.v",
+    "sha256": "ea99b4c81d5ef21df2b6ef18dc81542b9b5f608cb6f13af375d3379a7eb65dd7",
+    "patched_by": "patches/darkriscv/darkriscv-jalr-bit0.patch"
+   },
+   {
+    "upstream": "rtl/config.vh",
+    "local": "rtl/config.vh",
+    "sha256": "742fb1d3a5294d5ca2c431f7df5b26d907bafbe25ca91f29956562d2fa7eda92"
+   }
+  ],
+  "wrappers": [],
+  "patches": [
+   {
+    "file": "patches/darkriscv/darkriscv-jalr-bit0.patch",
+    "fixes": "JALR target clears bit 0 (RISC-V spec); upstream keeps it"
+   }
+  ],
+  "verilator_files": [
+   "rtl/darkriscv.v"
+  ]
+ },
+ "steel": {
+  "repository": "https://github.com/riscv-steel/riscv-steel",
+  "commit": "7af8290a770e6cb17e49dea75268a582bff5261f",
+  "license": "MIT",
+  "top_module": "steel_top",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Wno-BLKANDNBLK",
+   "-Wno-PINCONNECTEMPTY"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cv32e40p_extended_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "hardware/rvx_core.v",
+    "local": "hardware/rvx_core.v",
+    "sha256": "f0b31fda6e7253b401753e5e7b87710b429fc7b6239a6e135cd06063e5011afb"
+   }
+  ],
+  "wrappers": [
+   {
+    "file": "wrappers/steel/steel_top.v",
+    "local": "steel_top.v",
+    "sha256": "24a4b2e7fd93c21a5228d3f1d24e4d3fbe457b6a9643899304b4a5e3580f59b8",
+    "what": "environment wrapper around the unmodified rvx_core"
+   }
+  ],
+  "patches": [],
+  "verilator_files": [
+   "steel_top.v",
+   "hardware/rvx_core.v"
+  ]
+ },
+ "srv32": {
+  "repository": "https://github.com/kuopinghsu/srv32",
+  "commit": "7129bdcf8eb0ac2b7db82256e15c383a41b008b2",
+  "license": "MIT",
+  "top_module": "srv32_env",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Wno-BLKANDNBLK",
+   "-Wno-PINCONNECTEMPTY",
+   "-DSYNTHESIS",
+   "-Irtl"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cv32e40p_extended_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "rtl/riscv.v",
+    "local": "rtl/riscv.v",
+    "sha256": "159873fdb824b5ddc8c80f536700e6056c20b4348b67210bf3d479fb8c6a83c0"
+   },
+   {
+    "upstream": "rtl/opcode.vh",
+    "local": "rtl/opcode.vh",
+    "sha256": "1e721cd8b5ee3d56416d22366bff9d361c98bb5908ea659ab3ef867d9495439c"
+   }
+  ],
+  "wrappers": [
+   {
+    "file": "wrappers/srv32/srv32_env.v",
+    "local": "srv32_env.v",
+    "sha256": "318d258d9a695077138c89f13cb879bb3323027f2c1a4f310d18fdcf5de2b662",
+    "what": "environment wrapper (single-word memory interface)"
+   }
+  ],
+  "patches": [],
+  "verilator_files": [
+   "srv32_env.v",
+   "rtl/riscv.v"
+  ]
+ },
+ "nerv": {
+  "repository": "https://github.com/YosysHQ/nerv",
+  "commit": "6de2a41977975e0c2f175f5b8df0f3ad14e2dd0d",
+  "license": "ISC",
+  "top_module": "nerv_top",
+  "verilator_args": [
+   "-Wno-fatal"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/nerv_frontend_lit.py"
+  },
+  "files": [
+   {
+    "upstream": "nerv.sv",
+    "local": "nerv.sv",
+    "sha256": "e2896c38eb414d8a7983dc2540963e2991daf0c483419311785b009de87df217"
+   }
+  ],
+  "wrappers": [
+   {
+    "file": "wrappers/nerv/nerv_top.sv",
+    "local": "nerv_top.sv",
+    "sha256": "4dfe0b9183fe1f374c16225d97f5c6ec74f31c495f5ec2c9692050c6fac0c957",
+    "what": "environment wrapper (memory/reset interface)"
+   }
+  ],
+  "patches": [],
+  "verilator_files": [
+   "nerv_top.sv",
+   "nerv.sv"
+  ]
+ },
+ "a5": {
+  "repository": "https://github.com/AngeloJacobo/RISC-V",
+  "commit": "b0ab05501abcb2a1bc882702d196dcbd1385be03",
+  "license": "MIT",
+  "top_module": "angelo5_top",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Wno-BLKANDNBLK",
+   "-Wno-PINCONNECTEMPTY",
+   "-Irtl"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cv32e40p_extended_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "rtl/rv32i_alu.v",
+    "local": "rtl/rv32i_alu.v",
+    "sha256": "56f8685d04a5ee9dc12aa0e0f2d3bd9f253739726bd689251f9e8cd57abe6022",
+    "patched_by": "patches/a5/a5-jalr-bit0.patch"
+   },
+   {
+    "upstream": "rtl/rv32i_basereg.v",
+    "local": "rtl/rv32i_basereg.v",
+    "sha256": "1effa6e9703bdc9ba1d40378b15b6025dd41d36b1fdef88e3a1d7ca109e092eb"
+   },
+   {
+    "upstream": "rtl/rv32i_core.v",
+    "local": "rtl/rv32i_core.v",
+    "sha256": "680d4587c2cd87d56479ec287dfa775c58b9390cd6bf96937cace7a3ed7a1c8a"
+   },
+   {
+    "upstream": "rtl/rv32i_csr.v",
+    "local": "rtl/rv32i_csr.v",
+    "sha256": "b618f1b3385f2c759521d1a34c8183c3267b01c04260e0adb944a4b2e24f3c7b",
+    "patched_by": "patches/a5/a5-jalr-bit0.patch"
+   },
+   {
+    "upstream": "rtl/rv32i_decoder.v",
+    "local": "rtl/rv32i_decoder.v",
+    "sha256": "2e38c4a5f3e6daad234f5786760a7d79341ce69271e909acaf4e6be0649e5949"
+   },
+   {
+    "upstream": "rtl/rv32i_fetch.v",
+    "local": "rtl/rv32i_fetch.v",
+    "sha256": "62ae2eb3348df152ec7dcf0e4fb3e7405cb8c758b1e6547477596af642256430"
+   },
+   {
+    "upstream": "rtl/rv32i_forwarding.v",
+    "local": "rtl/rv32i_forwarding.v",
+    "sha256": "3be411527e32035c990d1ac133b3f3b01e02aba4e83cb92c6a538dccb97acc88"
+   },
+   {
+    "upstream": "rtl/rv32i_header.vh",
+    "local": "rtl/rv32i_header.vh",
+    "sha256": "01d1abe17970b5c3037f2d95c323e7c5b37239977000e08194b1c6a4837c8631"
+   },
+   {
+    "upstream": "rtl/rv32i_memoryaccess.v",
+    "local": "rtl/rv32i_memoryaccess.v",
+    "sha256": "dba90be0f6cdbe9bbc52f13649da0d51127c34a53669bff5aa5b2051e5756948"
+   },
+   {
+    "upstream": "rtl/rv32i_writeback.v",
+    "local": "rtl/rv32i_writeback.v",
+    "sha256": "0e0d1e6c3fe1e7cc209fb6ec86c6fce3630618839e45ed0b246f748ca5c61089"
+   }
+  ],
+  "wrappers": [
+   {
+    "file": "wrappers/a5/angelo5_top.v",
+    "local": "angelo5_top.v",
+    "sha256": "f43980d2a4410a58239d44e50cd13c86e52a3f8e5d991b34fa85d2be0fb83eca",
+    "what": "environment wrapper (memory interface)"
+   }
+  ],
+  "patches": [
+   {
+    "file": "patches/a5/a5-jalr-bit0.patch",
+    "fixes": "JALR target clears bit 0 and the misaligned-target trap uses that target (upstream traps on odd JALR targets)"
+   }
+  ],
+  "verilator_files": [
+   "angelo5_top.v",
+   "rtl/rv32i_core.v",
+   "rtl/rv32i_fetch.v",
+   "rtl/rv32i_decoder.v",
+   "rtl/rv32i_alu.v",
+   "rtl/rv32i_memoryaccess.v",
+   "rtl/rv32i_writeback.v",
+   "rtl/rv32i_basereg.v",
+   "rtl/rv32i_forwarding.v",
+   "rtl/rv32i_csr.v"
+  ]
+ },
+ "bzeeno": {
+  "repository": "https://github.com/bzeeno/riscv-cpu",
+  "commit": "c190c1f83480b3dc8f1d161f047055be68b2fc4b",
+  "license": "none stated upstream",
+  "top_module": "cpu",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Wno-BLKANDNBLK"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cv32e40p_extended_frontend.py"
+  },
+  "files": [
+   {
+    "exported": "alu.sv",
+    "local": "alu.sv",
+    "sha256": "923210e4af8ce56c66c4c692da776fb1d288ee009895aaf0a84753d145adfcdf"
+   },
+   {
+    "exported": "cla_32bit.sv",
+    "local": "cla_32bit.sv",
+    "sha256": "c826a0af104c0ca6516fc95117cd478218dd37463ba32ff994e7291424a4026b"
+   },
+   {
+    "exported": "comparator.sv",
+    "local": "comparator.sv",
+    "sha256": "fa23b3d36863d9604e8fdcb0bbcc3f7194f88877a01d1eef03a5f686d5157478"
+   },
+   {
+    "exported": "core.sv",
+    "local": "core.sv",
+    "sha256": "da0ebad2fea4018d7b7fb66b8bdbf81b199e613aedb1bb13e125680b9e2375e0"
+   },
+   {
+    "exported": "cpu.sv",
+    "local": "cpu.sv",
+    "sha256": "f50c6165d4a282d0e9a5ccda769b7a9afe2cb2e2c14da05a88f164490a4815fa"
+   },
+   {
+    "exported": "data_mem.sv",
+    "local": "data_mem.sv",
+    "sha256": "4928a9e09282d0696c4a4b9cfdf096eb3af0034ff7d339c65c6ad4872470a2aa"
+   },
+   {
+    "exported": "exe_mem_reg.sv",
+    "local": "exe_mem_reg.sv",
+    "sha256": "557ba5c3cf9a98539f07201f390860624bf0e89197b7b921ed224ea4a6b5d3a6"
+   },
+   {
+    "exported": "id_exe_reg.sv",
+    "local": "id_exe_reg.sv",
+    "sha256": "44c7cb909701c355cac0d945cc7be428943381968556e752fd2f970766a6fc89"
+   },
+   {
+    "exported": "if_id_reg.sv",
+    "local": "if_id_reg.sv",
+    "sha256": "0cce9a813307543b190823f1fbc8390e8ceb31a57cd0d954777638937f0f9dbb"
+   },
+   {
+    "exported": "imm_decode.sv",
+    "local": "imm_decode.sv",
+    "sha256": "b487c3c396a60c77e2d1b2a32c7e14dd584762f4a8a3c3d34dd164db17f5a558",
+    "patched_by": "patches/bzeeno/bzeeno-auipc-immediate.patch"
+   },
+   {
+    "exported": "instruction_mem.sv",
+    "local": "instruction_mem.sv",
+    "sha256": "7f4af5506bd0177f4765dc7e97f0a31b12d9e0de19ef289b3ef110a0e018cae3"
+   },
+   {
+    "exported": "load_modifier.sv",
+    "local": "load_modifier.sv",
+    "sha256": "31eedf0c409ce318c806304c12e1d25699b6dace94e980fcf8deaeddac2cad9e"
+   },
+   {
+    "exported": "mem_wb_reg.sv",
+    "local": "mem_wb_reg.sv",
+    "sha256": "0136faa063de362591a26b30ae1f805ea7c67d9c1fdca2cce3b5fbcf6d7145a0"
+   },
+   {
+    "exported": "mux_3to1.sv",
+    "local": "mux_3to1.sv",
+    "sha256": "58ed20c741f8337e42f382da7730c4b2d0cf826221a8f5cbf1d397ebe5c693fa"
+   },
+   {
+    "exported": "mux_4to1.sv",
+    "local": "mux_4to1.sv",
+    "sha256": "a3d167a3c0cdc761183afae6dec7a93198ae36f41e3b08ea6550fbffaa4fe3b4"
+   },
+   {
+    "exported": "pc_reg.sv",
+    "local": "pc_reg.sv",
+    "sha256": "089194c9425fb9505133dada913661b6e7975ccbfe727fd6dd7bc421f8131a3d"
+   },
+   {
+    "exported": "regfile.sv",
+    "local": "regfile.sv",
+    "sha256": "899a0bb37cbe2391076d76c6d40b64a33343421a5ce8d476fcf8861832ee081e"
+   },
+   {
+    "exported": "store_modifier.sv",
+    "local": "store_modifier.sv",
+    "sha256": "1c4edc79eac17e258667b344b18bafd657141a7a6648047fa3a49a7e07b7efe3"
+   },
+   {
+    "exported": "control_unit.sv",
+    "local": "control_unit.sv",
+    "sha256": "89e4d79e5cb1421856d00e121d30e5455379800f280f90aa5322454c72491f1b",
+    "patched_by": "patches/bzeeno/bzeeno-jal-signext-and-load-use-redirect.patch"
+   }
+  ],
+  "wrappers": [],
+  "patches": [
+   {
+    "file": "patches/bzeeno/bzeeno-auipc-immediate.patch",
+    "fixes": "AUIPC immediate case (upper-immediate) added to imm_decode"
+   },
+   {
+    "file": "patches/bzeeno/bzeeno-jal-signext-and-load-use-redirect.patch",
+    "fixes": "JAL immediate is sign-extended (negative JAL offsets) and a redirect/flush is accepted only with the held ID instruction (load-use redirect bug)"
+   }
+  ],
+  "source_kind": "coq-quotation",
+  "note": "The proofs use a re-expression of the upstream design that is kept as module quotations in the TRACE Coq library (src/Ex/External/Bzeeno*.v; derived from upstream commit c190c1f83480b3dc8f1d161f047055be68b2fc4b, which also fixes the upstream comparator). fetch_rtl.py exports it with rtl/tools/export_quoted_rtl.py and applies two fixes. The upstream repository states no license and is not downloaded.",
+  "coq_sources": [
+   {
+    "path": "Ex/External/BzeenoPipeline.v",
+    "sha256": "04918daf42c1d93579dd5c6e4dde12f17257e598be2eef9879dabb2084dde5ef"
+   },
+   {
+    "path": "Ex/External/BzeenoControl.v",
+    "sha256": "24a442beafc76b3dc36479573b7fcf0d9256f154fa22a417b649448ecfbf9289"
+   },
+   {
+    "path": "Ex/External/BzeenoFullCore.v",
+    "sha256": "e955dad2e87297f278ef0c7d44cc895df7ef3bf0a3c22b9f50392c594ce174aa"
+   },
+   {
+    "path": "Ex/External/BzeenoCPU.v",
+    "sha256": "083ee06694547792d3994841871acd8468cb8326fe150592e4d14d016cdd4f31"
+   }
+  ],
+  "verilator_files": [
+   "alu.sv",
+   "cla_32bit.sv",
+   "comparator.sv",
+   "core.sv",
+   "cpu.sv",
+   "data_mem.sv",
+   "exe_mem_reg.sv",
+   "id_exe_reg.sv",
+   "if_id_reg.sv",
+   "imm_decode.sv",
+   "instruction_mem.sv",
+   "load_modifier.sv",
+   "mem_wb_reg.sv",
+   "mux_3to1.sv",
+   "mux_4to1.sv",
+   "pc_reg.sv",
+   "regfile.sv",
+   "store_modifier.sv",
+   "control_unit.sv"
+  ]
+ },
+ "picorv32": {
+  "repository": "https://github.com/YosysHQ/picorv32",
+  "commit": "87c89acc18994c8cf9a2311e871818e87d304568",
+  "license": "ISC",
+  "top_module": "pico_transfer_top",
+  "verilator_args": [
+   "-Wno-fatal"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cv32e40p_extended_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "picorv32.v",
+    "local": "picorv32.v",
+    "sha256": "0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622"
+   }
+  ],
+  "wrappers": [
+   {
+    "file": "wrappers/picorv32/pico_transfer_top.v",
+    "local": "pico_transfer_top.v",
+    "sha256": "51877a37eba3b8ff374576cf0f81cb129b6793421edf9e2f4074d4a2548796ed",
+    "what": "compatibility wrapper for Verilator 4.028 nested --top-module"
+   }
+  ],
+  "patches": [],
+  "verilator_files": [
+   "pico_transfer_top.v",
+   "picorv32.v"
+  ]
+ },
+ "tinyriscv": {
+  "repository": "https://github.com/liangkangnan/tinyriscv",
+  "commit": "7cb8c8aa0676a27bacb574a80ac20a3c4508c939",
+  "license": "Apache-2.0",
+  "top_module": "tinyriscv",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Irtl/core"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cpu_array_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "rtl/core/clint.v",
+    "local": "rtl/core/clint.v",
+    "sha256": "29fc1c210676ea1a3cab348d2ccfdcdb2ffda329bac2910f2d0ce2836b44ac21"
+   },
+   {
+    "upstream": "rtl/core/csr_reg.v",
+    "local": "rtl/core/csr_reg.v",
+    "sha256": "95304ada40b5af6072d3f80b2d6f59467981af63cc08b50fb4868c01dfb3a58b"
+   },
+   {
+    "upstream": "rtl/core/ctrl.v",
+    "local": "rtl/core/ctrl.v",
+    "sha256": "b251436e1370db58640ec7f1364c488d95db3405c5a6d0cabe90f6aadea071ca"
+   },
+   {
+    "upstream": "rtl/core/defines.v",
+    "local": "rtl/core/defines.v",
+    "sha256": "bec91dc8796ef2d7475fb813a426b6c71efe3c2caeb8fdc9905a1a9101994266"
+   },
+   {
+    "upstream": "rtl/core/div.v",
+    "local": "rtl/core/div.v",
+    "sha256": "975d1462994529a6ce8b430208e1615e1c00ac147ee2c8beefe7e86c9bd1760c"
+   },
+   {
+    "upstream": "rtl/core/ex.v",
+    "local": "rtl/core/ex.v",
+    "sha256": "71f1104ced370a2383568b67f828782b7722f61eed7369ea1efede209c1760a3",
+    "patched_by": "patches/tinyriscv/tinyriscv-jalr-bit0.patch"
+   },
+   {
+    "upstream": "rtl/core/id.v",
+    "local": "rtl/core/id.v",
+    "sha256": "0dfb4fa2d37431c51e559e67fefd667104966263c878459b95f6fbc27df93dad"
+   },
+   {
+    "upstream": "rtl/core/id_ex.v",
+    "local": "rtl/core/id_ex.v",
+    "sha256": "5bb75bf363c1d78b818e237d9f50bf3c3cb8fdb85b5cb9ef2d3527d7077874f1"
+   },
+   {
+    "upstream": "rtl/core/if_id.v",
+    "local": "rtl/core/if_id.v",
+    "sha256": "b78f7e8f3998136c03a40265c354cece3426cbffdb01b0fdeff2ea8bacfda273"
+   },
+   {
+    "upstream": "rtl/core/pc_reg.v",
+    "local": "rtl/core/pc_reg.v",
+    "sha256": "e4a511d4ccf0d257f256e6ce103544f8dc1ab2f57362caea7798c2644f6e2970"
+   },
+   {
+    "upstream": "rtl/core/regs.v",
+    "local": "rtl/core/regs.v",
+    "sha256": "ad210d93acab9bd4d7eb15edb1d5b3de2440a49b53843efa795096bd1f892574"
+   },
+   {
+    "upstream": "rtl/core/rib.v",
+    "local": "rtl/core/rib.v",
+    "sha256": "db73b3a7de7a624c19d95bea21a3cb2d4f1dd659f6d4cd8840dd57dee52558dd"
+   },
+   {
+    "upstream": "rtl/core/tinyriscv.v",
+    "local": "rtl/core/tinyriscv.v",
+    "sha256": "ca9e8e0ea27f82a7a4026c5660596afa2a5b6ade28b1f347a82cd374ae37ff44"
+   },
+   {
+    "upstream": "rtl/debug/jtag_dm.v",
+    "local": "rtl/debug/jtag_dm.v",
+    "sha256": "f918fd2bf8bd700dc001894951048cfc2d1d2549b5b010d0ad953229e4a3f543"
+   },
+   {
+    "upstream": "rtl/debug/jtag_driver.v",
+    "local": "rtl/debug/jtag_driver.v",
+    "sha256": "e293c3b05598c68ba9512f5dd6b55f078ace64fa0683ab502d69e34b2be07389"
+   },
+   {
+    "upstream": "rtl/debug/jtag_top.v",
+    "local": "rtl/debug/jtag_top.v",
+    "sha256": "104659bf242ba35137c7c2ab54531df29824572e7e24b666438b8aaebecf65e5"
+   },
+   {
+    "upstream": "rtl/debug/uart_debug.v",
+    "local": "rtl/debug/uart_debug.v",
+    "sha256": "cd1883195b24ed3cebdc6c97ced2aabd71d69b14601245d45985e4f8df2d18cb"
+   },
+   {
+    "upstream": "rtl/perips/gpio.v",
+    "local": "rtl/perips/gpio.v",
+    "sha256": "c452786c07f9e02896fdc27cac66a3d286ed343de369233ccdde9367269e570e"
+   },
+   {
+    "upstream": "rtl/perips/ram.v",
+    "local": "rtl/perips/ram.v",
+    "sha256": "1e4d8ef4847a984a9cbd39f1a783364593980d3e61982a776bbb42049bc65c0d"
+   },
+   {
+    "upstream": "rtl/perips/rom.v",
+    "local": "rtl/perips/rom.v",
+    "sha256": "7422eb892884afe7b57f297e4c7d47589973615a76a72f29f15a5224552bfe40"
+   },
+   {
+    "upstream": "rtl/perips/spi.v",
+    "local": "rtl/perips/spi.v",
+    "sha256": "d83a90ef2018f75031bdc24805143aae549f8414a9a38ad4f05b43d2e9f22b29"
+   },
+   {
+    "upstream": "rtl/perips/timer.v",
+    "local": "rtl/perips/timer.v",
+    "sha256": "1d52420edcfd3ac0c158b2492c7ae55b9c0eb0e1dacd562f7181ba417a495b6b"
+   },
+   {
+    "upstream": "rtl/perips/uart.v",
+    "local": "rtl/perips/uart.v",
+    "sha256": "005c94c90b88b830e8c0e46f59b904cbef14bfc4bed1d2c0d075b49f8364fc17"
+   },
+   {
+    "upstream": "rtl/soc/tinyriscv_soc_top.v",
+    "local": "rtl/soc/tinyriscv_soc_top.v",
+    "sha256": "d4ee1328cf3557389446f8e605f650d0d3139fadee08f32a75678c1fc3c20470"
+   },
+   {
+    "upstream": "rtl/utils/full_handshake_rx.v",
+    "local": "rtl/utils/full_handshake_rx.v",
+    "sha256": "c5716da0d8f2c696bac3e0926775211a6e9fb58763728bf2cb7007117d47460c"
+   },
+   {
+    "upstream": "rtl/utils/full_handshake_tx.v",
+    "local": "rtl/utils/full_handshake_tx.v",
+    "sha256": "824b60787e0e7c418a148945c1a493b7cde47ad1cedc217b4efe5839775de3ab"
+   },
+   {
+    "upstream": "rtl/utils/gen_buf.v",
+    "local": "rtl/utils/gen_buf.v",
+    "sha256": "954b75877b5c6d807f213d3dd2a46586d21663c419e59d72c123fb18e8384249"
+   },
+   {
+    "upstream": "rtl/utils/gen_dff.v",
+    "local": "rtl/utils/gen_dff.v",
+    "sha256": "45ad966da07620af28376469b7f5d41c6bc07637575dd2de2f7e0394767d3763"
+   }
+  ],
+  "wrappers": [],
+  "patches": [
+   {
+    "file": "patches/tinyriscv/tinyriscv-jalr-bit0.patch",
+    "fixes": "JALR target clears bit 0 (upstream keeps it)"
+   }
+  ],
+  "verilator_files": [
+   "rtl/core/clint.v",
+   "rtl/core/csr_reg.v",
+   "rtl/core/ctrl.v",
+   "rtl/core/div.v",
+   "rtl/core/ex.v",
+   "rtl/core/id.v",
+   "rtl/core/id_ex.v",
+   "rtl/core/if_id.v",
+   "rtl/core/pc_reg.v",
+   "rtl/core/regs.v",
+   "rtl/core/rib.v",
+   "rtl/core/tinyriscv.v",
+   "rtl/utils/full_handshake_rx.v",
+   "rtl/utils/full_handshake_tx.v",
+   "rtl/utils/gen_buf.v",
+   "rtl/utils/gen_dff.v"
+  ]
+ },
+ "kronos": {
+  "repository": "https://github.com/SonalPinto/kronos",
+  "commit": "13678d47ccae4f889690ec1e0ba648299c7027d8",
+  "license": "Apache-2.0",
+  "top_module": "kronos_core",
+  "verilator_args": [
+   "-Wno-fatal"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "tools/cpu_array_frontend.py"
+  },
+  "files": [
+   {
+    "upstream": "rtl/core/kronos_EX.sv",
+    "local": "rtl/core/kronos_EX.sv",
+    "sha256": "339b84dacf3607cc593d9a368bd2201121744be1919eaad004461462cc69d8ba"
+   },
+   {
+    "upstream": "rtl/core/kronos_ID.sv",
+    "local": "rtl/core/kronos_ID.sv",
+    "sha256": "df646cc8765f7d82928be17c4c304a0c45e5c9cf912f56bc38d9bef40bc8569a"
+   },
+   {
+    "upstream": "rtl/core/kronos_IF.sv",
+    "local": "rtl/core/kronos_IF.sv",
+    "sha256": "ec47f0730242673cbca15205714f099ce97e73c29a541dae664d3b1a911ae02c"
+   },
+   {
+    "upstream": "rtl/core/kronos_RF.sv",
+    "local": "rtl/core/kronos_RF.sv",
+    "sha256": "667763d19b582542afadeca5971f133e4e98f30837ee06bc08f0e9ee59ea7a6b"
+   },
+   {
+    "upstream": "rtl/core/kronos_agu.sv",
+    "local": "rtl/core/kronos_agu.sv",
+    "sha256": "2d36a6a5d5bb44c4be325e80fe02ff99827d3020ff7dd66f8005249c4a501dc3"
+   },
+   {
+    "upstream": "rtl/core/kronos_alu.sv",
+    "local": "rtl/core/kronos_alu.sv",
+    "sha256": "4b912530ef441c6638a431ad2884f53f55fc94d92ddd806c1641f15fd317d74e"
+   },
+   {
+    "upstream": "rtl/core/kronos_branch.sv",
+    "local": "rtl/core/kronos_branch.sv",
+    "sha256": "f7a2dc32a8c55a4d24217559b6d210a4cd2cdb8b280afafcb626ee6a42cabc81"
+   },
+   {
+    "upstream": "rtl/core/kronos_core.sv",
+    "local": "rtl/core/kronos_core.sv",
+    "sha256": "8385e426a2c414bb01278271cc9ff7d662515f68c2def3bcb91f68fce1d50684"
+   },
+   {
+    "upstream": "rtl/core/kronos_counter64.sv",
+    "local": "rtl/core/kronos_counter64.sv",
+    "sha256": "a14d30450387640aefc4a8d3386e53a353037dbb848a4e92706b8e72e4a13393"
+   },
+   {
+    "upstream": "rtl/core/kronos_csr.sv",
+    "local": "rtl/core/kronos_csr.sv",
+    "sha256": "3b5c9a572d81fa67d5dcf4ff53a4f629f95a51fff0cfe785b711122546b350e0"
+   },
+   {
+    "upstream": "rtl/core/kronos_hcu.sv",
+    "local": "rtl/core/kronos_hcu.sv",
+    "sha256": "bc7af55525efabc7c1a4a7acfa2f5fb8c69341a3d0653fa6871bb759bdc5719c",
+    "patched_by": "patches/kronos/kronos-waw-interlock.patch"
+   },
+   {
+    "upstream": "rtl/core/kronos_lsu.sv",
+    "local": "rtl/core/kronos_lsu.sv",
+    "sha256": "1512f734516cd0ff70f22c0c034e0a21af87114caeda90b1153eb82eb28311d3"
+   },
+   {
+    "upstream": "rtl/core/kronos_types.sv",
+    "local": "rtl/core/kronos_types.sv",
+    "sha256": "6745807dcc5c38036dec2a7e223903d88b2c9da0567b3a227a8c34b6c510bc2c"
+   }
+  ],
+  "wrappers": [],
+  "patches": [
+   {
+    "file": "patches/kronos/kronos-waw-interlock.patch",
+    "fixes": "stall a second writer to the same destination until the older write-back (WAW hazard release bug)"
+   }
+  ],
+  "verilator_files": [
+   "rtl/core/kronos_types.sv",
+   "rtl/core/kronos_EX.sv",
+   "rtl/core/kronos_ID.sv",
+   "rtl/core/kronos_IF.sv",
+   "rtl/core/kronos_RF.sv",
+   "rtl/core/kronos_agu.sv",
+   "rtl/core/kronos_alu.sv",
+   "rtl/core/kronos_branch.sv",
+   "rtl/core/kronos_core.sv",
+   "rtl/core/kronos_counter64.sv",
+   "rtl/core/kronos_csr.sv",
+   "rtl/core/kronos_hcu.sv",
+   "rtl/core/kronos_lsu.sv"
+  ]
+ },
+ "ultraembedded": {
+  "repository": "https://github.com/ultraembedded/riscv",
+  "commit": "7ae6f803e30f78c6ea3121e73c3adf50ff912730",
+  "license": "BSD-3-Clause",
+  "top_module": "riscv_core",
+  "verilator_args": [
+   "-Wno-fatal",
+   "-Uverilator",
+   "-UVERILATOR",
+   "-DSYNTHESIS",
+   "-GSUPPORT_MULDIV=0",
+   "-Icore/riscv"
+  ],
+  "frontend": {
+   "ast_emitter": "tools/cv32e40p_extended_frontend.py",
+   "translator": "pure_function_frontend.py (array frontend variant)"
+  },
+  "files": [
+   {
+    "upstream": "core/riscv/riscv_alu.v",
+    "local": "core/riscv/riscv_alu.v",
+    "sha256": "0cbd0e6e8171f83fb289801664b25f751e4ca54c474048ea5b7ad141748924ab"
+   },
+   {
+    "upstream": "core/riscv/riscv_core.v",
+    "local": "core/riscv/riscv_core.v",
+    "sha256": "013804fe7a7a37af921a83cbf64b0d22b1862deae0b685e616742acc918c1c8b"
+   },
+   {
+    "upstream": "core/riscv/riscv_csr.v",
+    "local": "core/riscv/riscv_csr.v",
+    "sha256": "02edd945d40439ba5804c2f4cc2289647db7795c532860b49ea81acd187718b4"
+   },
+   {
+    "upstream": "core/riscv/riscv_csr_regfile.v",
+    "local": "core/riscv/riscv_csr_regfile.v",
+    "sha256": "fb13802b8b12faae27a29aae7f1faeffafd9d31d9d503de73117a48597bb2632"
+   },
+   {
+    "upstream": "core/riscv/riscv_decode.v",
+    "local": "core/riscv/riscv_decode.v",
+    "sha256": "2bf682b0a24f0694156d26ea5bad6ff0dcd531663494daaaff34ca64e6e12f87"
+   },
+   {
+    "upstream": "core/riscv/riscv_decoder.v",
+    "local": "core/riscv/riscv_decoder.v",
+    "sha256": "aadb8a158a4b5cb52c86a84571542e5ea087450ebbc88e274f29095eadbdb443"
+   },
+   {
+    "upstream": "core/riscv/riscv_defs.v",
+    "local": "core/riscv/riscv_defs.v",
+    "sha256": "a37be4e15e54af88a57123ecd53947275b462ed4fec1aa96b9060f677e267df2"
+   },
+   {
+    "upstream": "core/riscv/riscv_divider.v",
+    "local": "core/riscv/riscv_divider.v",
+    "sha256": "41e1a02fdfe635a8dd9c17c4c7dbf303e4c9c0d2f624e74aa8df06789b97d402"
+   },
+   {
+    "upstream": "core/riscv/riscv_exec.v",
+    "local": "core/riscv/riscv_exec.v",
+    "sha256": "bf8ef962bcfbdc250b53562e842d0c42aad53a14b4ea33830fbf5490b0a85536"
+   },
+   {
+    "upstream": "core/riscv/riscv_fetch.v",
+    "local": "core/riscv/riscv_fetch.v",
+    "sha256": "4402ffda772b8925ee5d30f64efbd441713976132d50471cf1b0800a1d309464"
+   },
+   {
+    "upstream": "core/riscv/riscv_issue.v",
+    "local": "core/riscv/riscv_issue.v",
+    "sha256": "988bcc6753feba4ce9545bda245e5fd983836d3301bd873e5bd1ffda25b0c618"
+   },
+   {
+    "upstream": "core/riscv/riscv_lsu.v",
+    "local": "core/riscv/riscv_lsu.v",
+    "sha256": "905051d342e21d645d263bf054888cce2cd43f4621ecb48f5b76f86010e22f54"
+   },
+   {
+    "upstream": "core/riscv/riscv_mmu.v",
+    "local": "core/riscv/riscv_mmu.v",
+    "sha256": "866f04ab36f4fef00c2f347d0eb4d64e109385d5f684858a0bd125938e3943a0"
+   },
+   {
+    "upstream": "core/riscv/riscv_multiplier.v",
+    "local": "core/riscv/riscv_multiplier.v",
+    "sha256": "7e90aa5e125cf5bfe83bdbe1c6c69f58487dfb253552254c73ef9ce4f737c030"
+   },
+   {
+    "upstream": "core/riscv/riscv_pipe_ctrl.v",
+    "local": "core/riscv/riscv_pipe_ctrl.v",
+    "sha256": "873e519ec1129db6b1256b59cc72af96c3d0092802a2c1383fec939af86d420a"
+   },
+   {
+    "upstream": "core/riscv/riscv_regfile.v",
+    "local": "core/riscv/riscv_regfile.v",
+    "sha256": "e0fd24c716257ba0379357456ecc45a8dade53af61c870590b5bb26b7dab6758"
+   },
+   {
+    "upstream": "core/riscv/riscv_trace_sim.v",
+    "local": "core/riscv/riscv_trace_sim.v",
+    "sha256": "1e691cd965180f3202c42439487a37054c1763756140b926e5ca92d6575dc88b"
+   },
+   {
+    "upstream": "core/riscv/riscv_xilinx_2r1w.v",
+    "local": "core/riscv/riscv_xilinx_2r1w.v",
+    "sha256": "4687449f57fcd33deef04bff381a6f4af27b31699d9baa3173eab9283837abab"
+   }
+  ],
+  "wrappers": [],
+  "patches": [],
+  "verilator_files": [
+   "core/riscv/riscv_alu.v",
+   "core/riscv/riscv_core.v",
+   "core/riscv/riscv_csr.v",
+   "core/riscv/riscv_csr_regfile.v",
+   "core/riscv/riscv_decode.v",
+   "core/riscv/riscv_decoder.v",
+   "core/riscv/riscv_divider.v",
+   "core/riscv/riscv_exec.v",
+   "core/riscv/riscv_fetch.v",
+   "core/riscv/riscv_issue.v",
+   "core/riscv/riscv_lsu.v",
+   "core/riscv/riscv_mmu.v",
+   "core/riscv/riscv_multiplier.v",
+   "core/riscv/riscv_pipe_ctrl.v",
+   "core/riscv/riscv_regfile.v",
+   "core/riscv/riscv_trace_sim.v",
+   "core/riscv/riscv_xilinx_2r1w.v"
+  ]
+ }
+}

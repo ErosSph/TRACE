@@ -1,0 +1,18 @@
+Theorem ob_out_@CLASS@ : OBL.Ob_out_@CLASS@.
+Proof.
+ intros @ARGS@ d w f Cx Hdec Hm Hj.
+ destruct Cx as ([seed HL] & H1 & H109 & H38 & H43 & H52 & H50 & H47 & H51 & H59 & H61 & H62 & H53 & H54 & H45). unfold T.rd in *.
+ destruct (CI.inv_@CLASS@ w @ARGS@ Hdec) as [[E0 [E1 E2]] [B0 B1]]. subst @ARGS@.
+ assert (HF : FactsHold d C.F0_@CLASS@) by (unfold C.F0_@CLASS@, PRE.F_base; fact_tac).
+ destruct (C.@CLASS@_ctl seed d HL HF) as (K44 & K105 & K106 & K107 & K112 & K33 & _).
+ match goal with Hm : LI.ipc f (_ _ _ ?im) mod 4 = 0 |- _ => pose proof (cmp_@CLASS@_ok d f _ _ im H53 H54) as Hc end.
+ match goal with Hm : LI.ipc f ?i mod 4 = 0 |- _ => assert (Etg : eval_expr d (tg_br cmp_@CLASS@) = LI.ipc f i) by (rewrite (br_tg d cmp_@CLASS@ _ _ _ Hc H45 H61); cbn [LI.ipc]; destruct (isa_branch_guard _ _ _); [apply nadd_r | reflexivity]) end.
+ assert (Ht : eval_expr d (tg_br cmp_@CLASS@) mod 4 = 0) by (rewrite Etg; exact Hm).
+ unfold DF.Outcome, T.rd. cbn [LI.dwr LI.drd LI.dval].
+ refine (conj _ (conj _ (conj _ (conj _ _)))).
+ - rewrite K112. exact (f_equal (norm 1) (commit_ok d (tg_br cmp_@CLASS@) Ht)).
+ - rewrite K33. reflexivity.
+ - rewrite K44. exact (eq_trans (npc_ok d (tg_br cmp_@CLASS@) Ht) (eq_trans (f_equal (norm 32) Etg) (ipc_norm f _))).
+ - rewrite K105. reflexivity.
+ - intro Hx. discriminate Hx.
+Qed.

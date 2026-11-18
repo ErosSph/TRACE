@@ -1,0 +1,26 @@
+{
+ "name": "lane_word",
+ "kind": "generic_lemma",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {
+  "function": "p_immediate_shapes",
+  "description": "sign-extend nodes over the instruction word cone: signed_value = signExtend of the normalised value (sv_se, se_norm); the same library carries the packed-bank lane read-back after a guarded lane write (lane_write) and the packed-ROM word lemma (pack_word)"
+ },
+ "content": {
+  "libraries": ["src/Lang/ExtendedSVLaneWord.v"]
+ },
+ "instantiate": {
+  "type": "library",
+  "used_by_generators": ["tools/cpu_tmpl_nvop.py"]
+ },
+ "match": [{"library": "ExtendedSVLaneWord"}],
+ "covers": ["imm", "rf", "fetch"],
+ "learned_from": "nerv",
+ "learned_at": "2026-11-04T20:00",
+ "learned_evidence": [
+  "src/Lang/ExtendedSVLaneWord.v (NERV closure, proof-optimization-log/20261104-template-nerv.md Continuation 4); the same proofs were first written inside results/r-tmpl-nerv-op-closure-20261104-a1 (lane_write, rom_word) and results/r-tmpl-nerv-dec-closure-20261104-a1 (sv_se, se_norm)"
+ ],
+ "reused_by": [],
+ "gate": {"library_module": "Lang.ExtendedSVLaneWord"},
+ "origin": "NERV closure (Continuation 4)"
+}

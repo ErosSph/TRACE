@@ -1,0 +1,143 @@
+{
+  "module": "SteelAllOutcome",
+  "preamble": "preamble.v.in",
+  "expected_classes": [
+    "Add",
+    "Sub",
+    "Sll",
+    "Slt",
+    "Sltu",
+    "Xor",
+    "Srl",
+    "Sra",
+    "Or",
+    "And",
+    "Addi",
+    "Slti",
+    "Sltiu",
+    "Xori",
+    "Ori",
+    "Andi",
+    "Slli",
+    "Srli",
+    "Srai",
+    "Lui",
+    "Auipc",
+    "Jal",
+    "Jalr",
+    "Beq",
+    "Bne",
+    "Blt",
+    "Bge",
+    "Bltu",
+    "Bgeu"
+  ],
+  "export": "@CLASS@_out",
+  "roles": {
+    "Add": {},
+    "Sub": {},
+    "Sll": {},
+    "Slt": {},
+    "Sltu": {},
+    "Xor": {},
+    "Srl": {},
+    "Sra": {},
+    "Or": {},
+    "And": {},
+    "Addi": {},
+    "Slti": {},
+    "Sltiu": {},
+    "Xori": {},
+    "Ori": {},
+    "Andi": {},
+    "Slli": {},
+    "Srli": {},
+    "Srai": {},
+    "Lui": {},
+    "Auipc": {},
+    "Jal": {},
+    "Jalr": {},
+    "Beq": {},
+    "Bne": {},
+    "Blt": {},
+    "Bge": {},
+    "Bltu": {},
+    "Bgeu": {}
+  },
+  "families": [
+    {
+      "seed": "seed-Add.v.in",
+      "representative": "Add",
+      "classes": [
+        "Add",
+        "Sub",
+        "Sll",
+        "Slt",
+        "Sltu",
+        "Xor",
+        "Srl",
+        "Sra",
+        "Or",
+        "And"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-tmpl-steel-op-closure-20261104-a1/SteelTmplOp.v",
+      "source_sha256": "51538648c69006358203d9b859bb064d8be6efb5730cce86bcfacbe54d5cf102"
+    },
+    {
+      "seed": "seed-Addi.v.in",
+      "representative": "Addi",
+      "classes": [
+        "Addi",
+        "Slti",
+        "Sltiu",
+        "Xori",
+        "Ori",
+        "Andi",
+        "Lui",
+        "Auipc"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-tmpl-steel-op-closure-20261104-a1/SteelTmplOp.v",
+      "source_sha256": "51538648c69006358203d9b859bb064d8be6efb5730cce86bcfacbe54d5cf102"
+    },
+    {
+      "seed": "seed-Slli.v.in",
+      "representative": "Slli",
+      "classes": [
+        "Slli",
+        "Srli",
+        "Srai"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-tmpl-steel-op-closure-20261104-a1/SteelTmplOp.v",
+      "source_sha256": "51538648c69006358203d9b859bb064d8be6efb5730cce86bcfacbe54d5cf102"
+    },
+    {
+      "seed": "seed-Jal.v.in",
+      "representative": "Jal",
+      "classes": [
+        "Jal",
+        "Jalr"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-tmpl-steel-op-closure-20261104-a1/SteelTmplOp.v",
+      "source_sha256": "51538648c69006358203d9b859bb064d8be6efb5730cce86bcfacbe54d5cf102"
+    },
+    {
+      "seed": "seed-Beq.v.in",
+      "representative": "Beq",
+      "classes": [
+        "Beq",
+        "Bne",
+        "Blt",
+        "Bge",
+        "Bltu",
+        "Bgeu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-tmpl-steel-op-closure-20261104-a1/SteelTmplOp.v",
+      "source_sha256": "51538648c69006358203d9b859bb064d8be6efb5730cce86bcfacbe54d5cf102"
+    }
+  ]
+}

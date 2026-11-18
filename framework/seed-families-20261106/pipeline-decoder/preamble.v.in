@@ -1,0 +1,12 @@
+
+From Coq Require Import ZArith List Bool Lia.
+Require Import coqutil.Z.BitOps Lang.ExtendedSV Lang.ExtendedSVWordInvariant Lang.ExtendedSVRootProjection Lang.ExtendedSVSymExec
+ Lang.ExtendedSVExprAgreement Lang.ExtendedSVPartialEval Angelo5.Angelo5FixedAST
+ TmplA5Target.A5TmplTarget TmplA5Cyc.A5TmplCyc TmplA5Dec.A5TmplDec Ex.External.CPUClassTableInverse Ex.External.CPUImmediateShapes
+ riscv.Spec.Decode RrA5Defs.A5RrDefs RrA5Obl.A5RrObl.
+Import ListNotations ExtendedSV ExtendedSVRootProjection ExtendedSVSymExec ExtendedSVExprAgreement ExtendedSVPartialEval.
+Local Open Scope Z_scope.
+
+Require Import RrA5DecD.A5RrDecD.
+Import A5RrDecD.A5RrDecD.
+Import DF.

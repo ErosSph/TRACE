@@ -1,0 +1,5036 @@
+{
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "external_llm_api_calls": 0,
+ "provenance_values": {
+  "automatic": "produced by a generator from AST+manifest+ISA table with no hand-written proof text",
+  "generalized_rule": "generator whose rule I wrote (design independent), output automatic",
+  "llm_written": "text written by me and checked by Coq"
+ },
+ "modules": [
+  {
+   "id": "tmpl-algebra",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVConditionalReductionAlgebra.v",
+   "result_dir": "results/r-tmpl-algebra-20261103-a1",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "9 reduction rules for BAnd/BOr with a constant operand"
+  },
+  {
+   "id": "tmpl-dark-controls",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_controls.py",
+   "result_dir": "results/r-tmpl-dark-controls-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "classes": 29,
+   "hand_written_in_output": [
+    "preamble helper lemmas and Ltac closers (norm_0, norm_1_boolz, norm31_shiftr32, tmpl_close) in the generator template"
+   ],
+   "acceleration_methods": [
+    "condition-directed reduction (cpu_condition_reduction Compiler + algebra rules)"
+   ],
+   "ast_sha256": "4b701bf84a8e24701974516c5cb6f02308ef61f8f045806b05f69b583f0e5ae5"
+  },
+  {
+   "id": "tmpl-dark-inv",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_inv.py",
+   "result_dir": "results/r-tmpl-dark-inv-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "contents": [
+    "CoherentFields (14 captured registers, mined from the capture process)",
+    "Inv",
+    "inv_init (real reset)",
+    "29 bridge theorems inv_prem_<Class>"
+   ],
+   "reuse": [
+    "DarkRISCV38DerivedTarget.target_initial_architecture (pinned target, same AST) for the arch part at reset"
+   ],
+   "manual_inputs": [
+    "template_roles.target_binding (manual provenance in the manifest)"
+   ]
+  },
+  {
+   "id": "tmpl-dark-step",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_dstep.py (+ tools/cpu_pipeline_skeleton.py)",
+   "result_dir": "results/r-tmpl-dark-step-20261103-a3",
+   "provenance": "automatic",
+   "accepted": true,
+   "scope": "boot, startup, shape, transport PROVED; admission, observer, front, arch, rank are open premises of refinement_given_cycle_facts",
+   "supersedes": "results/r-tmpl-dark-step-20261103-a2 (7 open goals)"
+  },
+  {
+   "id": "tmpl-class-table-bridge",
+   "kind": "generic_library_generated",
+   "generator": "tools/cpu_class_table.py",
+   "result_dir": "results/r-tmpl-class-20261103-a1",
+   "provenance": "automatic",
+   "files": [
+    "src/Ex/External/CPUClassTableCheck.v",
+    "src/Ex/External/CPUClassValueBridge.v"
+   ],
+   "accepted": true,
+   "hand_written_in_generator": [
+    "BR_HEAD helper lemmas bw_* of the bridge (word arithmetic facts)"
+   ],
+   "reuse": [
+    "CV32E40PISAWord{Left,Right}Shift, CV32E40PISAWordInterpretation, CV32E40PBranchISACondition (accepted pure ISA lemmas)"
+   ]
+  },
+  {
+   "id": "tmpl-seqstep",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSeqStep.v",
+   "result_dir": "results/r-tmpl-seqstep-20261103-a1",
+   "provenance": "llm_written",
+   "accepted": true
+  },
+  {
+   "id": "tmpl-dark-cycle-core",
+   "kind": "hand_written_source",
+   "file": "framework/template-sources/DarkTmplCycleCore.v.in",
+   "provenance": "llm_written",
+   "contents": "Dark clock-cycle shape: frames over the 3 phases, reset sequencing, HLT=0 from acks, XRES/FLUSH next values, env_ok invariant and env_step, observe_eq, rank_dec",
+   "reuse": [
+    "DarkRISCV38DerivedLFP.actual_driven_is_LFP (low-level RTL fact, same AST sha 4b701bf8..., reused)"
+   ]
+  },
+  {
+   "id": "tmpl-dark-cycle",
+   "kind": "generated_plus_core",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_cycle.py",
+   "result_dir": "results/r-tmpl-dark-cycle-20261103-a2",
+   "provenance": "automatic for the 14 capture-register lemmas and coherent_step; llm_written for the core",
+   "accepted": true
+  },
+  {
+   "id": "tmpl-dark-step-a4",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_dstep.py",
+   "result_dir": "results/r-tmpl-dark-step-20261103-a4",
+   "provenance": "automatic",
+   "accepted": true,
+   "scope": "boot, startup, shape, transport, observer, rank PROVED; front proved given goal_cursor; admission, arch, cursor are open premises",
+   "supersedes": "a3"
+  },
+  {
+   "id": "tmpl-seqstepif",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSeqStepIf.v",
+   "result_dir": "results/r-tmpl-seqstepif-20261103-a1",
+   "provenance": "llm_written",
+   "accepted": true
+  },
+  {
+   "id": "tmpl-dark-fetch-core",
+   "kind": "hand_written_source",
+   "file": "framework/template-sources/DarkTmplFetchCore.v.in",
+   "provenance": "llm_written",
+   "reuse": [
+    "DarkRISCV38DerivedLFP.actual_driven_is_LFP",
+    "DarkRISCV38DerivedLFP.actual_original_phase (both same AST sha 4b701bf8..., low-level RTL facts)"
+   ]
+  },
+  {
+   "id": "tmpl-dark-fetch",
+   "kind": "generated_plus_core",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_fetch.py",
+   "result_dir": "results/r-tmpl-dark-fetch-20261103-a1",
+   "provenance": "automatic for PC-chain steps (IFPC/IDPC/PC) and bus/mux wire equations; llm_written for the core",
+   "accepted": true,
+   "contents": "env2 (env_ok + HLT2=0 + IADDR=IFPC + IDATA=rom(IDPC)), env2_reset, env2_step, slot_step (FLUSH in {0,1} -> slot word = rom(PC))",
+   "note": "the buffer fact of bus-fetch a8 is vacuous in this environment: HLT2=0 is an invariant, so the IDATA2 buffer is never selected; a8 itself was not consumed, the same pairing was re-derived with seq_root_step"
+  },
+  {
+   "id": "tmpl-bank-write",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVBankWriteStep.v",
+   "sha256": "de1fee38a39306f78cc18ddb201010e01b7273d6289680d244b11c7803029133",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk, Print Assumptions closed)",
+   "note": "bank_phase_step/frame, bank_nba_step (slice write inside an NBA block), guarded-if shape (write/off/reset), lane theorems bank_phase_lane_nba/_guarded/_guard_off/_other, exact index forms mul32_exact/shifted_exact; mirrors ExtendedSV resolve_update/apply_update/write_slice; no design names"
+  },
+  {
+   "id": "tmpl-bank-operand",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVBankOperand.v",
+   "sha256": "331a6d7c81f0acc68cb54c244ce04ae3baa1c8679ce51f3eab1040044f829650",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk, Print Assumptions closed)",
+   "note": "bank_port_value(_x0) under CombLFP, RFRel (lanes = view, view 0 = 0), operand_clause(_x0), RFRel_lane_write/reset/frame, x0 derivation lemmas (idx0_test, or_nonzero, and_neq0_nonzero); no design names"
+  },
+  {
+   "id": "tmpl-dark-rf-a1",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_rf.py",
+   "result_dir": "results/r-tmpl-dark-rf-20261103-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "scope": "one slice write at rise in an NBA block (value mux zeroes lane 0), 3 plain read ports, bridge to RFRelated+lane0=0, cycle-level lane effect through the accepted cycle layer",
+   "source_sha256": "7e054798a6cf196a948cd834ad9d0e18fa8b763b3cd74bfce72ec6bd0bb5f08d",
+   "coqc_seconds": 13.9,
+   "coqchk_seconds": 5.8,
+   "depends": [
+    "tmpl-bank-write",
+    "tmpl-bank-operand",
+    "tmpl-dark-cycle"
+   ],
+   "reused_low_level_facts": [
+    "DarkRISCV38DerivedLFP.actual_driven_is_LFP (same AST, sha 4b701bf8...)"
+   ]
+  },
+  {
+   "id": "tmpl-bzeeno-rf-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_rf.py",
+   "result_dir": "results/r-tmpl-bzeeno-rf-20261103-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "scope": "genericity test: guarded write (rd!=0 guard), reset-zero branch, 2 x0-mux read ports; selection/guard values are hypotheses (phase event not instantiated)",
+   "source_sha256": "0dcaf00e743f857a976bcde5461227ae3c4dc4b6ab5149bed10d93fb1e5f1e3a",
+   "coqc_seconds": 7.3,
+   "coqchk_seconds": 2.6,
+   "depends": [
+    "tmpl-bank-write",
+    "tmpl-bank-operand"
+   ],
+   "reused_low_level_facts": []
+  },
+  {
+   "id": "tmpl-imm-shapes",
+   "kind": "generic_library",
+   "file": "src/Ex/External/CPUImmediateShapes.v",
+   "result_dir": "results/r-tmpl-imm-shapes-20261103-a1",
+   "provenance": "llm_written",
+   "accepted": true,
+   "contents": "imm_I/S/B/J/U shapes and eval_imm_X = norm 32 (isa_imm_X (value of W)); design independent"
+  },
+  {
+   "id": "tmpl-dark-imm",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_imm.py",
+   "result_dir": "results/r-tmpl-dark-imm-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "contents": "isa_simm_<group> for OPIMM, JALR, BRANCH, JAL, LUI, AUIPC: decoded immediate register = riscv-coq immediate of the slot word"
+  },
+  {
+   "id": "tmpl-dark-step-a5",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_dstep.py",
+   "result_dir": "results/r-tmpl-dark-step-20261103-a5",
+   "provenance": "automatic",
+   "accepted": true,
+   "scope": "domain = CPUJumpFamilyProgramDomain.check_program (jump-family ROM domain, Dark's rom image address = nth (address/4) image 0 fits); RFZero from the RF agent; PROVED boot, startup, shape, transport, admission, observer, rank, front (given cursor); OPEN: arch, cursor",
+   "supersedes": "a4"
+  },
+  {
+   "id": "tmpl-class-inverse",
+   "kind": "generic_library_generated",
+   "generator": "tools/cpu_class_table.py",
+   "result_dir": "results/r-tmpl-class-inverse-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "files": [
+    "src/Ex/External/CPUClassTableInverse.v"
+   ],
+   "hand_written_in_generator": [
+    "INV_HEAD tactics chain/fin"
+   ],
+   "note": "dispatch step: decoded class -> fields"
+  },
+  {
+   "id": "tmpl-dark-archrf",
+   "kind": "design_generated",
+   "generator": "tools/cpu_tmpl_arch.py",
+   "result_dir": "results/r-tmpl-dark-archrf-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "files": [
+    "results/r-tmpl-dark-archrf-20261103-a1/DarkTmplArchRF.v"
+   ],
+   "hand_written_in_generator": [
+    "core(): field/coherence/immediate transfer lemmas; class_text() proof script template"
+   ],
+   "note": "goal_arch RF part: 29 rfarch_C lemmas (bank after actual cycle vs ISA post register shape); uses CPUISARegView"
+  },
+  {
+   "id": "tmpl-isa-regview",
+   "kind": "generic_library_hand_written",
+   "generator": null,
+   "result_dir": null,
+   "provenance": "LLM-generated",
+   "accepted": true,
+   "files": [
+    "src/Ex/External/CPUISARegView.v"
+   ],
+   "hand_written_in_generator": [],
+   "note": "ISA register view, write effect, shift-immediate lemmas"
+  },
+  {
+   "id": "tmpl-dark-imm-a2",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_imm.py",
+   "result_dir": "results/r-tmpl-dark-imm-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "scope": "unchanged re-run of a1: a1 .vo was stale against a rebuilt CPUImmediateShapes (\"inconsistent assumptions\")",
+   "supersedes": "a1"
+  },
+  {
+   "id": "tmpl-dark-cursor-a1",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_cursor.py",
+   "core": "framework/template-sources/DarkTmplCursorCore.v.in",
+   "result_dir": "results/r-tmpl-dark-cursor-20261103-a1",
+   "provenance": "llm_written",
+   "accepted": true,
+   "scope": "pcseq invariant over actual_cycle (class free), cursor_inv, 29 dec_<Class> lemmas generated from the class table (decode -> inv_prem -> <Class>_controls), simm_<Group>, brx_<Branch>, commit_cursor (dataop/jal/jalr/branch against run1), cursor_silent, cursor_next. Generated parts: dec_*, simm_*, brx_*, field wire equations, dispatch; hand-written core: pcseq and committing-cycle glue.",
+   "reused_low_level_facts": [
+    "DarkRISCV38DerivedLFP.actual_driven_is_LFP"
+   ]
+  },
+  {
+   "id": "tmpl-dark-cursor-goal-a1",
+   "kind": "generated",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_cursor.py --goal",
+   "result_dir": "results/r-tmpl-dark-cursor-goal-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "scope": "goal_cursor_of_inv: step a5 goal_cursor, statement unchanged, from cursor_inv in the physical relation (goal_cursor is not provable without it)"
+  },
+  {
+   "id": "tmpl-dark-archrf-a2",
+   "kind": "design_generated",
+   "generator": "tools/cpu_tmpl_arch.py",
+   "result_dir": "results/r-tmpl-dark-archrf-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "files": [
+    "results/r-tmpl-dark-archrf-20261103-a2/DarkTmplArchRF.v"
+   ],
+   "hand_written_in_generator": [
+    "core() and class_text() proof templates"
+   ],
+   "note": "supersedes archrf a1: adds RAM frame (ram_keep) to the conclusion"
+  },
+  {
+   "id": "tmpl-dark-bubble",
+   "kind": "design_generated",
+   "generator": "tools/cpu_tmpl_bubble.py",
+   "result_dir": "results/r-tmpl-dark-bubble-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "files": [
+    "results/r-tmpl-dark-bubble-20261103-a1/DarkTmplBubble.v"
+   ],
+   "hand_written_in_generator": [],
+   "note": "non-commit cycles (FLUSH in 1..3, XRES 0/1): rf write value and DDREQ=0 derived by condition-directed reduction"
+  },
+  {
+   "id": "tmpl-jf-postshape",
+   "kind": "generic_library_hand_written",
+   "generator": null,
+   "result_dir": null,
+   "provenance": "LLM-generated",
+   "accepted": true,
+   "files": [
+    "src/Ex/External/CPUJumpFamilyPostShape.v"
+   ],
+   "hand_written_in_generator": [],
+   "note": "ISA post state is dataop_post/jump_post/branch_post; normalised ROM word decodes to the current instruction"
+  },
+  {
+   "id": "tmpl-dark-arch",
+   "kind": "design_generated",
+   "generator": "tools/cpu_tmpl_archtop.py",
+   "result_dir": "results/r-tmpl-dark-arch-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "files": [
+    "results/r-tmpl-dark-arch-20261103-a1/DarkTmplArch.v"
+   ],
+   "hand_written_in_generator": [
+    "CORE: tmpl_arch, bubble_rf, commit_rf, arch_commit, arch_bubble"
+   ],
+   "note": "goal_arch assembly: dispatch over the 29 classes generated from the class table"
+  },
+  {
+   "id": "tmpl-dark-step-a6",
+   "kind": "design_generated",
+   "generator": "tools/cpu_tmpl_dstep.py",
+   "result_dir": "results/r-tmpl-dark-step-20261103-a6",
+   "provenance": "automatic",
+   "accepted": true,
+   "files": [
+    "results/r-tmpl-dark-step-20261103-a6/DarkTmplStep.v"
+   ],
+   "hand_written_in_generator": [
+    "extra block: per-goal proofs"
+   ],
+   "note": "D step with no open goal: unconditional theorem refinement"
+  },
+  {
+   "id": "tmpl-bz-params",
+   "kind": "tooling",
+   "design": "darkriscv",
+   "generator": "tools/cpu_tmpl_params.py + tools/cpu_tmpl_paramize.py",
+   "provenance": "generalized_rule",
+   "note": "role-parameterisation of the three hand-written Dark cores (framework/template-sources/param/Tmpl{Cycle,Fetch,Cursor}Core.v.in) and of the arch/archtop/dstep generator strings; manifest template_roles.core_ids. Dark outputs of all 13 generators byte-identical (checked, tools/test_cpu_tmpl_params.py for the cores)",
+   "accepted": true,
+   "agent_design": "bzeeno-agent"
+  },
+  {
+   "id": "tmpl-bz-edge-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/r-tmpl-bz-edge-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "superseded_by": "tmpl-bz-edge-a2",
+   "note": "derived clock/reset nets (13,14,115,..,320), sel_rise/sel_fall"
+  },
+  {
+   "id": "tmpl-bz-edge-a2",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/r-tmpl-bz-edge-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "hand_written_in_generator": [
+    "filter_refine/matches_seq helper lemmas and the proof tactic order in the generator template"
+   ],
+   "acceleration_methods": [
+    "none needed (11 s)"
+   ],
+   "note": "adds per-process sel_<rise|fall>_match_<i>; rise selects [0,1,2,3,4,6], fall selects [5]; all hypotheses are about pre and the driven state, none about the design"
+  },
+  {
+   "id": "tmpl-bz-rf-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_rf.py --variant bzeeno-configured",
+   "result_dir": "results/r-tmpl-bz-rf-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "the earlier RF instance retargeted to the configured AST (ConfiguredAST.v)"
+  },
+  {
+   "id": "tmpl-bz-rffall-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_edge.py --glue",
+   "result_dir": "results/r-tmpl-bz-rffall-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "closes the open clock-wire hypothesis of the Bzeeno RF instance: RF write steps at the primary falling edge, matching hypothesis discharged"
+  },
+  {
+   "id": "tmpl-seqtree-lib",
+   "kind": "generic_library",
+   "design": "bzeeno",
+   "file": "src/Lang/ExtendedSVSeqTree.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "decision-tree register step: Rel/conv/seq_tree_step/seq_tree_hold/seq_tree_value (reset/flush/enable trees with NBA leaves); built and coqchk-ed by tools/build_template_deps.sh; closed under the global context"
+  },
+  {
+   "id": "tmpl-bz-stage-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/r-tmpl-bz-stage-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "hand_written_in_generator": [
+    "inner_of/conv_of/tree_of definitions and the per-register proof script"
+   ],
+   "note": "42 stage registers (PC 119, IF/ID 4, ID/EX 19, EX/MEM 11, MEM/WB 7) at the rising edge: rise_<R> = tree_expr evaluated at the driven state; RAM 327 (part select) skipped"
+  },
+  {
+   "id": "tmpl-cv-symexec",
+   "kind": "generic_library",
+   "design": "cv32e40p",
+   "file": "src/Lang/ExtendedSVSymExec.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "result_dir": "results/r-tmpl-cv-ctl-20261103-a1",
+   "note": "symbolic executor for blocking multi-output comb processes under expression-keyed facts; writer index (TabC) for fast kernel checking; closed under the global context; design independent"
+  },
+  {
+   "id": "tmpl-cv-factchain",
+   "kind": "generic_library",
+   "design": "cv32e40p",
+   "file": "src/Lang/ExtendedSVFactChain.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "result_dir": "results/r-tmpl-cv-ctl-20261103-a1",
+   "note": "forward fact propagation along the comb order (chain_outs_tab); design independent"
+  },
+  {
+   "id": "tmpl-cv-decoder-a1",
+   "kind": "generated",
+   "design": "cv32e40p",
+   "generator": "tools/cpu_tmpl_decoder.py",
+   "result_dir": "results/r-tmpl-cv-decoder-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "29 decoder_C theorems (process_1376); coqc 279 s, coqchk 1236 s (over 15 min). Built against the first library version (root scans by roots_unwrittenb); superseded by tmpl-cv-ctl-a1, whose decoder step is the same computation with the writer-index optimisation. Kept as evidence."
+  },
+  {
+   "id": "tmpl-cv-ctl-a1",
+   "kind": "generated",
+   "design": "cv32e40p",
+   "generator": "tools/cpu_tmpl_idctl.py",
+   "result_dir": "results/r-tmpl-cv-ctl-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "milestone 1: 29 per-class control cones (decoder + 111 forward steps, 187 derived ID-stage control facts); coqc 160 s, coqchk 601 s, both 0, closed under the global context; hypothesis: opcode/funct3/funct7 slices of the decoder word, illegal_c_insn_i=0, deassert_we_i=0 (manual role commit_base)"
+  },
+  {
+   "id": "tmpl-bz-stage-a2",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/r-tmpl-bz-stage-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "unchanged re-run of stage a1 against the rebuilt ExtendedSVSeqTree (seq_frame added); use a2 as provider; a1 is stale"
+  },
+  {
+   "id": "tmpl-bz-frame-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_stage.py --frame",
+   "result_dir": "results/r-tmpl-bz-frame-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "goal 1: 44 frame lemmas (fall: all registers of non-firing processes incl. RAM 327; rise: RF bank 319)"
+  },
+  {
+   "id": "tmpl-bz-ram-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_stage.py --ram",
+   "result_dir": "results/r-tmpl-bz-ram-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "goal 2: ram_hold: RAM 327 unchanged at the rise when dmem.we (321) = 0"
+  },
+  {
+   "id": "tmpl-bz-ctl-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_bzctl.py",
+   "result_dir": "results/r-tmpl-bz-ctl-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "classes": 29,
+   "acceleration_methods": [
+    "symbolic executor ExtendedSVSymExec + ExtendedSVFactChain.chain_outs_tab (CV32E40P agent library, used unchanged)"
+   ],
+   "note": "goal 3 (partial): 22 ID-stage controller outputs per class under an explicit scenario (resetn=1, all forwarding/stall guards 0, undecided inputs such as compare_eq/compare_lt = 0 listed in facts_<C>) (29 fact sets satisfiable but only for rs1=rs2=exe_rd=0)"
+  },
+  {
+   "id": "tmpl-bz-ctl-a2",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_bzctl.py",
+   "result_dir": "results/r-tmpl-bz-ctl-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "classes": 29,
+   "exports": 1120,
+   "acceleration_methods": [
+    "ExtendedSVSymExec + ExtendedSVFactChain.chain_outs_tab (CV32E40P agent, unchanged)"
+   ],
+   "note": "scenario-split controller facts: per class x 16 forwarding scenarios x undecided 1-bit inputs (ex_write, compare_eq/lt); coqc 610 s (peak 2.8 GB), coqchk 215 s; supersedes ctl-a1",
+   "superseded_by": "results/r-tmpl-bz-ctl-20261103-a3",
+   "vacuous": "1050 of 1120 fact sets unsatisfiable (z3, tools/cpu_tmpl_factcheck.py); the firing-guard scenarios pin leaves to 0. Do not consume."
+  },
+  {
+   "id": "tmpl-bz-link-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_link.py",
+   "result_dir": "results/r-tmpl-bz-link-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "opcode/funct3/funct7/rs1/rs2 controller wires = part selects of the IF/ID word 140 (copy chains traced from the AST)"
+  },
+  {
+   "id": "tmpl-cv-ops-lib-ExtendedSVSymAlias",
+   "kind": "llm_written",
+   "design": "cv32e40p",
+   "file": "src/Lang/ExtendedSVSymAlias.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "path-execution data-flow equations (simp/pex/eqchain/resolve) under constant facts; built and coqchk-ed by tools/build_template_deps.sh (exit 0), closed under the global context"
+  },
+  {
+   "id": "tmpl-cv-ops-lib-ExtendedSVBankPortGuard",
+   "kind": "llm_written",
+   "design": "cv32e40p",
+   "file": "src/Lang/ExtendedSVBankPortGuard.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "guarded register-bank read port + 6-bit address lemma; built and coqchk-ed by tools/build_template_deps.sh (exit 0), closed under the global context"
+  },
+  {
+   "id": "tmpl-cv-ops-lib-CPUImmediateRtlShapes",
+   "kind": "llm_written",
+   "design": "cv32e40p",
+   "file": "src/Ex/External/CPUImmediateRtlShapes.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "Verilog replicate-style RISC-V immediates (I,S,B,J) equal riscv-coq immediates; built and coqchk-ed by tools/build_template_deps.sh (exit 0), closed under the global context"
+  },
+  {
+   "id": "tmpl-cv-ops-lib-CPUCarryIsolatedAdder",
+   "kind": "llm_written",
+   "design": "cv32e40p",
+   "file": "src/Ex/External/CPUCarryIsolatedAdder.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "generic Z-level carry-isolation 4x8-lane adder: ci_out(ci_in 1 1 1 1 a + ci_in cin 0 0 0 b) = (a+b+cin) mod 2^32; built and coqchk-ed by build_template_deps.sh"
+  },
+  {
+   "id": "tmpl-casemux-lib",
+   "kind": "generic_library",
+   "design": "bzeeno",
+   "file": "src/Lang/ExtendedSVCaseMux.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "checked_case_mux: comb process `case sel k: out = in_k` at a comb fixed point (symbolic input value); in framework/template-route-deps.txt"
+  },
+  {
+   "id": "tmpl-bz-fwd-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_bzfwd.py",
+   "result_dir": "results/r-tmpl-bz-fwd-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "forwarding muxes 204/210: sel_link_a/b (controller o_fwda/o_fwdb -> mux select) and mux_<a|b>_<k> for k=0..3 (output = chosen input 199/200/201/202 resp. 205..208 sources)"
+  },
+  {
+   "id": "tmpl-bz-final-statement-a2",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_final.py",
+   "result_dir": "results/r-tmpl-bz-final-20261103-a2",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "target statement TemplateStatement (text of JumpITree.actual_checked_program_infinite_itree, reference environment/cycle/observer definitions) + same_statement_as_reference (reference inhabits it by conversion); assumptions: functional extensionality only (inherited from the reference)"
+  },
+  {
+   "id": "tmpl-bz-valid-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_bzvalid.py",
+   "result_dir": "results/r-tmpl-bz-valid-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "hand_written_in_generator": [
+    "Python mirror of texpr (checked by Coq: texpr_<R> by computation)",
+    "closing tactic of valid_<R>"
+   ],
+   "note": "valid-bit transport at the rise: valid_141/250/286/308 in terms of previous valids and the controller outputs o_flush (157)/o_not_stall (156) at the driven state; reset nets proved =1 from the primary reset"
+  },
+  {
+   "id": "tmpl-cv-ops-id-a1",
+   "kind": "generated",
+   "design": "cv32e40p",
+   "generator": "tools/cpu_tmpl_cv_ops.py",
+   "result_dir": "results/r-tmpl-cv-ops-id-20261103-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "hand_written_in_generator": [
+    "glue theorems rf_port_a/b (operand_guard instance), rs_a/b, scen_*/fwd_* (chain_outs_tab + fwA/fwB), reg_d_bridge (lemma reg_d_iff)",
+    "Python mirrors cpu_tmpl_pex / Plan (Coq re-checks the equation chain by computation)"
+   ],
+   "note": "55 theorems: word_copy, fwA_{0,1,2}, fwB_{0,1,2}, rf_port_{a,b}, rs_{a,b}, 7 scen_*, 7 fwd_*, reg_d_bridge, 29 <C>_ops; coqc 194 s (1.64 GB), coqchk 25 s; assumptions none; depends on results/r-tmpl-cv-ctl-20261103-a1 (facts/outs read from its text). No old CV32E40P proof or fact reused."
+  },
+  {
+   "id": "lib-CPUCarryIsolatedExpr",
+   "kind": "library",
+   "design": "generic",
+   "file": "src/Ex/External/CPUCarryIsolatedExpr.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "expression-level instance of carry_isolated_add: eval_ci_result (37-bit sign-extended sum, four lane selects at 1/10/19/28); coqc + coqchk 0, closed under the global context; first needed by CV32E40P"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-cycle-a1",
+   "kind": "hand_written",
+   "file": "framework/template-sources/CvTmplCycleCore.v",
+   "result_dir": "results/r-tmpl-cv-cycle-20261103-a1",
+   "provenance": "llm_written",
+   "note": "template cycle/observe/reset = unchanged full38 definitions; commit_pc_is_ghost, reset_observe_silent (bubbles never reported without a ghost token)"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-ctl-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_idctl.py",
+   "result_dir": "results/r-tmpl-cv-ctl-20261103-a2",
+   "provenance": "automatic",
+   "note": "control cone v2: stall-condition guards of process_1704 are premises, deassert_we_i derived; 195 facts/class; coqc 165 s, coqchk 650 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-exprsubst",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVExprSubst.v",
+   "result_dir": "results/r-tmpl-cv-ifid-20261103-a2",
+   "provenance": "llm_written",
+   "note": "alias transport of expression facts"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-ifid-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_ifid.py",
+   "result_dir": "results/r-tmpl-cv-ifid-20261103-a2",
+   "provenance": "automatic",
+   "note": "29 <C>_ctl_if: cone stated on the IF/ID flop outputs 337/339 via alias chains 945-718-567-108-337, 946-570-110-339"
+  },
+  {
+   "id": "tmpl-symaliasnba-lib",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSymAliasNba.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "pexn/pexany/eqchain2/eqchain2_out: ExtendedSVSymAlias.eqchain for comb blocks whose assignments are non-blocking (queued, applied at the end); CV32E40P agent files untouched; in framework/template-route-deps.txt",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-datapathfacts-lib",
+   "kind": "generic_library",
+   "file": "src/Ex/External/CPUDatapathFacts.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "facts plumbing, norm_lo/norm_wide, slice_val, shamt5, rtl_clear0/clear0_*, isa_imm_B/J_even, rsx_*/rimm_B2 (Bzeeno sign-AND replicate immediate shapes) with eval lemmas; in framework/template-route-deps.txt",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-alu-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-alu-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "exports": 23,
+   "acceleration_methods": [
+    "condition-directed constants (ExtendedSVFactChain.chain_outs_tab)",
+    "path execution of data multiplexers (ExtendedSVSymAliasNba.eqchain2_out)"
+   ],
+   "hand_written_in_generator": [
+    "rewrite order is computed by the Python planner; closing normaliser tactic (norm_lo/norm_wide/shift-0) in the template"
+   ],
+   "note": "23 <C>_ex_result: EX result wire 259 from ID/EX registers and control values (ALU, operand muxes, exe_data_mux, link path)",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-alu-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-alu-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "superseded_by": "tmpl-bz-ex-alu-a2",
+   "note": "stale: built against the first CPUDatapathFacts (library gained norm_add_*, bit0_add_even, rtl_clear0 afterwards); use a2",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-cmp-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-cmp-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "exports": 16,
+   "acceleration_methods": [
+    "condition-directed constants (ExtendedSVFactChain.chain_outs_tab)",
+    "path execution of data multiplexers (ExtendedSVSymAliasNba.eqchain2_out)"
+   ],
+   "hand_written_in_generator": [
+    "rewrite order is computed by the Python planner; closing normaliser tactic (norm_lo/norm_wide/shift-0) in the template"
+   ],
+   "note": "10 <C>_cmp (6 branches + Slt family: compare_eq/lt wires from forwarded operands/imm, signed/unsigned) + 6 <C>_taken (controller pcsrc/flush table at the compare output = ISA branch condition)",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-cmp-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-cmp-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "superseded_by": "tmpl-bz-ex-cmp-a2",
+   "note": "stale: built against the first CPUDatapathFacts (library gained norm_add_*, bit0_add_even, rtl_clear0 afterwards); use a2",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-tgt-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-tgt-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "exports": 8,
+   "acceleration_methods": [
+    "condition-directed constants (ExtendedSVFactChain.chain_outs_tab)",
+    "path execution of data multiplexers (ExtendedSVSymAliasNba.eqchain2_out)"
+   ],
+   "hand_written_in_generator": [
+    "rewrite order is computed by the Python planner; closing normaliser tactic (norm_lo/norm_wide/shift-0) in the template"
+   ],
+   "note": "8 <C>_target: jal_pc 40 (Jal), jalr_branch_pc 42 (Jalr, 6 branches)",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-tgt-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-tgt-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "superseded_by": "tmpl-bz-ex-tgt-a2",
+   "note": "stale: built against the first CPUDatapathFacts (library gained norm_add_*, bit0_add_even, rtl_clear0 afterwards); use a2",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-imm-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-imm-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "exports": 21,
+   "acceleration_methods": [
+    "condition-directed constants (ExtendedSVFactChain.chain_outs_tab)",
+    "path execution of data multiplexers (ExtendedSVSymAliasNba.eqchain2_out)"
+   ],
+   "hand_written_in_generator": [
+    "rewrite order is computed by the Python planner; closing normaliser tactic (norm_lo/norm_wide/shift-0) in the template"
+   ],
+   "note": "18 <C>_imm (imm_val 30 = isa immediate of the IF/ID word, I/U/J/B shapes + shift amount) + word183/word184 field links",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-imm-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-imm-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "superseded_by": "tmpl-bz-ex-imm-a2",
+   "note": "stale: built against the first CPUDatapathFacts (library gained norm_add_*, bit0_add_even, rtl_clear0 afterwards); use a2",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-gen-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-gen-20261103-a2",
+   "provenance": "automatic",
+   "accepted": true,
+   "exports": 12,
+   "acceleration_methods": [
+    "condition-directed constants (ExtendedSVFactChain.chain_outs_tab)",
+    "path execution of data multiplexers (ExtendedSVSymAliasNba.eqchain2_out)"
+   ],
+   "hand_written_in_generator": [
+    "rewrite order is computed by the Python planner; closing normaliser tactic (norm_lo/norm_wide/shift-0) in the template"
+   ],
+   "note": "pcnext_0/1/2 (next-pc mux 130/25), if_p4, fwd{a,b}_sel{0..3} (operand mux outputs; duplicates the stage agent bzfwd with the planner, kept as a cross-check)",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-gen-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-bz-ex-gen-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "superseded_by": "tmpl-bz-ex-gen-a2",
+   "note": "stale: built against the first CPUDatapathFacts (library gained norm_add_*, bit0_add_even, rtl_clear0 afterwards); use a2",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-ex-iface-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzex.py --kinds iface",
+   "result_dir": "results/r-tmpl-bz-ex-iface-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "exports": 61,
+   "note": "interface E1/E3 of the Bzeeno template agent (<C>_ex with ExPrem_<C>, <C>_e3, ntaken_e3) and ISA bridge section (<C>_ex_isa via CPUClassValueBridge.bridge_<C>, <C>_isa: taken decision = isa_branch_guard)",
+   "design": "bzeeno"
+  },
+  {
+   "id": "tmpl-bz-env-a2",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_env.py",
+   "result_dir": "results/r-tmpl-bz-env-20261103-a2",
+   "provenance": "llm_written",
+   "accepted": true,
+   "reused_low_level_facts": [
+    "GeneratedBoundedPhase.Phase.original_phase",
+    "GeneratedBoundedPhase.Phase.original_phase_shape",
+    "GeneratedSeedBoot.Bootstrap.boot_runtime",
+    "GeneratedSeedBoot.Bootstrap.boot_events_allowed",
+    "GeneratedBoundedPhase.Phase.cached_outputs(_correct)"
+   ],
+   "ast_sha256": "556b0d6b98ac6eb3c4d1d4b64d3be1e6c8e97a7b0e8c3cb7b3ab... (ConfiguredAST.v, prefix 556b0d6b)",
+   "note": "item 1: env_state (CatalogShape and CombLFP at every state of boot + environment history) and env_rise_hyps (all hypotheses of the edge/stage layers at pre = rs words events with F.rise; NetWords from CatalogWords + ClockBoundary); closed under the global context"
+  },
+  {
+   "id": "tmpl-bz-fetch-a1",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_bzfetch.py",
+   "result_dir": "results/r-tmpl-bz-fetch-20261103-a1",
+   "provenance": "automatic",
+   "accepted": true,
+   "note": "item 2: fetch_word (input wire 137 of IF/ID = nth i words 0 at pc 4*i, via ExtendedSVPackedROM.lookup_packed) and rom_inv (ROM root 330 = pack words along boot + environment history)"
+  },
+  {
+   "id": "lib-ExtendedSVSliceBits",
+   "kind": "generic_library",
+   "design": "generic",
+   "file": "src/Lang/ExtendedSVSliceBits.v",
+   "sha256": "e55099da23e2cb0058ad4d1dcce38cca34a470d60561f406ca6b905c547d6bd2",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk exit 0, closed under the global context)",
+   "note": "write_slice bit facts (slice_after_write, slice_disjoint), SliceEq/SliceHold, slice_bit"
+  },
+  {
+   "id": "lib-ExtendedSVSliceExec",
+   "kind": "generic_library",
+   "design": "generic",
+   "file": "src/Lang/ExtendedSVSliceExec.v",
+   "sha256": "915ec1ed6ec9b3fc8096c7f573c2937756cbf6a23d2b894d0052f9378d058cc8",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk exit 0, closed under the global context)",
+   "note": "slice-overlay path executor sx (sound against exec_stmt/resolve_update/apply_update), static footprint touches/late_okb through the writer table, transfer to CombLFP (prun_slices_comb_lfp), slchain/slchain_sound/slchain_out; many single-slice processes of one root are combined per slice"
+  },
+  {
+   "id": "lib-CPUBitReverse",
+   "kind": "generic_library",
+   "design": "generic",
+   "file": "src/Ex/External/CPUBitReverse.v",
+   "sha256": "affd399d923dbea599146ee393cb79255a043c1efdd8eec38de3ae71deaebb68",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk exit 0, closed under the global context)",
+   "note": "rev_bits/reverse32, rev_from_slices (root with bit i = bit W-1-i of x), rev_shr_rev / shiftl_via_reverse32, eval_shr64_low"
+  },
+  {
+   "id": "lib-CPUByteCompare",
+   "kind": "generic_library",
+   "design": "generic",
+   "file": "src/Ex/External/CPUByteCompare.v",
+   "sha256": "14d6bdf770d1c64a7753be5c8328e204d7c2e9d5acd7a1ca9fcc50c058c2c0e5",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk exit 0, closed under the global context)",
+   "note": "per-byte eq/gt vectors and their combination equal Z.eqb / unsigned / signed compare (cmp_eq, cmp_gtu, cmp_gts, cmp_ltu, cmp_lts in the boolz forms of CPUClassValueBridge); RTL expression shapes (eval_eq_byte, eval_gt_byte, eval_eq_result, eval_gt_result), eq_result_from_slices, gt_result_from_slices"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-slice-demo-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_slice_demo.py",
+   "result_dir": "results/r-tmpl-cv-slice-demo-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "instantiates the four slice libraries on the real CV32E40P processes: operand_a_rev = reverse32 operand_a, shift_left_result = reverse32 shift_right_result, is_equal_result = {4{a==b}} and is_greater_result (signed/unsigned) in scalar mode; coqc + coqchk 0, assumptions none; depends on results/r-tmpl-cv-ctl-20261103-a1 (wtab)"
+  },
+  {
+   "id": "lib-CPUCarrySlices",
+   "kind": "generic_library",
+   "design": "generic",
+   "file": "src/Ex/External/CPUCarrySlices.v",
+   "sha256": "97849b673d4f04f7dceae08cc6c2b58dcfa9d1aef08cbef56906cf20c0193069",
+   "provenance": "llm_written",
+   "accepted": true,
+   "gate": "tools/build_template_deps.sh (coqc + coqchk exit 0, closed)",
+   "note": "ci_slices/ci_from_slices (gap+lane slices of the 36-bit carry-isolation words = ci_in), ci_result_over, adder_result_from_slices (= (a+b+cin) mod 2^32)"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-ops-ex-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_ops_ex.py",
+   "result_dir": "results/r-tmpl-cv-ops-ex-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "EX part 1: adder_result (1332) for ADD and SUB in scalar mode from processes 622-626 at the comb fixed point; premises are stage facts 1307/1327/1303/1312"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-phase-a1",
+   "kind": "llm_written",
+   "generator": "tools/cpu_tmpl_bzgate.py (source framework/template-sources/bz/BzTmplPhase.v)",
+   "result_dir": "results/r-tmpl-bz-phase-20261103-a1",
+   "provenance": "llm_written",
+   "note": "cycle phase layer: rise/fall hypotheses of one reference clock cycle, fall_state, clock boundary after the cycle; reuses GeneratedClockCycleJoint.post_clock_inputs and GeneratedBoundedPhase.original_phase (same AST)"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-xfer-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzxfer.py",
+   "result_dir": "results/r-tmpl-bz-xfer-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "stage-register transport at the rise for PC, IF/ID(138-140), ID/EX(232-249), EX/MEM, MEM/WB data registers (copy chains followed from the AST) + rd field"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-inv-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzinv.py",
+   "result_dir": "results/r-tmpl-bz-inv-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "INV definitions: stage relations ID/EX/MEM at the token cut, stages [MEM;EX;ID], arch (RFRel isa_view + RAM), front (env, clock boundary, bubble hygiene, fetch cursor); per-class parts generated from the ex-iface ISA bridge",
+   "superseded_by": "r-tmpl-bz-inv-20261103-a2"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-step-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzdstep.py",
+   "result_dir": "results/r-tmpl-bz-step-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "D-step shell (plan mode, Runtime=list Event, rank a Section variable): startup and observer proved; shape/transport/admission/front/arch/rank/boot are premises of assembled",
+   "superseded_by": "a3"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-resetedge-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --reset-events",
+   "result_dir": "results/r-tmpl-bz-resetedge-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "edge layer for events on the primary reset and clock events with reset 0 (6 scenarios + boot event from the raw seed); selection lists computed by polarity simulation"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-resetstage-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --reset-stage",
+   "result_dir": "results/r-tmpl-bz-resetstage-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "rise0_/rassert0_/rassert1_ register steps (126 theorems)"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-resetframe-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --reset-frame",
+   "result_dir": "results/r-tmpl-bz-resetframe-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "frames for rise0, fall0, rassert0, rrelease0, bootassert (132 theorems)"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-resetram-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --reset-ram",
+   "result_dir": "results/r-tmpl-bz-resetram-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "RAM hold at a clock rise with reset 0"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-reset-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzreset.py",
+   "result_dir": "results/r-tmpl-bz-reset-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "boot events: four valid bits 0, 42 registers at reset values, RF bank zero, RAM = seed (zero), clock boundary; reuses Phase.original_phase(_shape), Bootstrap.seed_shape/boot_events_allowed (AST hash 556b0d6b)"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-rank-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzrank.py",
+   "result_dir": "results/r-tmpl-bz-rank-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "silent-cycle rank = CPUQueueDeferredProgress.rank 3 pending wait; strict decrease from valid_* + fall frames + RankPremises"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-ctl-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzctl.py --atoms",
+   "result_dir": "results/r-tmpl-bz-ctl-20261103-a3",
+   "provenance": "generalized_rule",
+   "note": "ctl v3: 945 scenario theorems, unwritten 1-bit sub-expressions enumerated instead of pinning 5-bit leaves; every fact set z3-satisfiable; 1295 inconsistent atom combinations pruned; per-class coverage checked by tools/cpu_tmpl_factcover.py. coqc 518 s, coqchk 161 s, closed",
+   "superseded_by": "a4 (renamed library TmplBzCtl3.BzTmplCtl3, same statements; a3 clashes with the reset/rank agent ifidinv which loads ctl a2 as TmplBzCtl)"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "cv-auto-configured-input-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_pending_configured_input.py",
+   "result_dir": "results/r-cv-auto-configured-input-20261103-a1",
+   "provenance": "automatic",
+   "note": "ConfiguredAST + ConfigBinding: same processes/signals/statement_fuel, lfp_fuel 8 -> 16 (config results/r-cv-auto-config-20261103-a1-input). coqc/coqchk 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-lfp-bridge-a1",
+   "kind": "generic_library+adapter",
+   "file": "src/Lang/ExtendedSVConfiguredFuel.v",
+   "result_dir": "results/r-tmpl-cv-lfp-20261103-a1",
+   "provenance": "llm_written",
+   "note": "CombLFP configured <-> original (CombLFP ignores lfp_fuel); control-cone Add_ctl reused unchanged for configured program. coqc 27 s; convergence NOT proved"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-ifidinv-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzifid.py",
+   "result_dir": "results/r-tmpl-bz-ifidinv-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "IF/ID idle-slot invariant (v141=0 -> 140=28691, 139=138=0): boot, cycle preservation, and o_flush=0 for the idle word (controller facts, 8 hazard cases); discharges the second conjunct of RankPremises"
+  },
+  {
+   "id": "lib-CPUShiftWide",
+   "kind": "generic_library",
+   "file": "src/Ex/External/CPUShiftWide.v",
+   "provenance": "llm_written",
+   "gate": "tools/build_template_deps.sh (coqc + coqchk 0, closed)",
+   "note": "sx_expr/eval_sx_expr0/1, low32_shr_mod64, low32_shr_signed, sub_via_not, norm_signed32",
+   "design": "cv32e40p",
+   "accepted": true
+  },
+  {
+   "id": "lib-CPUCmpFlags",
+   "kind": "generic_library",
+   "file": "src/Ex/External/CPUCmpFlags.v",
+   "provenance": "llm_written",
+   "gate": "tools/build_template_deps.sh (coqc + coqchk 0, closed)",
+   "note": "nibble masks mk, bit3 lemmas, lt_of_gt_eq, ge_of_gt_eq, eqb_sv",
+   "design": "cv32e40p",
+   "accepted": true
+  },
+  {
+   "id": "lib-CPUFetchAlign",
+   "kind": "generic_library",
+   "file": "src/Ex/External/CPUFetchAlign.v",
+   "provenance": "llm_written",
+   "gate": "tools/build_template_deps.sh (coqc + coqchk 0, closed)",
+   "note": "align2_expr {x[31:1],1b0}, eval_align2 = x land lnot 1",
+   "design": "cv32e40p",
+   "accepted": true
+  },
+  {
+   "id": "tmpl-cv-ops-ex-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_ops_ex2.py",
+   "result_dir": "results/r-tmpl-cv-ops-ex-20261103-a2",
+   "provenance": "generalized_rule",
+   "note": "EX part 2: 16 operator theorems (and/or/xor/srl/sra/sll/add/sub/slts/sltu result_o 1314; beq..bgeu comparison_result_o 1315); selects and sign mask derived; stage facts ExStage; coqc 126.5 s coqchk 34.5 s",
+   "design": "cv32e40p",
+   "accepted": true
+  },
+  {
+   "id": "tmpl-cv-ops-ex-a4",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_ops_fetch.py",
+   "result_dir": "results/r-tmpl-cv-ops-ex-20261103-a4",
+   "provenance": "generalized_rule",
+   "note": "branch_decision copies (129, 572 = 1315), fetch target with & ~1 for pc_mux 2 (jump_target 760) and 3 (alu_operand_c 1197); a3 superseded",
+   "design": "cv32e40p",
+   "accepted": true
+  },
+  {
+   "id": "tmpl-cv-ops-ex-a5",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_ops_cls.py",
+   "result_dir": "results/r-tmpl-cv-ops-ex-20261103-a5",
+   "provenance": "automatic",
+   "note": "35 per-class theorems (21 data ops = word.unsigned result_word, 6 branches = isa_branch_guard + decision wires, Jal/Jalr link) composing a2/a4 with CPUClassValueBridge; coqc 115.9 s coqchk 6.0 s",
+   "design": "cv32e40p",
+   "accepted": true
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-lfp-converge-a2",
+   "kind": "generic_library+instance",
+   "file": "src/Lang/ExtendedSVBitStability.v",
+   "result_dir": "results/r-tmpl-cv-lfp-20261103-a2",
+   "provenance": "llm_written",
+   "note": "all-states: for every seed of length 1800, comb_iter 14 (hence 16) is a CombLFP fixpoint. coqc 173 s, coqchk 445 s (33.5 GB RSS)"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-ctl-a4",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzctl.py --atoms --module BzTmplCtl3 --namespace TmplBzCtl3",
+   "result_dir": "results/r-tmpl-bz-ctl-20261103-a4",
+   "provenance": "generalized_rule",
+   "note": "ctl v3 under its own library name; 945 theorems; coqc 521 s, coqchk 159 s, closed; z3 non-vacuity checked"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-ctlin-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzctlin.py",
+   "result_dir": "results/r-tmpl-bz-ctlin-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "controller input wires 142,150-155 as register reads"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-disp-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzdisp.py",
+   "result_dir": "results/r-tmpl-bz-disp-20261103-a2",
+   "provenance": "generalized_rule",
+   "note": "scenario dispatcher: guard_cover + <C>_n (o_not_stall = 1) for 29 classes; computed fact inclusion; coqc 461 s"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-none-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bznone.py",
+   "result_dir": "results/r-tmpl-bz-none-20261103-a2",
+   "provenance": "generalized_rule",
+   "note": "n_one_word: o_not_stall = 1 for any legal decoded word with load flags 0"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-inv-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzinv.py",
+   "result_dir": "results/r-tmpl-bz-inv-20261103-a2",
+   "provenance": "generalized_rule",
+   "note": "INV a2: Struct gains no-load flags and legal word at IF/ID"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-shape-a2",
+   "kind": "llm_written",
+   "generator": "tools/cpu_tmpl_bzgate.py (framework/template-sources/bz/BzTmplShape.v)",
+   "result_dir": "results/r-tmpl-bz-shape-20261103-a2",
+   "provenance": "llm_written",
+   "note": "stage tags after one cycle"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-nstate-a2",
+   "kind": "llm_written",
+   "generator": "tools/cpu_tmpl_bzgate.py (framework/template-sources/bz/BzTmplNState.v)",
+   "result_dir": "results/r-tmpl-bz-nstate-20261103-a2",
+   "provenance": "llm_written",
+   "note": "o_not_stall = 1 at the driven rise state from Struct"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-step-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzdstep.py",
+   "result_dir": "results/r-tmpl-bz-step-20261103-a3",
+   "provenance": "generalized_rule",
+   "note": "D-step: startup, observer, shape, rank, boot proved; transport/admission/front/arch open premises of assembled"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-exreg-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_exreg.py",
+   "result_dir": "results/r-tmpl-cv-exreg-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "ID/EX stage-flag registers (process_23) after clk rise = driven ID control values; 29 class theorems; library Lang/ExtendedSVSeqNba.v; issue/clock guards are explicit hypotheses"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-pstate-ifidcap-a4",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_ifidcap.py",
+   "result_dir": "results/r-tmpl-cv-pstate-20261103-a4",
+   "provenance": "generalized_rule",
+   "libraries": [
+    "src/Lang/ExtendedSVSeqNba.v"
+   ],
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "IF/ID capture registers (process_10, 336/337/338/339/341/342) after clk rise as function of driven guards 321/361/374/343: cases ifid_L, H00/H01/H10, K00/K01/K10, R; coqc 72 s, coqchk 84 s, both 0, 9 exports closed"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-phaselen-lib",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVPhaseLength.v",
+   "result_dir": "results/r-tmpl-cv-exphase-20261103-a2",
+   "provenance": "llm_written",
+   "note": "WB p n / wb_check; comb_round, comb_iter, phase_driven_state, PhaseSemantics preserve state length; phase_seed, phase_eq"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-exphase-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_exphase.py",
+   "result_dir": "results/r-tmpl-cv-exphase-20261103-a2",
+   "provenance": "generalized_rule",
+   "libraries": [
+    "src/Lang/ExtendedSVPhaseLength.v"
+   ],
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "cv_phase_len, cv_driven_len (length 1800 through a phase), cv_phase_lfp (post-edge state is a comb LFP of phase_seed); coqc 25 s, coqchk 5 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-exoperands-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_exoperands.py",
+   "result_dir": "results/r-tmpl-cv-exoperands-20261103-a1",
+   "provenance": "generalized_rule",
+   "libraries": [
+    "src/Lang/ExtendedSVSeqNba.v"
+   ],
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "ID/EX operand registers 589/590/591/588 after clk rise = driven ID wires 844/845/846/581 (issue guards + shift-imm guard as premises); ex_alias: EX wires 1303/1307/1309/1311/1312/1302/1304/1305/1197/134 are copies of the registers at any comb fixed point; coqc 64 s, coqchk 24 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-exside-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_exside.py",
+   "result_dir": "results/r-tmpl-cv-exside-20261103-a1",
+   "provenance": "automatic",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "classes": 29,
+   "note": "per-class glue_<C>: ID facts at the issue cycle -> EX result in the next settled state = result_word / isa_branch_guard / pc+4; composes ctl a2, OpsId a1, ExCapture, ExOperands, ExPhase, OpsExCls a5; hypotheses = named INV obligations; coqc 388 s, coqchk 22 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-extarget-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_extarget.py",
+   "result_dir": "results/r-tmpl-cv-extarget-20261103-a1",
+   "provenance": "automatic",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "branch/Jal/Jalr fetch targets (385/520 branch_addr_i) from the ID/EX branch-target register and the ID jump target; bt_copy 846=760; coqc 85 s, coqchk 10 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-pstate-psalias-a5",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_psalias.py",
+   "result_dir": "results/r-tmpl-cv-pstate-20261103-a5",
+   "provenance": "generalized_rule",
+   "libraries": [
+    "src/Lang/ExtendedSVPhaseLength.v"
+   ],
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "alias step at settled post-edge state: s1_alias_ifid (S1 945=337, 946=339 for any phase, from cv_phase_lfp + CvTmplIfId aliases) and ifid_L_alias (guards 321/361/374=1 -> S1 336=1, S1 945 = DR 377, S1 946 = DR 375); coqc 17 s, coqchk 2 s, both 0, closed"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-disp2-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans.py",
+   "result_dir": "results/r-tmpl-bz-disp2-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "scenario dispatcher outputs: Cout (156, ASEL/BSEL forwarding selects, class constants 158 162 163 164 165 166 168 169 173 174 175) for 29 classes by the computed membership check; coqc 479 s, coqchk 65 s, closed",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-fwdin-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans.py",
+   "result_dir": "results/r-tmpl-bz-fwdin-20261103-a1",
+   "provenance": "automatic",
+   "note": "RF read-port index wires 312/313 = rs1/rs2 fields 146/147 (copy chains via 33/34); coqc 2 s, closed",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-trisa-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans_isa.py",
+   "result_dir": "results/r-tmpl-bz-trisa-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "ISA side of the forwarding payloads: dpay/dval/drd/dwr and isa_eff (isa_view after a checked step = upd (dpay c i) on the view before); FE only; coqc 5 s",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-trcore-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans_core.py",
+   "result_dir": "results/r-tmpl-bz-trcore-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "registers after one cycle (Post record, post_holds), driven = old registers (DSame), forwarding payloads W0/W1, fwd_two, operand lemmas opnd_A/opnd_B; coqc 44 s, closed",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-trcls-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans_cls.py",
+   "result_dir": "results/r-tmpl-bz-trcls-20261103-a1",
+   "provenance": "automatic",
+   "note": "per class tr_<C> (ID -> EX ExCl clause from Cout/forwarded operands/imm/cmp) and exval_<C> (EX result 259 = ISA value), dispatchers tr_all/exval_all/rd_inv; coqc 55 s, closed",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-trans-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans_main.py",
+   "result_dir": "results/r-tmpl-bz-trans-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "transport_core: shape_transport_ctx for the Advance shape (EX->MEM and ID->EX with forwarding_correct) from Forall CatalogEvent, ClockBoundary, Struct, arch_rel; FE only; coqc 72 s, coqchk 63 s",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-transstep-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bztrans_step.py",
+   "result_dir": "results/r-tmpl-bz-transstep-20261103-a1",
+   "provenance": "generalized_rule",
+   "note": "BzTmplStep.goal_transport (a3 statement verbatim) proved from transport_core; FE only; coqc 59 s, coqchk 39 s",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-archcopy-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzcopy.py",
+   "result_dir": "results/r-tmpl-bz-archcopy-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-archrf-a1",
+   "kind": "generated",
+   "generator": "hand: BzTmplArchRF.v (rf_cycle, ram_cycle)",
+   "result_dir": "results/r-tmpl-bz-archrf-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-isa-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzisa.py",
+   "result_dir": "results/r-tmpl-bz-isa-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-defs-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzarch.py",
+   "result_dir": "results/r-tmpl-bz-defs-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-arch-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzarch.py (goal_arch)",
+   "result_dir": "results/r-tmpl-bz-arch-20261103-a2",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-flow-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzflow.py",
+   "result_dir": "results/r-tmpl-bz-flow-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-id-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzid.py",
+   "result_dir": "results/r-tmpl-bz-id-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-sel-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzid.py --sel",
+   "result_dir": "results/r-tmpl-bz-sel-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-next-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bznext.py",
+   "result_dir": "results/r-tmpl-bz-next-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-frontfacts-a1",
+   "kind": "generated",
+   "generator": "hand: BzTmplFrontFacts.v",
+   "result_dir": "results/r-tmpl-bz-frontfacts-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-front-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzarch.py (goal_front, goal_admission)",
+   "result_dir": "results/r-tmpl-bz-front-20261103-a1",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "bzeeno",
+   "accepted": true,
+   "id": "tmpl-bz-step-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzstepfinal.py (all goals discharged; template_checked_program_infinite_itree)",
+   "result_dir": "results/r-tmpl-bz-step-20261103-a4",
+   "provenance": "generalized_rule"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-banklanes-lib",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVBankLanes.v",
+   "result_dir": "results/r-tmpl-cv-rfwrite-20261103-a1",
+   "provenance": "llm_written",
+   "note": "packed bank root written lane by lane by several sequential processes: lanes_read, bank_phase_lanes"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-rfwrite-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_rfwrite.py",
+   "result_dir": "results/r-tmpl-cv-rfwrite-20261103-a1",
+   "provenance": "generalized_rule",
+   "libraries": [
+    "src/Lang/ExtendedSVBankLanes.v"
+   ],
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "register file (32 lane processes, root 902): rf_lane, rf_lane0, dec_slices, ex_regs, ex_wires, rf_alu_write; coqc 119 s, coqchk 19 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-rfrel-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_rfrel.py",
+   "result_dir": "results/r-tmpl-cv-rfrel-20261103-a1",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "RFRel after the ALU write and ISA view after write (rf_rel_step, rf_rel_isa); coqc 21 s, coqchk 5 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-nextpc-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_nextpc.py",
+   "result_dir": "results/r-tmpl-cv-nextpc-20261103-a1",
+   "provenance": "llm_written",
+   "note": "RTL fetch-target expression = ISA getNextPc for branches, Jal, Jalr; coqc 7 s, coqchk 4 s, both 0"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-excommit-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_excommit.py",
+   "result_dir": "results/r-tmpl-cv-excommit-20261103-a3",
+   "provenance": "automatic",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "captures 598/599/609/620/637, rd_field, commit_core, 23 commit_<C> (RFRel after the ALU write = ISA view after the instruction), 6+2 tgt_<C> (RTL fetch target = ISA getNextPc); coqc 339 s, coqchk 28 s; FunctionalExtensionality only"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-rfsel-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_rfsel.py",
+   "result_dir": "results/r-tmpl-cv-rfsel-20261103-a2",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "forwarding selects sel_a/sel_b for all 2^8 pending-write flag combinations by reflection over the checked executor; coqc 83 s, coqchk 116 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-rfoperands-a6",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_rfoperands.py",
+   "result_dir": "results/r-tmpl-cv-rfoperands-20261103-a6",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "O6: o6_core, o6_a, o6_b: forwarded operand = ISA register under RFRel and the pending-write tie; coqc 17 s, coqchk 4 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-rfhold-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_rfhold.py",
+   "result_dir": "results/r-tmpl-cv-rfhold-20261103-a1",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "RF lanes hold when 599 = 0 (branches, bubbles); coqc 35 s, coqchk 3.5 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-c5-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_c5.py",
+   "result_dir": "results/r-tmpl-cv-c5-20261103-a1",
+   "provenance": "automatic",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "C5 (pending tie) pieces against defs a6: pend_wires, c5_catchup, c5_write_core/c5_nowrite_core, 29 c5_step_<C>; coqc 350 s, coqchk 25 s, assumptions none"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-resstable-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_resstable.py",
+   "result_dir": "results/r-tmpl-cv-resstable-20261103-a1",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "EX result wire 1314 depends only on the ID/EX registers (10 value operators); coqc 19 s, coqchk 5 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-exbubble-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_exbubble.py",
+   "result_dir": "results/r-tmpl-cv-exbubble-20261103-a1",
+   "provenance": "generalized_rule",
+   "libraries": [
+    "src/Lang/ExtendedSVSeqNba.v"
+   ],
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "non-issue cycle: 599=0, 620=0, 600=1, 609=0, 601=3 after the clk rise (process_23 bubble branch); coqc 51 s, coqchk 19 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-dispatch-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_dispatch.py",
+   "result_dir": "results/r-tmpl-cv-dispatch-20261103-a1",
+   "provenance": "automatic",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "Cls, cls_instr, wf_<C> word-field facts of facts_C from the ISA decode inverse, split_facts, dispatch_facts; coqc 58 s, coqchk 9 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-c5-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_c5.py",
+   "result_dir": "results/r-tmpl-cv-c5-20261103-a2",
+   "provenance": "automatic",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "C5 pieces re-gated against defs a9 (same text as a1); coqc 355 s, coqchk 24 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-nextbank-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_nextbank.py",
+   "result_dir": "results/r-tmpl-cv-nextbank-20261104-a1",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "O10 for bank 902 (next_bank), pend_same, c5_transfer S1 to next state; coqc 53 s, coqchk 18 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": true,
+   "id": "tmpl-cv-isastep-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_isastep.py",
+   "result_dir": "results/r-tmpl-cv-isastep-20261104-a1",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "ISA register effect per class from instruction_effect (29 isa_effect_<C>); coqc 43 s, coqchk 5 s"
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": false,
+   "id": "tmpl-cv-issueword-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_gate.py",
+   "result_dir": "results/r-tmpl-cv-issueword-20261104-a1",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "IssueWordInv (raw=norm for 222 122 223 135 121 718), proved ghost invariant; coqc accepted 32 s, coqchk deferred (batch)",
+   "coqchk_deferred": true
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": false,
+   "id": "tmpl-cv-tonext-a4",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_gate.py",
+   "result_dir": "results/r-tmpl-cv-tonext-20261104-a4",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "c5_to_next: C5 shape S1 -> p (next_bank + a19 next_r + c5_transfer); coqc 28 s, coqchk deferred",
+   "coqchk_deferred": true
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": false,
+   "id": "tmpl-cv-dalias-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_gate.py",
+   "result_dir": "results/r-tmpl-cv-dalias-20261104-a3",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "alias_107, alias_1303, div_facts at any comb fixed point; coqc 17 s, coqchk deferred",
+   "coqchk_deferred": true
+  },
+  {
+   "design": "cv32e40p",
+   "accepted": false,
+   "id": "tmpl-cv-idle-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_cv_gate.py",
+   "result_dir": "results/r-tmpl-cv-idle-20261104-a2",
+   "provenance": "generalized_rule",
+   "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+   "note": "idle EX (600 = 0) pend_wires0, rf_rel_hold0; coqc 48 s, coqchk deferred",
+   "coqchk_deferred": true
+  },
+  {
+   "id": "steel-lib-bitstab-nolatch",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVBitStabilityNoLatch.v",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_seconds": 1.3,
+   "note": "latch-free variant of ExtendedSVBitStability (comb_stable0_b); coqchk via build_template_deps; closed under the global context",
+   "design": "steel"
+  },
+  {
+   "id": "steel-roles",
+   "kind": "tool",
+   "generator": "tools/cpu_tmpl_steel_roles.py",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "note": "manifest framework/auto-contract-profiles/steel.json: 10 role groups discovered (events, reset flops, RF via cpu_isa_trace, instruction word, pc, fsm, fetch mux, memory, classes), 2 groups decided as llm (commit condition, environment)",
+   "roles_discovered": 10,
+   "roles_llm": 2,
+   "design": "steel"
+  },
+  {
+   "id": "steel-lfp-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "result_dir": "results/r-tmpl-steel-lfp-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.8,
+   "classes": 0,
+   "note": "all-states comb convergence in 1 round (= lfp_fuel), driven_lfp, phase_length, settle_lfp; closed under the global context",
+   "design": "steel"
+  },
+  {
+   "id": "steel-inv-sim",
+   "kind": "tool",
+   "generator": "tools/steel_inv_sim.py",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "simulation-first INV: reach 600x60 0 violations; inductive on 900 random INV states x3 steps 0 violations; 6 mutants rejected",
+   "design": "steel"
+  },
+  {
+   "id": "srv32-lfp-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "result_dir": "results/r-tmpl-srv32-lfp-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 5.1,
+   "classes": 0,
+   "note": "all-states comb convergence in 1 round (= lfp_fuel), driven_lfp, phase_length, settle_lfp; generator by the Steel agent (generalized_rule); only a one-line Import of the AST module added in tools/cpu_tmpl_srv32.py",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-edge-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/r-tmpl-srv32-edge-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 24.9,
+   "classes": 0,
+   "note": "derived clock/reset nets (riscv.clk 18, riscv.resetb 19), sel_rise/sel_fall: rise selects processes 0..15, fall selects none; unchanged Bzeeno generator, roles from srv32.json",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-stage-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/r-tmpl-srv32-stage-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 30.7,
+   "classes": 0,
+   "note": "41 rise_<R> register steps for processes 0-9, 11 (decision-tree form); processes 10 (case), 12-14 (CSR/pipefill), 15 (RF bank) not covered (unobserved in the domain / own layer)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-frame-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --frame",
+   "result_dir": "results/r-tmpl-srv32-frame-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 45.7,
+   "classes": 0,
+   "note": "fall_frame_<R>: every register keeps its value over the falling edge (no process fires)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-roles-tool",
+   "kind": "tool",
+   "generator": "tools/cpu_tmpl_srv32_roles.py",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "srv32 role discovery (events, RF bank/ports/write process, instruction word/capture process, pc chain, ex_flush) + llm roles (commit stage, stages, environment, obligations); writes framework/auto-contract-profiles/srv32.json",
+   "design": "srv32"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-roles-tool",
+   "kind": "tool",
+   "generator": "tools/cpu_tmpl_angelo5_roles.py",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "role discovery for the CE/stall 5-stage core with synchronous RF: events, RF bank/write process/guard/zero-muxed read ports (discovered); stage chain, observer, forwarding unit, redirect sources, environment (llm entries with rationale); writes framework/auto-contract-profiles/angelo5fix.json; the clock/reset-net section is the unchanged cpu_tmpl_edge.discover_pipelined"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-edge-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/r-tmpl-a5-edge-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "note": "failed: AST .vo is library Angelo5.Angelo5FixedAST, manifest said Angelo5Fixed.; kept as evidence, superseded by a2"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-edge-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/r-tmpl-a5-edge-20261104-a2",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 15.0,
+   "note": "unchanged Bzeeno edge generator; 13 derived clock/reset nets (18,19,117,131,132,155,156,208,209,277,278,338,339) traced to primary inputs 0/1; sel_rise selects processes [0,1,2,3,4,8,9,10,12], sel_fall selects none (no falling-edge process); assumptions closed; accepted only after batch coqchk exit 0"
+  },
+  {
+   "id": "steel-target-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_sttarget.py",
+   "result_dir": "results/r-tmpl-steel-target-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 27.9,
+   "note": "target defs + boot/observer/rank facts for every image; closed",
+   "design": "steel"
+  },
+  {
+   "id": "steel-edge-a1",
+   "kind": "generated",
+   "provenance": "automatic",
+   "superseded_by": "steel-edge-a3",
+   "note": "SUPERSEDED: its lemmas assume the active-high reset input = 1 (idle level of an active-low reset), unusable in operation",
+   "design": "steel"
+  },
+  {
+   "id": "srv32-ex-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_ex.py on the planner of tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-srv32-ex-20261104-a1",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 47.4,
+   "classes": 29,
+   "note": "EX facts for all 29 classes: ex_result (323) for the 21 data ops + Jal/Jalr link; next_pc (324) and branch_taken (325) for the 6 branches in both outcomes; the 33-bit subtraction wires 321/322. Flags are the determined ex_* values of the class. srv32 specs new (llm_adapted), planner/emitter of the Bzeeno route unchanged; new generic library CPUSubSign33 (llm_written) for the compare sign bits",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-inv-sim",
+   "kind": "tool",
+   "generator": "tools/srv32_inv_sim.py",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "simulation-first INV: reach 600x120 0 violations; inductive 900 random INV states x1 step 0 violations; 9 AST mutants rejected",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-ex-tool",
+   "kind": "tool",
+   "generator": "tools/cpu_tmpl_srv32_ex.py",
+   "provenance": "llm_adapted",
+   "accepted": true,
+   "note": "srv32 specs (flags by sampling the capture decode, branch scenarios from the process-80 arm guards) on the Bzeeno planner/emitter (cpu_tmpl_bzex.py, unchanged)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-lib-subsign33",
+   "kind": "library",
+   "generator": "src/Ex/External/CPUSubSign33.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "coqc_accepted": true,
+   "note": "generic: sign bit of the 33-bit sign-/zero-extended subtraction = signed/unsigned compare (slt_signbit, sltu_signbit), sub33_zero; built and coqchk-ed by build_template_deps.sh",
+   "design": "generic"
+  },
+  {
+   "id": "srv32-driver",
+   "kind": "tool",
+   "generator": "tools/cpu_tmpl_srv32.py",
+   "provenance": "llm_written",
+   "accepted": true,
+   "note": "gate driver + ledger writer for srv32",
+   "design": "srv32"
+  },
+  {
+   "id": "steel-edge-a2",
+   "kind": "generated",
+   "superseded_by": "steel-edge-a3",
+   "note": "SUPERSEDED by a3 (same fast-filter, reset-idle level corrected to 0)",
+   "design": "steel"
+  },
+  {
+   "id": "bz-edge-a3-fastfilter",
+   "kind": "generated",
+   "design": "bzeeno",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter",
+   "result_dir": "results/r-tmpl-bz-edge-20261104-a3-fastfilter",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "note": "regression of the option on Bzeeno"
+  },
+  {
+   "id": "steel-lib-seqtree-flat",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSeqTreeFlat.v",
+   "provenance": "generalized_rule",
+   "note": "text transformation of seq_tree_step/hold/value for body SSeq [t]",
+   "design": "steel"
+  },
+  {
+   "id": "steel-stage-a2",
+   "kind": "generated",
+   "superseded_by": "steel-stage-a3",
+   "note": "SUPERSEDED by a3 (built on edge a2)",
+   "design": "steel"
+  },
+  {
+   "id": "nerv-lfp-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl_lazy.py (wraps cpu_tmpl_lfpnl.py)",
+   "result_dir": "results/r-tmpl-nerv-lfp-20261104-a3",
+   "provenance": "automatic",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 8.4,
+   "note": "all-states comb convergence + driven/settle LFP for the literal-index NERV AST; assumptions none",
+   "design": "nerv"
+  },
+  {
+   "id": "generic-bitstability-lazy",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVBitStabilityLazy.v",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "accepted": true,
+   "note": "slx_l/Kiter0_l/comb_stable0_l equal to the accepted slx/Kiter0 (lazy width test in exhaustive); removes the 2^32 enumeration that did not finish (16 CPU min, 80 GB)",
+   "design": "generic"
+  },
+  {
+   "id": "generic-overlay4",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSymExecOverlay4.v",
+   "generator": "tools/ (textual copy of ExtendedSVSymExecOverlay with xeval4 guards)",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "accepted": true,
+   "note": "oxexec4 and soundness, closed under the global context",
+   "design": "generic"
+  },
+  {
+   "id": "nerv-roles",
+   "kind": "manifest",
+   "file": "framework/auto-contract-profiles/nerv.json",
+   "generator": "tools/cpu_tmpl_nerv_roles.py",
+   "provenance": "automatic",
+   "note": "10 role groups; discovered by structural rules, commit/environment/reset convention are llm decisions",
+   "design": "nerv"
+  },
+  {
+   "id": "srv32-cap-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_cap.py (+ rise_R of the stage layer, ExtendedSVSymExec.xeval)",
+   "result_dir": "results/r-tmpl-srv32-cap-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 30.8,
+   "classes": 29,
+   "note": "capture (decode) facts for 29 classes: after the rising edge the ex_* flag registers (memwr, jal, jalr, lui, auipc, csr, mul, alu, alu_op, subtype, branch, imm_sel, illegal) hold the class values given the opcode/funct3/funct7/bit30 slices of the instruction word; new generator srv32-specific (xeval under slice facts)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-rf-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_rf.py + framework/template-sources/Srv32RfCore.v.in; library src/Lang/ExtendedSVBankWriteBlk.v",
+   "result_dir": "results/r-tmpl-srv32-rf-20261104-a1",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.7,
+   "classes": 0,
+   "note": "RF write step at the rising edge: rf_write_lane (lane i = i == (wb_dst_sel-1) mod 32 ? norm 32 data : old) and rf_write_off (guard false: bank unchanged); expressions read from the AST; new generic library ExtendedSVBankWriteBlk (block-wrapped slice write, variant of ExtendedSVBankWriteStep shape B)",
+   "design": "srv32"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-dec-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5dec.py",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "result_dir": "results/r-tmpl-a5-dec-20261104-a2",
+   "coqc_seconds": 101.9,
+   "note": "per-class decoder facts for 29 classes: 29 DecOut theorems (31 constant outputs: flags, ALU one-hot, valid_opcode=1, illegal_shift=0, system_noncsr) via ExtendedSVSymExecOverlay.ox_run_outs from word-slice facts; 19 symbolic imm_d equations via oxrun_comb_lfp (expression computed inside Coq). New generator, reuse of the CV32E40P overlay engine (no new Coq library); assumptions closed. Failed attempts before a2 were slowness only (lazy Definitions and apply-in); a1 dir removed (run killed by me)"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-lfp-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "result_dir": "results/r-tmpl-a5-lfp-20261104-b8",
+   "coqc_seconds": 13.1,
+   "note": "all-states comb convergence (bit-mask certificate, N = lfp_fuel = 8), driven_lfp, phase_length, settle_lfp; generator change: loadpath derived from the design manifest instead of the hard-coded Steel path (additive, Steel output unchanged)"
+  },
+  {
+   "id": "srv32-ex-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_ex.py on the planner of tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-srv32-ex-20261104-a2",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 87.7,
+   "classes": 29,
+   "note": "EX facts for all 29 classes: ex_result (323) for the 21 data ops + Jal/Jalr link; next_pc (324) and branch_taken (325) for the 6 branches in both outcomes; the 33-bit subtraction wires 321/322. Flags are the determined ex_* values of the class. srv32 specs new (llm_adapted), planner/emitter of the Bzeeno route unchanged; new generic library CPUSubSign33 (llm_written) for the compare sign bits (a2: adds 21 dataop *_ex_next = next_pc/branch_taken/ill_branch; Jal/Jalr next_pc open)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-lib-bankwriteblk",
+   "kind": "library",
+   "generator": "src/Lang/ExtendedSVBankWriteBlk.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "coqc_accepted": true,
+   "note": "generic: block-wrapped bank slice write under reset/guard (variant of BankWriteStep shape B); coqchk exit 0 via build_template_deps.sh",
+   "design": "generic"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "tmpl-bankrebase-lib",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVBankRebase.v",
+   "provenance": "llm_written",
+   "accepted": true,
+   "coqc_clean": true,
+   "note": "shared rebased register-file library: RFRelR (lane j = x(j+1), pad lane 31 unconstrained), operand_clause_rebased (zero-muxed port bank[(rs-1)*32 +: 32] = view (norm 5 rs)), rf2_lane_write / rf2_frame (write process SSeq[SSeq[SIf c {bank slice <= e}; SIf c2 {other NBAs}]], second if = registered read addresses), RFRelR_write/_frame/_reset; all closed. Added to framework/template-route-deps.txt (built and coqchk'd by tools/build_template_deps.sh)"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "tmpl-rf-rebased-generator",
+   "kind": "tool",
+   "generator": "tools/cpu_tmpl_rf.py --rebased",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "reuse": "form of the rise-edge step theorems (SelHyps, rf_write_lane / rf_write_off, selection via the edge layer sel_rise_match_<i>) follows the srv32 agent's Srv32RfCore.v.in / results/r-tmpl-srv32-rf-20261104-a1; the blk1 write shape stays theirs (Lang/ExtendedSVBankWriteBlk.v)",
+   "note": "additive: new function rebased_text and option --rebased; the Dark and Bzeeno paths are untouched"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-rf-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_rf.py --rebased",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "result_dir": "results/r-tmpl-a5-rf-20261104-a1",
+   "coqc_seconds": 5.8,
+   "note": "TmplA5RF.A5TmplRF: rf_write_lane, rf_write_off, rfrel_write_step, rfrel_frame_step (rise edge, via TmplA5Edge.sel_rise_match_2), operand_124/operand_125 (view (norm 5 rs_addr_q)); assumptions closed"
+  },
+  {
+   "id": "srv32-ex-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_ex.py on the planner of tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-srv32-ex-20261104-a3",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 123.5,
+   "classes": 29,
+   "note": "EX facts for all 29 classes: ex_result (323) for the 21 data ops + Jal/Jalr link; next_pc (324) and branch_taken (325) for the 6 branches in both outcomes; the 33-bit subtraction wires 321/322. Flags are the determined ex_* values of the class. srv32 specs new (llm_adapted), planner/emitter of the Bzeeno route unchanged; new generic library CPUSubSign33 (llm_written) for the compare sign bits",
+   "design": "srv32"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-dec-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5dec.py",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "result_dir": "results/r-tmpl-a5-dec-20261104-a3",
+   "coqc_seconds": 119.2,
+   "supersedes": "angelo5fix-dec-a2 (kept)",
+   "note": "a2 plus 19 *_imm_isa theorems linking imm_d to CPUImmediateShapes.isa_imm_{I,B,J,U} of the instruction word 157 (reuse of CPUImmediateRtlShapes.eval_rimm_I/B and eval_imm_U; eval_aimm_J generated for the EReplicate-11 shape of the J immediate); 67 exports, assumptions closed"
+  },
+  {
+   "id": "srv32-ex-a4",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_ex.py on the planner of tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-srv32-ex-20261104-a4",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 131.0,
+   "classes": 29,
+   "note": "superset of a1-a3: 75 exports = 29-class ex_result, 6 branches x 2 outcomes, 21 data-op + Jal/Jalr next_pc/branch_taken/ill_branch, wires (if/ex/wb_stall = 0, ex_flush, wb_flush, alu_op1/2, ex_trap = ex_trap_nop = 0 for valid classes), operand ports 245/246 in three scenarios (x0, WB forwarding, bank lane)",
+   "design": "srv32"
+  },
+  {
+   "id": "nerv-havoc-lib",
+   "kind": "library",
+   "file": "src/Lang/ExtendedSVSymExecHavoc.v",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_exit": 0,
+   "accepted": true,
+   "note": "havoc symbolic executor on top of Overlay4: undecided assignment/if/case (or rhs larger than hbound=3000 nodes) -> width-0 havoc entries for the static writers; frame+soundness proved (hxexec_sound, closed under the global context); split prefix/tail run (hxl, hxrun2_comb_lfp) and output extraction hx2_out; generic, no design ids",
+   "design": "nerv"
+  },
+  {
+   "id": "nerv-nb-lib",
+   "kind": "library",
+   "file": "src/Lang/ExtendedSVSymExecNb.v",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_exit": 0,
+   "accepted": true,
+   "note": "NBA symbolic executor for sequential processes (nbexec, merge_if, lane patches) and seq_nb_value/seq_nb_hold: value of a register after a clock phase when one selected sequential process writes it; replaces the single-tree converter for bodies with several statements (x <= y; if (r) x <= 0)",
+   "design": "nerv"
+  },
+  {
+   "id": "nerv-edge-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter (shared, unchanged)",
+   "result_dir": "results/r-tmpl-nerv-edge-20261104-a1",
+   "provenance": "automatic",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 4.8,
+   "note": "sel_rise (all 18 sequential processes) and sel_fall (none) for the primary clock; manifest additions: pipeline_roles.rf_write and the edge discovery fields",
+   "design": "nerv"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-target-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5target.py",
+   "result_dir": "results/r-tmpl-a5-target-20261104-a1-failed-silent-prefix-6cycles-symbolic-too-slow",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "note": "failed (killed after 10 min): silent_prefix over 6 cycles with the memory word symbolic does not finish under vm_compute; kept as evidence"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-target-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5target.py",
+   "result_dir": "results/r-tmpl-a5-target-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 15.6,
+   "note": "A5TmplTarget: rise/fall/actual_cycle, actual_reset (initialize + reset assert + 2 clock pairs + release after fall = Angelo5Run/A5_BOOT), actual_observe (writeback_ce 90 in the driven state, pc 76); boot_regs, boot_rf_zero, observe_boot, silent_prefix (2 cycles) for every image; modelled on cpu_tmpl_sttarget.py; assumptions closed"
+  },
+  {
+   "id": "steel-edge-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter (TMPL_RST_IDLE=0)",
+   "result_dir": "results/r-tmpl-steel-edge-20261104-a3",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 6.7,
+   "note": "additive option RST_IDLE in the shared edge generator (default 1 = unchanged output): Steel has an active-high reset, so the edge lemmas must assume reset = 0",
+   "design": "steel"
+  },
+  {
+   "id": "steel-stage-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py (E.RST_IDLE)",
+   "result_dir": "results/r-tmpl-steel-stage-20261104-a3",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 21.9,
+   "note": "33 register steps, edge a3",
+   "design": "steel"
+  },
+  {
+   "id": "steel-frame-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --frame",
+   "result_dir": "results/r-tmpl-steel-frame-20261104-a1",
+   "provenance": "automatic",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 23.7,
+   "note": "37 frame lemmas (fall edge keeps every sequential register), shared generator unchanged except RST_IDLE",
+   "design": "steel"
+  },
+  {
+   "id": "steel-lib-slicerootfact",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSliceRootFact.v",
+   "provenance": "llm_written",
+   "note": "closed under the global context; appended to framework/template-route-deps.txt",
+   "design": "steel"
+  },
+  {
+   "id": "steel-ctl-a2",
+   "kind": "generated",
+   "superseded_by": "steel-ctl-a3",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "note": "superseded by ctl-a3",
+   "design": "steel"
+  },
+  {
+   "id": "srv32-base-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_step.py base (Lo/Hi/Basic phase invariants incl. post-phase NetWords; per-register one-cycle lemmas cyc_R)",
+   "result_dir": "results/r-tmpl-srv32-base-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 27.8,
+   "classes": 0,
+   "note": "item 4: basic invariant (length, comb fixed point, NetWords) preserved by clock/reset phases; clock/reset/rom after a phase; driven registers; cyc_R = value after one cycle (rise tree on the driven state, fall frame) for the 41 stage registers",
+   "design": "srv32"
+  },
+  {
+   "id": "steel-ctl-a3",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py",
+   "result_dir": "results/r-tmpl-steel-ctl-20261104-a3",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 338.3,
+   "note": "supersedes ctl-a2: adds irq/reset wires and the fetch wires rw_address, word_index, invalid_address as targets; 29 theorems; closed",
+   "design": "steel"
+  },
+  {
+   "id": "steel-cyc-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stcyc.py",
+   "result_dir": "results/r-tmpl-steel-cyc-20261104-a1",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 23.6,
+   "note": "33 cyc_R: register after actual_cycle = stage expression at the driven state (rise step + fall frame); class independent; closed",
+   "design": "steel"
+  },
+  {
+   "id": "steel-val-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stval.py",
+   "result_dir": "results/r-tmpl-steel-val-20261104-a1",
+   "provenance": "generalized_rule",
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "accepted": false,
+   "coqc_seconds": 12.0,
+   "note": "val_R: PC, state, reset flops, prev_*, responses, mip, read_data after one operating cycle from wire values; closed",
+   "design": "steel"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-reset-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --reset-events",
+   "result_dir": "results/r-tmpl-a5-reset-20261104-a2",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 23.4,
+   "note": "reset layer"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-copy-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_bzcopy.py --design angelo5fix",
+   "result_dir": "results/r-tmpl-a5-copy-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 12.4,
+   "note": "control/word/address copy chains"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-fwd-a7",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5fwd.py",
+   "result_dir": "results/r-tmpl-a5-fwd-20261104-a7",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 23.5,
+   "note": "forwarding if-chain atoms"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-alu-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5alu.py",
+   "result_dir": "results/r-tmpl-a5-alu-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 52,
+   "note": "ALU result expressions per class"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-ovlwb-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5ovl.py --job wb",
+   "result_dir": "results/r-tmpl-a5-ovlwb-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 7.3,
+   "note": "writeback comb facts"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-ovlcsr-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5ovl.py --job csr",
+   "result_dir": "results/r-tmpl-a5-ovlcsr-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 121,
+   "note": "CSR misalign/new_pc per class"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-ovlex-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5ovl.py --job ex",
+   "result_dir": "results/r-tmpl-a5-ovlex-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 196,
+   "note": "execute control per class"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-stage-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/r-tmpl-a5-stage-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": null,
+   "note": "rise_150"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-stage2-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage2.py",
+   "result_dir": "results/r-tmpl-a5-stage2-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 39.5,
+   "note": "next-state formulas, processes 4 8 9 10"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-stage2csr-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage2.py",
+   "result_dir": "results/r-tmpl-a5-stage2csr-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 30.2,
+   "note": "next-state formulas, CSR process 12"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-stage2s-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage2.py --slices",
+   "result_dir": "results/r-tmpl-a5-stage2s-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 6.4,
+   "note": "slice registers 167/168/169"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-stage2s-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage2.py --slices",
+   "result_dir": "results/r-tmpl-a5-stage2s-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.1,
+   "note": "CSR counters 434/435"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-ovlfetch-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5ovl.py --job fetch",
+   "result_dir": "results/r-tmpl-a5-ovlfetch-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.0,
+   "note": "fetch stalled word/pc selection"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-ovlmem-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5ovl.py --job mem (expression-keyed facts, 5 funct3 classes, 314=0)",
+   "result_dir": "results/r-tmpl-a5-ovlmem-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 25.3,
+   "note": "memoryaccess data bus per funct3 class (not on the 29-class domain path: no loads/stores)"
+  },
+  {
+   "id": "srv32-base-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_step.py base (Lo/Hi/Basic phase invariants incl. post-phase NetWords; per-register one-cycle lemmas cyc_R)",
+   "result_dir": "results/r-tmpl-srv32-base-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 30.1,
+   "classes": 0,
+   "note": "item 4: basic invariant (length, comb fixed point, NetWords) preserved by clock/reset phases; clock/reset/rom after a phase; driven registers; cyc_R = value after one cycle (rise tree on the driven state, fall frame) for the 41 stage registers",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-wire-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_wire.py on the planner of tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-srv32-wire-20261104-a1",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": false,
+   "coqchk_deferred": true,
+   "coqc_seconds": 23.6,
+   "classes": 0,
+   "note": "comb-wire facts of a settled state: stall wires = 0, inst without flush, imem_addr copy, constant wires, ROM word value, flush_zero/ld_m2r0/st_mw0, and junk_bt0 (branch_taken = 0 in every flushed token whatever the decoded flags; 17 scenario theorems over process 80)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-wire-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_wire.py on the planner of tools/cpu_tmpl_bzex.py",
+   "result_dir": "results/r-tmpl-srv32-wire-20261104-a2",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 23.5,
+   "classes": 0,
+   "note": "comb-wire facts of a settled state: stall wires = 0, inst without flush, imem_addr copy, constant wires, ROM word value, flush_zero/ld_m2r0/st_mw0, and junk_bt0 (branch_taken = 0 in every flushed token whatever the decoded flags; 17 scenario theorems over process 80)",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-nx-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_nx.py (one same-statement optimisation: proofs on D-form hypotheses, no drv rewriting inside the evaluated tree)",
+   "result_dir": "results/r-tmpl-srv32-nx-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 21.1,
+   "classes": 0,
+   "note": "next-value layer: one-cycle value of the pipeline registers (pc chain 239/240/241, ex_insn-side 250, ex_result copy 290, wb dst/m2r/branch/nop/trap 293..299, wb_memwr 292, wb_alu2reg 289 in 6 flag scenarios) from wire/register facts; each theorem has a D-form helper nx_R_D",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-nx2-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_nx2.py (same D-form method as nx)",
+   "result_dir": "results/r-tmpl-srv32-nx2-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 6.9,
+   "classes": 0,
+   "note": "next-value lemmas of the captured instruction fields: ex_insn (249), ex_src1/src2/dst_sel (252..254) as slices of the instruction word, imem_rdata (12) = rom word or 0 outside the image",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-cap3-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_cap3.py (same xeval method as cap)",
+   "result_dir": "results/r-tmpl-srv32-cap3-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 22.1,
+   "classes": 29,
+   "note": "capture facts part 3: ex_system (269) and ex_system_op (270) are 0 after the rise for each of the 29 classes",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-nx2-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_nx2.py (same D-form method as nx)",
+   "result_dir": "results/r-tmpl-srv32-nx2-20261104-a2",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 16.2,
+   "classes": 0,
+   "note": "next-value lemmas of the captured instruction fields: ex_insn (249), ex_src1/src2/dst_sel (252..254) as slices of the instruction word, imem_rdata (12) = rom word or 0 outside the image",
+   "design": "srv32"
+  },
+  {
+   "id": "srv32-route-lfp-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "result_dir": "results/route-srv32-20261104-reg1/lfp",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.7,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-lfp-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "result_dir": "results/route-steel-20261104-reg1/lfp",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 5.5,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-edge-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/route-srv32-20261104-reg1/edge",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 21.1,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-target-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_sttarget.py",
+   "result_dir": "results/route-steel-20261104-reg1/target",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 24.7,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-edge-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter",
+   "result_dir": "results/route-steel-20261104-reg1/edge",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 5.8,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-stage-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --rise-procs",
+   "result_dir": "results/route-srv32-20261104-reg1/stage",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 29.0,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-stage-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/route-steel-20261104-reg1/stage",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 19.7,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-frame-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --frame",
+   "result_dir": "results/route-steel-20261104-reg1/frame",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 21.2,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-frame-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --frame",
+   "result_dir": "results/route-srv32-20261104-reg1/frame",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 40.4,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-cyc-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stcyc.py",
+   "result_dir": "results/route-steel-20261104-reg1/cyc",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 24.5,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-val-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stval.py",
+   "result_dir": "results/route-steel-20261104-reg1/val",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 12.2,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-rf-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_strf.py (src/Lang/ExtendedSVBankRebaseRst.v)",
+   "result_dir": "results/route-steel-20261104-reg1/rf",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 8.9,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-base-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_step.py base",
+   "result_dir": "results/route-srv32-20261104-reg1/base",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 27.7,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-ram-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_strf.py --ram",
+   "result_dir": "results/route-steel-20261104-reg1/ram",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 3.5,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-rf-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_rf.py",
+   "result_dir": "results/route-srv32-20261104-reg1/rf",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.2,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-ex-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_ex.py",
+   "result_dir": "results/route-srv32-20261104-reg1/ex",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 114.9,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-cap-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_cap.py",
+   "result_dir": "results/route-srv32-20261104-reg1/cap",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 29.8,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-wire-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_wire.py",
+   "result_dir": "results/route-srv32-20261104-reg1/wire",
+   "provenance": "llm_adapted",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 25.9,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "srv32-route-nx-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_nx.py",
+   "result_dir": "results/route-srv32-20261104-reg1/nx",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 20.1,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-ctl-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py (Fast4 engine, eqchain2_out)",
+   "result_dir": "results/route-steel-20261104-reg1/ctl",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 326.1,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-fetch-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stfetch.py + framework/template-sources/SteelFetchCore.v.in",
+   "result_dir": "results/route-steel-20261104-reg1/fetch",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 6.2,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "fetch link read_data = rom word (pack_word, fetch_link)"
+  },
+  {
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lift.py",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "id": "lift-isa",
+   "design": "generic",
+   "result_dir": "results/r-tmpl-lift-isa-20261104-a1",
+   "provenance": "generalized_rule",
+   "wall_s": 17,
+   "note": "TmplLiftIsa: isa_eff (generalised BzTmplTrIsa), ipc, isa_pc, isa_pc_ok, isa_pc_even, clear0_jalr, tb0_norm, boolz_bool; assumption: functional_extensionality only"
+  },
+  {
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lift.py",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "id": "steel-lift",
+   "design": "steel",
+   "result_dir": "results/r-tmpl-steel-lift-20261104-a1",
+   "provenance": "automatic",
+   "wall_s": 36,
+   "note": "29 <C>_lift from SteelTmplCtl a3; roles framework/lift-roles/steel.json; no hand proof text"
+  },
+  {
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lift.py",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "id": "srv32-lift",
+   "design": "srv32",
+   "result_dir": "results/r-tmpl-srv32-lift-20261104-a1",
+   "provenance": "automatic",
+   "wall_s": 29,
+   "note": "34 exports: rdata1/2_pend, 22 lift_result, 8 lift_next, trap_lift; plus pend_sel helper (hand-written, 20 lines)"
+  },
+  {
+   "kind": "generated",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "design": "steel",
+   "id": "steel-mis",
+   "generator": "tools/cpu_tmpl_stctl_run.py --kind mis",
+   "result_dir": "results/r-tmpl-steel-mis-20261104-a1",
+   "provenance": "automatic",
+   "wall_s": 214,
+   "note": "8 <C>_mis: 238 = take_branch & next_address[1] as a function of the data, without the 238=0 premise (STNOMIS); supersedes the failed route-steel mis attempts"
+  },
+  {
+   "kind": "generated",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "design": "steel",
+   "id": "steel-lift-a2",
+   "generator": "tools/cpu_tmpl_lift.py --kinds lift2",
+   "result_dir": "results/r-tmpl-steel-lift-20261104-a2",
+   "provenance": "automatic",
+   "wall_s": 38,
+   "note": "SteelTmplLift without the 238=0 premise (derived from mis + ipc mod 4 = 0); supersedes lift a1 for the closure"
+  },
+  {
+   "kind": "hand_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "design": "steel",
+   "provenance": "llm_written",
+   "id": "steel-pre-closure-a1",
+   "result_dir": "results/r-tmpl-steel-pre-closure-20261104-a1",
+   "note": "pre_cycle"
+  },
+  {
+   "kind": "hand_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "design": "steel",
+   "provenance": "llm_written",
+   "id": "steel-mem-closure-a1",
+   "result_dir": "results/r-tmpl-steel-mem-closure-20261104-a1",
+   "note": "ram_word"
+  },
+  {
+   "kind": "hand_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk": "deferred (registered in framework/coqchk-pending.txt)",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "design": "steel",
+   "provenance": "llm_written",
+   "id": "steel-inv-closure-a1",
+   "result_dir": "results/r-tmpl-steel-inv-closure-20261104-a1",
+   "note": "padded actual_reset (full-length seed), pre_reset"
+  },
+  {
+   "kind": "superseded",
+   "design": "steel",
+   "id": "steel-target-a1-reset",
+   "result_dir": "results/r-tmpl-steel-target-20261104-a1",
+   "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+   "external_llm_api_calls": 0,
+   "reason": "target generator bug: seed_x had length 332 while the program declares 334 signals, so Pre (length 334) was unsatisfiable at actual_reset; superseded by SteelTmplInv.actual_reset (full-length seed); generator fixed additively: tools/cpu_tmpl_sttarget.py --pad-seed"
+  },
+  {
+   "id": "steel-route-mis-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py --kind mis",
+   "result_dir": "results/route-steel-20261104-reg1/mis",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 215.0,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "misaligned_instruction_address (238) as a function of the jump-family data, without the premise 238 = 0"
+  },
+  {
+   "id": "steel-route-imm-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py --kind imm",
+   "result_dir": "results/route-steel-20261104-reg1/imm",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 66.1,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "immediates 205 = isa_imm_X w for 15 classes; kernel-hang fix: rewrite with eq_refl lemmas instead of cbn on the EReplicate wire 211"
+  },
+  {
+   "id": "steel-route-fw-route-steel-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stfw.py",
+   "result_dir": "results/route-steel-20261104-reg1/fw",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 5.8,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "fetch wires: w_R (checked assignment binding) for 217,24,221,219,220,224,225 and fetch_wire: 217 = read_data when operating (203=0,170=1,230=0,263=0)"
+  },
+  {
+   "id": "srv32-route-op-route-srv32-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_op.py",
+   "result_dir": "results/route-srv32-20261104-reg1/op",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 3.3,
+   "design": "srv32",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "forwarded read-port operands 245/246 in register-relation shape: operand_D under RFRelR bank view and FWD = 0"
+  },
+  {
+   "id": "nerv-route-lfp-route-nerv-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl_lazy.py",
+   "result_dir": "results/route-nerv-20261104-reg1/lfp",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 7.2,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-target-route-nerv-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_copy.py framework/template-sources/NervTmplTarget.v.in",
+   "result_dir": "results/route-nerv-20261104-reg1/target",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 1.8,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-lfp-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py --rounds 8",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/lfp",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 12.4,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-edge-route-nerv-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter",
+   "result_dir": "results/route-nerv-20261104-reg1/edge",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 5.4,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-target-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5target.py",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/target",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 14.6,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-edge-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/edge",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 11.8,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-reset-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --reset-events",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/reset",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 22.0,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-stage-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/stage",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 1.7,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-rf-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_rf.py --rebased",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/rf",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 5.5,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-dec-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5dec.py",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/dec",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 117.4,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-edger-route-nerv-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --reset-events",
+   "result_dir": "results/route-nerv-20261104-reg1/edger",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 241.5,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-stage-route-nerv-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/route-nerv-20261104-reg1/stage",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 2.1,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "accepted a1 was generated with the default reset level 1 (edge a2 uses 0); the route regenerates it with rst_idle=0"
+  },
+  {
+   "id": "nerv-route-rise-route-nerv-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvrise.py",
+   "result_dir": "results/route-nerv-20261104-reg1/rise",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": false,
+   "coqchk_deferred": true,
+   "coqc_seconds": 2.2,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "angelo5fix-route-alu-route-angelo5fix-20261104-reg1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5alu.py",
+   "result_dir": "results/route-angelo5fix-20261104-reg1/alu",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 53.1,
+   "design": "angelo5fix",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-lfp-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl_lazy.py",
+   "result_dir": "results/route-nerv-20261104-reg2/lfp",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 6.8,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-target-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_copy.py framework/template-sources/NervTmplTarget.v.in",
+   "result_dir": "results/route-nerv-20261104-reg2/target",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 1.8,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-edge-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter",
+   "result_dir": "results/route-nerv-20261104-reg2/edge",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.3,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-lfp-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "result_dir": "results/route-steel-20261104-pad/lfp",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.9,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-target-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_sttarget.py",
+   "result_dir": "results/route-steel-20261104-pad/target",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 26.1,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "seed_x padded to 334 cells (fixes Pre unsatisfiable at the real reset); the route-steel-20261104-reg1 dir was built with the unpadded a1 text (ref kept for comparison) (driver regression)"
+  },
+  {
+   "id": "steel-route-edge-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --fast-filter",
+   "result_dir": "results/route-steel-20261104-pad/edge",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 6.3,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-stage-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/route-steel-20261104-pad/stage",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 24.6,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-frame-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py --frame",
+   "result_dir": "results/route-steel-20261104-pad/frame",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 22.7,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-cyc-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stcyc.py",
+   "result_dir": "results/route-steel-20261104-pad/cyc",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 23.4,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-val-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stval.py",
+   "result_dir": "results/route-steel-20261104-pad/val",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 10.8,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-fetch-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stfetch.py + framework/template-sources/SteelFetchCore.v.in",
+   "result_dir": "results/route-steel-20261104-pad/fetch",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 7.5,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "fetch link read_data = rom word (pack_word, fetch_link)"
+  },
+  {
+   "id": "steel-route-rf-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_strf.py (src/Lang/ExtendedSVBankRebaseRst.v)",
+   "result_dir": "results/route-steel-20261104-pad/rf",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 9.8,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-ram-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_strf.py --ram",
+   "result_dir": "results/route-steel-20261104-pad/ram",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 3.0,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-edger-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_edge.py --reset-events",
+   "result_dir": "results/route-nerv-20261104-reg2/edger",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 261.7,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-stage-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/route-nerv-20261104-reg2/stage",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 1.8,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-rise-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvrise.py",
+   "result_dir": "results/route-nerv-20261104-reg2/rise",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 32.8,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-wire-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvwire.py",
+   "result_dir": "results/route-nerv-20261104-reg2/wire",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 18.6,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "nerv-route-ctlpre-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvctl.py gen-pre",
+   "result_dir": "results/route-nerv-20261104-reg2/ctlpre",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 245.4,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-ctl-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py (Fast4 engine, eqchain2_out)",
+   "result_dir": "results/route-steel-20261104-pad/ctl",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 333.9,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-route-mis-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py --kind mis",
+   "result_dir": "results/route-steel-20261104-pad/mis",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 225.3,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "misaligned_instruction_address (238) as a function of the jump-family data, without the premise 238 = 0"
+  },
+  {
+   "id": "steel-route-imm-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl.py --kind imm",
+   "result_dir": "results/route-steel-20261104-pad/imm",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 60.1,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "immediates 205 = isa_imm_X w for 15 classes; kernel-hang fix: rewrite with eq_refl lemmas instead of cbn on the EReplicate wire 211"
+  },
+  {
+   "id": "steel-route-fw-route-steel-20261104-pad",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stfw.py",
+   "result_dir": "results/route-steel-20261104-pad/fw",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 6.0,
+   "design": "steel",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": "fetch wires: w_R (checked assignment binding) for 217,24,221,219,220,224,225 and fetch_wire: 217 = read_data when operating (203=0,170=1,230=0,263=0)"
+  },
+  {
+   "id": "nerv-route-ctl-route-nerv-20261104-reg2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvctl.py gen-cls",
+   "result_dir": "results/route-nerv-20261104-reg2/ctl",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 391.0,
+   "design": "nerv",
+   "via": "tools/cpu_tmpl_route.py",
+   "note": " (driver regression)"
+  },
+  {
+   "id": "steel-closure-immj-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stctl_run.py --kind imm (STNOMIS=1)",
+   "result_dir": "results/r-tmpl-steel-immj-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 36.4,
+   "coqc_peak_rss_kb": 2048604,
+   "assumptions": [],
+   "design": "steel",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "jump-family immediates (Jal/Jalr/6 branches) with the ctl premises WITHOUT wire 238: 205 = isa_imm_X w; the route imm needs 238 = 0, which itself needs 205 (mis), so the 238 premise was circular"
+  },
+  {
+   "id": "steel-closure-op-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stop.py",
+   "result_dir": "results/r-tmpl-steel-op-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 65.5,
+   "coqc_peak_rss_kb": 2446632,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "steel",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "operating INV Op, context Ctx, Outcome per class (29 x one script over <C>_lift / <C>_imm / inv_<C>), op_post, op_step"
+  },
+  {
+   "id": "steel-closure-boot-a1",
+   "kind": "hand",
+   "generator": "framework/template-sources/steel-closure/SteelTmplBoot.v",
+   "result_dir": "results/r-tmpl-steel-boot-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 75.3,
+   "coqc_peak_rss_kb": 3327844,
+   "assumptions": [],
+   "design": "steel",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "boot phases A/B silent, ranks 2/1/0, op_O: Op at the second cycle from the concrete driven state of B (val_R, rfrel_frame, ram_hold, fetch_link)"
+  },
+  {
+   "id": "steel-closure-step-a1",
+   "kind": "hand",
+   "generator": "framework/template-sources/steel-closure/SteelTmplStep.v",
+   "result_dir": "results/r-tmpl-steel-step-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 52.7,
+   "coqc_peak_rss_kb": 2342948,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "steel",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "D step + FINAL THEOREM SteelTmplStep.refinement (29-class jump-family domain, real padded reset), FunctionalExtensionality only"
+  },
+  {
+   "id": "steel-closure-gen-step-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_closure.py --design steel (shape state_inv)",
+   "result_dir": "results/r-tmpl-closure-steel-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 48.9,
+   "coqc_peak_rss_kb": 2343072,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "steel",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "same D step regenerated from framework/closure-schemas/steel.json; source identical to steel-closure-step-a1 (regress)"
+  },
+  {
+   "id": "srv32-closure-target-a1",
+   "kind": "hand",
+   "generator": "framework/template-sources/srv32-closure/Srv32TmplTarget.v",
+   "result_dir": "results/r-tmpl-srv32-target-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.0,
+   "coqc_peak_rss_kb": 760168,
+   "assumptions": [],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "runtime = RTL state + ghost cycle counter (cap 3), real reset (power-up, resetb 1->0, one clock, release; seed padded to 335), observer = n>=3 and ex_flush = 0, token ex_pc, rank st_rank, boot observe/rank lemmas",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "srv32-closure-imm-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_imm.py (planner tools/cpu_tmpl_bzex.py)",
+   "result_dir": "results/r-tmpl-srv32-imm-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 19.8,
+   "coqc_peak_rss_kb": 2041916,
+   "assumptions": [],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "immediate wire 320 per format (U, J, I, B, shift) as the accepted RTL immediate shapes; ex_ill_branch = 0 for the 6 valid branch funct3",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "srv32-closure-front-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_front.py",
+   "result_dir": "results/r-tmpl-srv32-front-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 122.9,
+   "coqc_peak_rss_kb": 2562180,
+   "assumptions": [],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "EX clause list exc i and cap_<C> (29, one script): capture of the fetched word into the EX registers in one cycle; cap_all dispatch",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "srv32-closure-back-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_srv32_back.py",
+   "result_dir": "results/r-tmpl-srv32-back-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 317.4,
+   "coqc_peak_rss_kb": 5412204,
+   "assumptions": [],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "Outcome and back_<C> (29, one script over Srv32TmplLift <C>_lift_result/_next, Srv32Ex <C>_ex_next, ex_trap_valid, Srv32Nx): WB next values, trap wires, redirect bit and next fetch pc; back_all dispatch",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "srv32-closure-run-a1",
+   "kind": "hand",
+   "generator": "framework/template-sources/srv32-closure/Srv32TmplRun.v",
+   "result_dir": "results/r-tmpl-srv32-run-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 67.5,
+   "coqc_peak_rss_kb": 2144052,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "operating INV Op (pulse states S0..S3, register relation with pending WB write, lane 31 excluded), RF write lemma bank_step/bank_off, fetch_next, op_commit (S0/S3), op_silent (S1->S2->S3), rank_op",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "srv32-closure-boot-a1",
+   "kind": "hand",
+   "generator": "framework/template-sources/srv32-closure/Srv32TmplBoot.v",
+   "result_dir": "results/r-tmpl-srv32-boot-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 356.8,
+   "coqc_peak_rss_kb": 3097860,
+   "assumptions": [],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "boot via Lang.ExtendedSVNonInterference: concrete run with ROM = 0, taint sets t1..t11 by vm_compute, symbolic run agrees outside the taint; op_O (Op at the 3rd cycle, index 0, ISA initial)",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "srv32-closure-step-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_closure.py --design srv32 (shape state_inv, pulse arms; schema framework/closure-schemas/srv32.json)",
+   "result_dir": "results/r-tmpl-closure-srv32-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 50.5,
+   "coqc_peak_rss_kb": 2343060,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "srv32",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "D step (9 goals) + final theorem Srv32TmplStep.refinement over CPUJumpFamilyProgramDomain.check_program",
+   "module_coqchk": "exit 0 (module-level -norec, results/r-tmpl-srv32-closure-coqchk-20261104-a1/)"
+  },
+  {
+   "id": "lang-noninterference-a1",
+   "kind": "library",
+   "file": "src/Lang/ExtendedSVNonInterference.v",
+   "provenance": "generalized_rule",
+   "design": "generic",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "design-independent non-interference through initialize / comb_iter / lfp_candidate / PhaseSemantics with a computable taint checker (aphase, ainit); havoc rule for blocking comb processes and for selected sequential processes; built + coqchk by tools/build_template_deps.sh"
+  },
+  {
+   "id": "nerv-closure-target2-a1",
+   "kind": "hand",
+   "generator": "hand-written framework/template-sources/nerv-closure/NervTmplTarget2.v",
+   "result_dir": "results/r-tmpl-nerv-target2-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 1.2,
+   "coqc_peak_rss_kb": 735908,
+   "assumptions": [],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "padded seed (581 cells) real reset; reuses route target events/observer",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "nerv-closure-wire2-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvwire.py build(roots=[61,62])",
+   "result_dir": "results/r-tmpl-nerv-wire2-closure-20261104-a1",
+   "provenance": "automatic",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 4.3,
+   "coqc_peak_rss_kb": 550968,
+   "assumptions": [],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "imm_b_sext / imm_j_sext wires",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "nerv-closure-dec-a1",
+   "kind": "hand",
+   "generator": "hand-written framework/template-sources/nerv-closure/NervTmplDec.v",
+   "result_dir": "results/r-tmpl-nerv-dec-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 26.9,
+   "coqc_peak_rss_kb": 2042356,
+   "assumptions": [],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "fields, ISA immediates (slice executor for imm_b/imm_j), read ports",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "nerv-closure-cyc-a1",
+   "kind": "hand",
+   "generator": "hand-written framework/template-sources/nerv-closure/NervTmplCyc.v (rise wrappers generated inline)",
+   "result_dir": "results/r-tmpl-nerv-cyc-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 44.4,
+   "coqc_peak_rss_kb": 1071372,
+   "assumptions": [],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "Pre preserved by a cycle, fall frame, rise steps 00/01 per register",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "nerv-closure-op-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_nvop.py",
+   "result_dir": "results/r-tmpl-nerv-op-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 100.5,
+   "coqc_peak_rss_kb": 4376100,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "operating INV Op, Ctx, 29 <C>_out (one script; N1-N4 lift), outcome_all, rf_after, fetch_after, op_post, op_step",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "nerv-closure-boot-a1",
+   "kind": "hand",
+   "generator": "hand-written framework/template-sources/nerv-closure/NervTmplBoot.v",
+   "result_dir": "results/r-tmpl-nerv-boot-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 432.8,
+   "coqc_peak_rss_kb": 20306096,
+   "assumptions": [],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "NI boot to the boot rise (t1..t3), frames to reset release, reset_q cycle via Bub01_ctl: op_O, observe_reset, rank_reset, rank_op",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "nerv-closure-step-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_closure.py --design nerv (shape state_inv, template state_inv_step_noinv; schema framework/closure-schemas/nerv.json)",
+   "result_dir": "results/r-tmpl-closure-nerv-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "coqc_accepted": true,
+   "coqchk_deferred": true,
+   "coqc_seconds": 183.7,
+   "coqc_peak_rss_kb": 11105104,
+   "assumptions": [
+    "FunctionalExtensionality.functional_extensionality_dep"
+   ],
+   "design": "nerv",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "D step (9 goals) + final theorem NervTmplStep.refinement over CPUJumpFamilyProgramDomain.check_program",
+   "module_coqchk": "see results/r-tmpl-nerv-closure-coqchk-20261104-a1/"
+  },
+  {
+   "id": "lang-laneword-a1",
+   "kind": "library",
+   "file": "src/Lang/ExtendedSVLaneWord.v",
+   "provenance": "generalized_rule",
+   "design": "generic",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "note": "lane read-back after a guarded 32-bit lane write of a 1024-bit bank, packed-image word, signed_value = signExtend; coqc + coqchk -norec exit 0 (promotion candidate framework/rule-candidates/lane_word.json)"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-aluout-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5aluout.py",
+   "result_dir": "results/r-tmpl-a5-aluout-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 106.92709450796247,
+   "note": "superseded by a2 (Inv Fetch clause 1 conditional on ack)"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-aluout-closure-20261104-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5aluout.py",
+   "result_dir": "results/r-tmpl-a5-aluout-closure-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 110.65415264852345,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-boot-closure-20261104-a7",
+   "kind": "llm_written",
+   "generator": "hand-written (framework/template-sources/angelo5-closure/A5TmplBoot.v)",
+   "result_dir": "results/r-tmpl-a5-boot-closure-20261104-a7",
+   "provenance": "llm_written",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 163.9407327696681,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-cyc-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5cyc.py",
+   "result_dir": "results/r-tmpl-a5-cyc-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 104.79520121216774,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-decout-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5decout.py",
+   "result_dir": "results/r-tmpl-a5-decout-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": false,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 23.186512844637036,
+   "note": "superseded by a2 (Inv Fetch clause 1 conditional on ack)"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-decout-closure-20261104-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5decout.py",
+   "result_dir": "results/r-tmpl-a5-decout-closure-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 22.730314237996936,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-frame-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "result_dir": "results/r-tmpl-a5-frame-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 71.00231247022748,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-fwd-closure-20261104-a1",
+   "kind": "llm_written",
+   "generator": "hand-written (framework/template-sources/angelo5-closure/A5TmplFwdLift.v)",
+   "result_dir": "results/r-tmpl-a5-fwd-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 12.450035331770778,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-hx-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5hx.py",
+   "result_dir": "results/r-tmpl-a5-hx-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 24.98304482921958,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-inv-closure-20261104-a1",
+   "kind": "llm_written",
+   "generator": "hand-written (framework/template-sources/angelo5-closure/A5TmplInv.v)",
+   "result_dir": "results/r-tmpl-a5-inv-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": false,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 8.043149251490831,
+   "note": "superseded by a2 (Inv Fetch clause 1 conditional on ack)"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-inv-closure-20261104-a2",
+   "kind": "llm_written",
+   "generator": "hand-written (framework/template-sources/angelo5-closure/A5TmplInv.v)",
+   "result_dir": "results/r-tmpl-a5-inv-closure-20261104-a2",
+   "provenance": "llm_written",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 8.043368754908442,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stage2mem-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage2.py",
+   "result_dir": "results/r-tmpl-a5-stage2mem-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 1.6691176313906908,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stage2one-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_stage2one.py",
+   "result_dir": "results/r-tmpl-a5-stage2one-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 6.0322788041085005,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-step-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-step-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 80.51976629719138,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc000000-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc000000-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 290.32486826740205,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc010010-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc010010-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 147.66922054998577,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc010011-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc010011-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 165.6352023743093,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc100000-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc100000-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 296.1993702594191,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc100001-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc100001-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 120.94533095136285,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc110000-closure-20261104-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc110000-closure-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 291.74581569619477,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111000-closure-20261104-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111000-closure-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 301.33270887658,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111100r0-closure-20261104-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111100r0-closure-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 315.47803997062147,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111100r1-closure-20261104-a2",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111100r1-closure-20261104-a2",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 263.0455670338124,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111110r0-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111110r0-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 248.28742519766092,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111110r1-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111110r1-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 186.67660801112652,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111111r0-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111111r0-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 265.5873881839216,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-stepc111111r1-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-stepc111111r1-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 199.56581742689013,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-steph-closure-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_a5step.py",
+   "result_dir": "results/r-tmpl-a5-steph-closure-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 32.725713608786464,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5-steplib-closure-20261104-a1",
+   "kind": "llm_written",
+   "generator": "hand-written (framework/template-sources/angelo5-closure/A5TmplStepLib.v)",
+   "result_dir": "results/r-tmpl-a5-steplib-closure-20261104-a1",
+   "provenance": "llm_written",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 5.278051063418388,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "design": "angelo5fix",
+   "id": "angelo5fix-c11-a5close-20261104-a1",
+   "kind": "generated",
+   "generator": "tools/cpu_tmpl_closure.py",
+   "result_dir": "results/r-tmpl-a5close-20261104-a1",
+   "provenance": "generalized_rule",
+   "accepted": true,
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0,
+   "coqc_seconds": 141.59557774290442,
+   "note": "coqc 0 + assumption audit; coqchk deferred and registered"
+  },
+  {
+   "id": "lang-exprresolve-a1",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVExprResolve.v",
+   "provenance": "generalized_rule",
+   "design": "generic",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "id": "lang-partialeval-a1",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVPartialEval.v",
+   "provenance": "generalized_rule",
+   "design": "generic",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0
+  },
+  {
+   "id": "lang-seqtree2one-a1",
+   "kind": "generic_library",
+   "file": "src/Lang/ExtendedSVSeqTree2One.v",
+   "provenance": "generalized_rule",
+   "design": "generic",
+   "stage": "closure",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+   "external_llm_api_calls": 0
+  }
+ ],
+ "tools": [
+  {
+   "file": "tools/cpu_tmpl_ast.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_roles.py"
+  },
+  {
+   "file": "tools/cpu_isa_classes.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_reduce.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_controls.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_accept.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_rf.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_arch.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_cursor.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_bubble.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_archtop.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_params.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_paramize.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_edge.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/test_cpu_tmpl_params.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "framework/template-sources/param/TmplCycleCore.v.in",
+   "design": "bzeeno"
+  },
+  {
+   "file": "framework/template-sources/param/TmplFetchCore.v.in",
+   "design": "bzeeno"
+  },
+  {
+   "file": "framework/template-sources/param/TmplCursorCore.v.in",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_symexec.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_decoder.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_idctl.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzctl.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_link.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_pex.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_ops.py",
+   "design": "cv32e40p",
+   "status": "partial, not yet gated"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzfwd.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_final.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzvalid.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_ops.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_ifid.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cvcycle.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzex.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_env.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzfetch.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_slice_demo.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_ops_ex.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzgate.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzxfer.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzinv.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzdstep.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/bz_scratch.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzreset.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzrank.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_factcheck.py",
+   "design": "all"
+  },
+  {
+   "file": "tools/cpu_tmpl_factcover.py",
+   "design": "all"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzifid.py"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_ops_ex2.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_ops_fetch.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_ops_cls.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzctlin.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bzdisp.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bznone.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_exreg.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_exphase.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_exoperands.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_exside.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_extarget.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_bztrans.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bztrans_isa.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bztrans_core.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bztrans_cls.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bztrans_main.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_bztrans_step.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/bz_scratch2.py",
+   "design": "bzeeno"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_rfwrite.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_rfrel.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_nextpc.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_rfoperands.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_rfsel.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_excommit.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_rfhold.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_c5.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_resstable.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_exbubble.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_dispatch.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_cv_nextbank.py",
+   "design": "cv32e40p"
+  },
+  {
+   "file": "tools/cpu_tmpl_angelo5_roles.py",
+   "design": "angelo5fix"
+  },
+  {
+   "file": "tools/cpu_tmpl_rf.py (--rebased)",
+   "design": "angelo5fix"
+  },
+  {
+   "file": "tools/angelo5_inv_sim.py",
+   "design": "angelo5fix",
+   "kind": "simulation",
+   "provenance": "llm_written"
+  },
+  {
+   "file": "tools/cpu_tmpl_stop.py",
+   "design": "steel",
+   "kind": "generator",
+   "provenance": "generalized_rule",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_stclose_gate.py",
+   "design": "steel",
+   "kind": "gate",
+   "provenance": "llm_written",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/closure_templates/state_inv_step.v.tmpl",
+   "design": "steel",
+   "kind": "template",
+   "provenance": "llm_adapted",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_srv32_imm.py",
+   "design": "srv32",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_srv32_front.py",
+   "design": "srv32",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_srv32_back.py",
+   "design": "srv32",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_srv32close_gate.py",
+   "design": "srv32",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_nvop.py",
+   "design": "nerv",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_nvclose_gate.py",
+   "design": "nerv",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/closure_templates/state_inv_step_noinv.v.tmpl",
+   "design": "nerv",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_stage2one.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_a5hx.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_a5cyc.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_a5aluout.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_a5decout.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_a5close_gate.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/cpu_tmpl_a5step.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  },
+  {
+   "file": "tools/angelo5_inv_sim2.py",
+   "design": "angelo5fix",
+   "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+  }
+ ],
+ "failed_attempts": [
+  {
+   "what": "development iterations on the generator before the first full run",
+   "seconds_each": "1-8",
+   "note": "scratch dir only; the full-class run a1 passed first time"
+  },
+  {
+   "what": "results/r-tmpl-dark-step-20261103-a1-failed-audit-count",
+   "reason": "coqc without -time: the audit regex needs the Chars separators; coqc 10 s",
+   "seconds": 22
+  },
+  {
+   "what": "results/r-tmpl-dark-cycle-20261103-a1-failed-audit-count",
+   "reason": "core Print Assumptions lines confused the audit marker; coqc 17 s",
+   "seconds": 23
+  },
+  {
+   "what": "scratch (no result dir): Bzeeno rf-fall glue, first versions",
+   "reason": "filter_in/exact over the big program record hung in the elaborator/kernel (>100 s); replaced by value-level per-process lemmas sel_*_match_<i> inside the edge module",
+   "design": "bzeeno"
+  },
+  {
+   "what": "scratch (no result dir): ExtendedSVSeqTree first version (Stmt-level tree functions)",
+   "reason": "nested SSeq [SIf ..] leaves break structural induction on Stmt; redone with an inductive Rel and a fuel-based conv",
+   "design": "bzeeno"
+  },
+  {
+   "what": "cv32e40p one general optimisation (same statement) of the decoder/cone check",
+   "reason": "first library version: coqchk 1236 s for 29 decoder theorems because roots_unwrittenb rescans all process bodies on unary nats (~0.8 s per root); replaced by a root->writer-position index checked once; cone module coqchk 601 s for 29 classes with 111 more steps each",
+   "design": "cv32e40p",
+   "seconds": 1236
+  },
+  {
+   "what": "results/r-tmpl-bz-final-20261103-a1-failed-name",
+   "reason": "wrong module path JumpITree.JumpITree.* (coqc 26 s)",
+   "design": "bzeeno"
+  },
+  {
+   "what": "results/r-tmpl-cv-ifid-20261103-a1-failed-namespace",
+   "reason": "provider namespace did not match the ctl .vo logical name; 1 s",
+   "design": "cv32e40p",
+   "seconds": 1
+  },
+  {
+   "what": "results/r-tmpl-bz-env-20261103-a1-failed-audit",
+   "reason": "only one Print Assumptions line for two exports (audit count); 20 s",
+   "design": "bzeeno"
+  },
+  {
+   "what": "results/r-tmpl-cv-ops-ex-20261103-a3",
+   "reason": "accepted but compiled against a CPUShiftWide later changed (align2 moved to CPUFetchAlign); superseded by a4",
+   "design": "cv32e40p",
+   "seconds": 15
+  },
+  {
+   "what": "results/r-tmpl-srv32-exalu-20261104-a1",
+   "reason": "compiled against CPUSubSign33 before the lemmas sv_def/sub33_zero were added (library changed); superseded by results/r-tmpl-srv32-ex-20261104-a1",
+   "design": "srv32",
+   "seconds": 34
+  },
+  {
+   "what": "results/r-tmpl-nerv-lfp-20261104-a1-killed-timeout",
+   "reason": "strict andb in ExtendedSVBitStability.exhaustive enumerates 2^32 for a case on a 32-bit counter; killed at 16 CPU min, 80 GB",
+   "design": "nerv"
+  },
+  {
+   "what": "results/r-tmpl-nerv-lfp-20261104-a2-failed-known-false",
+   "reason": "lazy cert terminated in 1 s but known_ok=false: variable-offset lane writes of unrolled loops stay unknown; fixed by the literal-index AST",
+   "design": "nerv"
+  },
+  {
+   "what": "results/r-tmpl-a5-ovlmem-20261104-a1-failed-case-undecided-scrutinee",
+   "reason": "case scrutinee ESel funct3 low bits not decided by signal facts; fixed by expression-keyed facts (a2)",
+   "design": "angelo5fix"
+  },
+  {
+   "what": "scratch boot probe: vm_compute of the reset state incl. instruction register 6",
+   "reason": ">4 min, killed; Fetch clause made conditional on ack (Inv a2)",
+   "design": "angelo5fix"
+  },
+  {
+   "what": "results/r-tmpl-a5-inv-closure-20261104-a1 (+ aluout/decout a1)",
+   "reason": "superseded by Inv a2 (Fetch clause 1 conditional on ack)",
+   "design": "angelo5fix"
+  },
+  {
+   "what": "results/r-tmpl-a5-stepc{110000,111000,111100r0,111100r1}-closure-20261104-a1",
+   "reason": "rank-chain rewrite after short-circuit (2,3 failed; 4,5 killed): generator wraps the rank rewrites in try; a2 accepted",
+   "design": "angelo5fix"
+  },
+  {
+   "what": "results/r-tmpl-a5-boot-closure-20261104-a1..a6",
+   "reason": "a1/a5/a6 hung (Transparent PhaseSemantics inside s5_len leaked to the rest of the file; injection / assumption / rd-vs-read_signal conversions unfolded the reset state), a2-a4 Ltac/scope typos; a7 accepted",
+   "design": "angelo5fix"
+  },
+  {
+   "what": "framework/rule-candidates/partial_eval.json",
+   "reason": "promotion rejected by the design-name scan: identifier cv (constant value) matches cv32e40p; library left unchanged (in use)",
+   "design": "angelo5fix"
+  }
+ ],
+ "counts": {
+  "accepted_result_dirs": 110,
+  "generated_automatic": 68,
+  "llm_written_sources": 22,
+  "llm_calls": 0,
+  "cv32e40p_accepted_result_dirs": 12
+ }
+}

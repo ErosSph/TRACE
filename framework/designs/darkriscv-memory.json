@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "design": "darkriscv-three-stage-zero-wait-memory",
+  "backend": "ExtendedSV physical-phase semantics with explicit external byte RAM",
+  "translation_equivalence": "not_mechanized_from_original_rtl; unchanged CPU source/AST and original RTL regression recorded; RAM is a separately specified zero-wait device, not original darkram latency",
+  "verification_scope": "checked infinite ADDI x1,0,7 / SW x1,0(x0) / LW x2,0(x0) / JAL x0,0 pinned-program refinement; explicit zero power-on RF and 128-byte zero RAM, ACK1/combinational RAM response; all-cycle actual phase validity and full RF/ROM/PC/nextPC/bounded RAM-byte architecture relation. NOT all38 or arbitrary programs",
+  "pinned_target": "DarkRISCVMemoryDesignTarget.actual_target",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.DarkRISCVMemoryDesignTarget"],
+    "open_modules": ["CPUDesignTarget"], "binders": "", "arguments": []
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/dark-array-final", "namespace": "DarkArray"},
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/DarkRISCVMemoryDesignTarget.v",
+    "src/Ex/External/DarkRISCVMemoryExecutionDomain.v"
+  ],
+  "preserve_roots": [],
+  "bindings": {
+    "cycle": "DarkRISCVMemoryFixedProgramRefinement.target_step",
+    "commits": "DarkRISCVMemoryFixedProgramRefinement.target_observe",
+    "boot": "DarkRISCVMemoryFixedProgramRefinement.actual_boot",
+    "environment": "DarkRISCVMemoryPhaseTrace.MemoryState and memory_cycle; DATAI from sampled RAM, writes use actual DWR/DADDR/DBE/DATAO"
+  },
+  "proof_providers": {
+    "certificate": "DarkRISCVMemoryDesignTarget.checked_certificate",
+    "infinite": "DarkRISCVMemoryExecutionDomain.actual_source_valid_infinite_memory_refinement",
+    "source_and_architecture_all_cycles": "DarkRISCVMemoryExecutionDomain.every_actual_memory_cycle_source_and_architecture"
+  }
+}

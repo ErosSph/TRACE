@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-five-load-infinite-loop",
+  "backend": "Actual repaired AST and original nine-round reset/rise/fall scheduler, shared coupled physical/frontend cycle",
+  "translation_equivalence": "External RTL-to-AST translation equivalence remains unmechanized; cumulative repaired derived DUT",
+  "verification_scope": "Actual repaired native AST and unchanged reset/rise/fall scheduler, original zero-RF/zero-RAM reset, original byte-ROM LOAD x1,0(x0) (LB/LH/LW/LBU/LHU selected by k) at PC0 and JAL x0,-4 at PC4 forever. True EX loads with separate address/value witnesses, actual signed/unsigned byte/half/word RAM formatter, forwarding and RF retirement, original ISA run1, same physical/frontend joint and concrete finite waiting. Complete PC/nextPC/all RF/ROM/128-byte RAM relation. Five explicit infinite program families with address0 and zero global memory/data, not arbitrary addresses/data/programs or all38. No RTL/ISA/seed/environment change; no no-load premise is substituted.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPULoadKindJALLoopDomain.words k)",
+  "certificate_harness": {
+    "certificate_interface": "cycle",
+    "imports": [
+      "Ex.External.CPUDesignTarget",
+      "Ex.External.CPULoadKindJALLoopDomain",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.BzeenoLoadUseJalLoadKindLoopInfiniteITree",
+      "Ex.External.BzeenoLoadUseJalLoadKindLoopEvents"
+    ],
+    "open_modules": [
+      "CPUDesignTarget"
+    ],
+    "binders": "(k : CPULoadKindJALLoopDomain.Kind)",
+    "arguments": [
+      "k"
+    ],
+    "provider_applications": {
+      "CPUDesignTarget.Build_Certificate": [
+        {
+          "symbol": "BzeenoLoadUseJalNineProgramTarget.nine_target",
+          "arguments": [
+            {
+              "symbol": "CPULoadKindJALLoopDomain.words",
+              "arguments": [
+                {
+                  "binder": "k"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopEvents.EventCut",
+          "arguments": [
+            {
+              "binder": "k"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopEvents.event_rank",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopInfiniteITree.actual_architecture_from_event",
+          "arguments": [
+            {
+              "binder": "k"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopEvents.actual_startup",
+          "arguments": [
+            {
+              "binder": "k"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopEvents.initial_event_cut",
+          "arguments": [
+            {
+              "binder": "k"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopEvents.actual_event_safety",
+          "arguments": [
+            {
+              "binder": "k"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadKindLoopEvents.actual_event_progress",
+          "arguments": [
+            {
+              "binder": "k"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {
+      "directory": "experiments/framework/generated/bzeeno-native-full",
+      "namespace": "BzeenoNative"
+    },
+    {
+      "directory": "experiments/framework/generated/bzeeno-load-use",
+      "namespace": "BzeenoLoadUse"
+    },
+    {
+      "directory": "experiments/framework/generated/bzeeno-load-use-jal",
+      "namespace": "BzeenoLoadUseJal"
+    }
+  ],
+  "proof_roots": [
+    "src/Ex/External/CPULoadKindJALLoopDomain.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadKindLoopPhysical.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadKindLoopEvents.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadKindLoopArchitecture.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadKindLoopInfiniteITree.v"
+  ],
+  "preserve_roots": [
+    "src/Ex/External/BzeenoLoadUseJalBranchInfiniteITree.v"
+  ],
+  "bindings": {
+    "architecture": "Unchanged original ProgramArchRelated/nine_target, actual all128 RAM bytes and all RF lanes",
+    "control": "Actual opcode3/all five funct3 controls, x0 source, true EX load and real width/sign RAM forwarding; actual acceptance and occupancy rank",
+    "assembly": "Shared public CPUDesignTarget constructor with certified actual providers; architecture provider is imported from a module also exposing final infinite theorem, not claimed transitively independent"
+  },
+  "proof_providers": {
+    "certificate": "CPUDesignTarget.Build_Certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

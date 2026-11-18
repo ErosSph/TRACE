@@ -1,0 +1,858 @@
+{
+ "design": "angelo5fix",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "external_llm_api_calls": 0,
+ "library": "framework/rule-library.json",
+ "matched": [
+  {
+   "rule": "fe_rebased_bank",
+   "kind": "normalization",
+   "evidence": "bank(s) [128] written and read at (x-1)*32"
+  },
+  {
+   "rule": "fe_generate_instances",
+   "kind": "normalization",
+   "evidence": "1 instance(s) below a generate block"
+  },
+  {
+   "rule": "reset_level",
+   "kind": "normalization",
+   "evidence": "active-low reset: reset input 1 is an asynchronous Negedge event of process_3 (inverted 0)"
+  },
+  {
+   "rule": "lfp_nolatch_cert",
+   "kind": "layer_generator",
+   "evidence": "251 blocking-only comb processes, lfp_fuel 8"
+  },
+  {
+   "rule": "edge_derived_clock",
+   "kind": "layer_generator",
+   "evidence": "9 sequential processes; event nets [117, 131, 132, 155, 156, 208, 209, 277, 278, 338, 339] trace to inputs 0/1"
+  },
+  {
+   "rule": "reset_events_layer",
+   "kind": "layer_generator",
+   "evidence": "6 sequential processes have the reset input as an event (async reset)"
+  },
+  {
+   "rule": "reset_phase_layers",
+   "kind": "layer_generator",
+   "evidence": "6 sequential processes have the reset input as an event (async reset)"
+  },
+  {
+   "rule": "stage_seqtree",
+   "kind": "layer_generator",
+   "evidence": "1 of 9 rising processes are single decision trees"
+  },
+  {
+   "rule": "seqtree2",
+   "kind": "layer_generator",
+   "evidence": "multi-tree processes [1, 4, 8, 9, 10] (part-select writers [1, 8])"
+  },
+  {
+   "rule": "seqtree2_slice",
+   "kind": "generic_lemma",
+   "evidence": "part-select writers in multi-tree processes [1, 8]"
+  },
+  {
+   "rule": "nb_symexec",
+   "kind": "generic_lemma",
+   "evidence": "multi-statement sequential bodies with ifs: [2]"
+  },
+  {
+   "rule": "frame_fall_hold",
+   "kind": "layer_generator",
+   "evidence": "0 sequential processes fire on the fall"
+  },
+  {
+   "rule": "rf_rebased_bank",
+   "kind": "layer_generator",
+   "evidence": "bank 128 rebased, write shape rf2_guard_first (process_2)"
+  },
+  {
+   "rule": "copy_chains",
+   "kind": "layer_generator",
+   "evidence": "manifest control chain roles present"
+  },
+  {
+   "rule": "class_table",
+   "kind": "generic_lemma",
+   "evidence": "instruction word 136"
+  },
+  {
+   "rule": "immediate_shapes",
+   "kind": "generic_lemma",
+   "evidence": "10 sign-replicate / sign-extend / concat-of-slices nodes over the instruction word cone"
+  },
+  {
+   "rule": "engine_symexec_chain",
+   "kind": "proof_strategy",
+   "evidence": "instruction word 136, decode cone 53 signals"
+  },
+  {
+   "rule": "engine_fast4",
+   "kind": "proof_strategy",
+   "evidence": "4 and/or nodes mixing decode-cone and other operands"
+  },
+  {
+   "rule": "engine_overlay",
+   "kind": "proof_strategy",
+   "evidence": "self-reading comb processes [158, 167, 182, 196, 228, 251]"
+  },
+  {
+   "rule": "comparison_atoms",
+   "kind": "proof_strategy",
+   "evidence": "if-chains with register-tag comparisons (process, guards) [(175, 4)]"
+  },
+  {
+   "rule": "lift_isa",
+   "kind": "layer_generator",
+   "evidence": "design-independent ISA lemmas (TmplLiftIsa)"
+  },
+  {
+   "rule": "lift_overlay_provider",
+   "kind": "layer_generator",
+   "evidence": "provider engine -> lift builder overlay_provider"
+  },
+  {
+   "rule": "closure_staged",
+   "kind": "proof_strategy",
+   "evidence": "stage list with stored valid bits, observer valid 90"
+  }
+ ],
+ "pattern_errors": [],
+ "derived": {
+  "design": "angelo5fix",
+  "fields": {
+   "rst_idle": 1,
+   "_reset_variant": "idle_level",
+   "_rst_rule": "reset_level[idle_level] (active-low reset: reset input 1 is an asynchronous Negedge event of process_3 (inverted 0))"
+  },
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--rounds",
+     "8",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "lfp_nolatch_cert"
+    ],
+    "runnable": true,
+    "evidence": "251 blocking-only comb processes, lfp_fuel 8"
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "edge_derived_clock"
+    ],
+    "runnable": true,
+    "evidence": "9 sequential processes; event nets [117, 131, 132, 155, 156, 208, 209, 277, 278, 338, 339] trace to inputs 0/1"
+   },
+   {
+    "name": "reset",
+    "layer": "reset",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "reset_events_layer"
+    ],
+    "runnable": true,
+    "evidence": "6 sequential processes have the reset input as an event (async reset)"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "stage_seqtree"
+    ],
+    "runnable": true,
+    "evidence": "1 of 9 rising processes are single decision trees",
+    "derived": {
+     "rise_procs": [
+      3
+     ]
+    }
+   },
+   {
+    "name": "frame",
+    "layer": "frame",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--frame",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "rules": [
+     "frame_fall_hold"
+    ],
+    "runnable": true,
+    "evidence": "0 sequential processes fire on the fall"
+   },
+   {
+    "name": "rf",
+    "layer": "rf",
+    "cmd": [
+     "tools/cpu_tmpl_rf.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--rebased",
+     "{modq:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "rf_rebased_bank"
+    ],
+    "runnable": true,
+    "evidence": "bank 128 rebased, write shape rf2_guard_first (process_2)"
+   }
+  ],
+  "proposals": [
+   {
+    "name": "resetstage",
+    "layer": "reset",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edger",
+     "{mod:reset}",
+     "--reset-stage",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "reset_phase_layers"
+    ],
+    "runnable": false,
+    "evidence": "6 sequential processes have the reset input as an event (async reset)"
+   },
+   {
+    "name": "resetframe",
+    "layer": "reset",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edger",
+     "{mod:reset}",
+     "--reset-frame",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "reset_phase_layers"
+    ],
+    "runnable": false,
+    "evidence": "6 sequential processes have the reset input as an event (async reset)"
+   },
+   {
+    "name": "stage2",
+    "layer": "stage2",
+    "cmd": [
+     "tools/cpu_tmpl_stage2.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--procs",
+     "1,4,8,9,10",
+     "--slices",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "seqtree2",
+     "seqtree2_slice"
+    ],
+    "runnable": false,
+    "evidence": "multi-tree processes [1, 4, 8, 9, 10] (part-select writers [1, 8])"
+   },
+   {
+    "name": "fwd",
+    "layer": "fwd",
+    "cmd": [
+     "tools/cpu_tmpl_a5fwd.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--dec",
+     "{modq:dec}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "comparison_atoms"
+    ],
+    "runnable": false,
+    "evidence": "if-chains with register-tag comparisons (process, guards) [(175, 4)]"
+   },
+   {
+    "name": "copy",
+    "layer": "copy",
+    "cmd": [
+     "tools/cpu_tmpl_bzcopy.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "rules": [
+     "copy_chains"
+    ],
+    "runnable": false,
+    "evidence": "manifest control chain roles present"
+   }
+  ],
+  "residual": [
+   {
+    "layer": "target",
+    "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+    "hint": []
+   },
+   {
+    "layer": "cycle",
+    "reason": "cycle composition / register values on the driven state",
+    "hint": []
+   },
+   {
+    "layer": "fetch",
+    "reason": "fetch link (instruction memory read = ROM word)",
+    "hint": []
+   },
+   {
+    "layer": "ctl",
+    "reason": "per-class control and datapath facts",
+    "hint": [
+     "engine_overlay:ExtendedSVSymExecOverlay",
+     "engine_fast4:ExtendedSVFast4",
+     "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain"
+    ]
+   },
+   {
+    "layer": "domain",
+    "reason": "domain premises (misaligned / trap = 0 from check_program)",
+    "hint": []
+   },
+   {
+    "layer": "lift",
+    "reason": "ISA lift of the provider facts",
+    "hint": [
+     "lift_isa",
+     "lift_overlay_provider"
+    ]
+   },
+   {
+    "layer": "closure",
+    "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+    "hint": [
+     "closure_staged"
+    ]
+   }
+  ],
+  "engines": [
+   {
+    "rule": "nb_symexec",
+    "layers": [
+     "stage",
+     "rf"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecNb"
+    ],
+    "priority": 0,
+    "evidence": "multi-statement sequential bodies with ifs: [2]"
+   },
+   {
+    "rule": "engine_symexec_chain",
+    "layers": [
+     "ctl",
+     "wire"
+    ],
+    "libraries": [
+     "ExtendedSVSymExec",
+     "ExtendedSVFactChain"
+    ],
+    "priority": 0,
+    "evidence": "instruction word 136, decode cone 53 signals"
+   },
+   {
+    "rule": "engine_fast4",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVFast4"
+    ],
+    "priority": 1,
+    "evidence": "4 and/or nodes mixing decode-cone and other operands"
+   },
+   {
+    "rule": "engine_overlay",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecOverlay"
+    ],
+    "priority": 2,
+    "evidence": "self-reading comb processes [158, 167, 182, 196, 228, 251]"
+   }
+  ],
+  "frontend": [
+   {
+    "rule": "fe_rebased_bank",
+    "option": "padded offset bank",
+    "evidence": "bank(s) [128] written and read at (x-1)*32"
+   },
+   {
+    "rule": "fe_generate_instances",
+    "option": "iterate nested instances",
+    "evidence": "1 instance(s) below a generate block"
+   }
+  ],
+  "closure": {
+   "rule": "closure_staged",
+   "shape": "staged",
+   "cmd": [
+    "tools/cpu_tmpl_closure.py",
+    "--design",
+    "{design}",
+    "--out",
+    "{out}"
+   ],
+   "runnable": true,
+   "evidence": "stage list with stored valid bits, observer valid 90"
+  },
+  "lift": [
+   {
+    "rule": "lift_isa",
+    "kind": "shared",
+    "runnable": true,
+    "evidence": "design-independent ISA lemmas (TmplLiftIsa)"
+   },
+   {
+    "rule": "lift_overlay_provider",
+    "kind": "overlay_provider",
+    "runnable": false,
+    "evidence": "provider engine -> lift builder overlay_provider"
+   }
+  ],
+  "notes": []
+ },
+ "validation": [
+  {
+   "field": "rst_idle",
+   "manifest": 1,
+   "derived": 1,
+   "status": "match",
+   "detail": "reset_level[idle_level] (active-low reset: reset input 1 is an asynchronous Negedge event of process_3 (inverted 0))"
+  },
+  {
+   "field": "stage lfp",
+   "manifest": "tools/cpu_tmpl_lfpnl.py --design {design} --module {module} --rounds 8 --out {out}",
+   "derived": "tools/cpu_tmpl_lfpnl.py --design {design} --module {module} --rounds 8 --out {out}",
+   "status": "match",
+   "detail": "rules lfp_nolatch_cert"
+  },
+  {
+   "field": "stage target",
+   "manifest": "tools/cpu_tmpl_a5target.py --design {design} --module {module} --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer target with tools/cpu_tmpl_a5target.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage edge",
+   "manifest": "tools/cpu_tmpl_edge.py --design {design} --module {module} --out {out}",
+   "derived": "tools/cpu_tmpl_edge.py --design {design} --module {module} --out {out}",
+   "status": "match",
+   "detail": "rules edge_derived_clock"
+  },
+  {
+   "field": "stage reset",
+   "manifest": "tools/cpu_tmpl_edge.py --design {design} --module {module} --reset-events {mod:edge} --out {out}",
+   "derived": "tools/cpu_tmpl_edge.py --design {design} --module {module} --reset-events {mod:edge} --out {out}",
+   "status": "match",
+   "detail": "rules reset_events_layer"
+  },
+  {
+   "field": "stage stage",
+   "manifest": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edge {mod:edge} --out {out}",
+   "derived": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edge {mod:edge} --out {out}",
+   "status": "match",
+   "detail": "rules stage_seqtree"
+  },
+  {
+   "field": "stage rf",
+   "manifest": "tools/cpu_tmpl_rf.py --design {design} --module {module} --rebased {modq:edge} --out {out}",
+   "derived": "tools/cpu_tmpl_rf.py --design {design} --module {module} --rebased {modq:edge} --out {out}",
+   "status": "match",
+   "detail": "rules rf_rebased_bank"
+  },
+  {
+   "field": "stage dec",
+   "manifest": "tools/cpu_tmpl_a5dec.py --design {design} --module {module} --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer ctl with tools/cpu_tmpl_a5dec.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage alu",
+   "manifest": "tools/cpu_tmpl_a5alu.py --design {design} --module {module} --out {out}",
+   "derived": null,
+   "status": "residual",
+   "detail": "no rule produces layer ctl with tools/cpu_tmpl_a5alu.py (provenance generalized_rule)"
+  },
+  {
+   "field": "stage frame",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edge {mod:edge} --frame --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['frame_fall_hold']: 0 sequential processes fire on the fall; not built yet"
+  },
+  {
+   "field": "stage resetstage",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edger {mod:reset} --reset-stage --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['reset_phase_layers']: 6 sequential processes have the reset input as an event (async reset) [generator not text-mode runnable]; not built yet"
+  },
+  {
+   "field": "stage resetframe",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_stage.py --design {design} --module {module} --edger {mod:reset} --reset-frame --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['reset_phase_layers']: 6 sequential processes have the reset input as an event (async reset) [generator not text-mode runnable]; not built yet"
+  },
+  {
+   "field": "stage stage2",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_stage2.py --design {design} --module {module} --edge {mod:edge} --procs 1,4,8,9,10 --slices --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['seqtree2', 'seqtree2_slice']: multi-tree processes [1, 4, 8, 9, 10] (part-select writers [1, 8]) [generator not text-mode runnable]; built off-driver: ledger ['angelo5fix-stage2s-a1', 'angelo5fix-stage2s-a2']"
+  },
+  {
+   "field": "stage fwd",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_a5fwd.py --design {design} --module {module} --dec {modq:dec} --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['comparison_atoms']: if-chains with register-tag comparisons (process, guards) [(175, 4)] [generator not text-mode runnable]; built off-driver: ledger ['angelo5fix-fwd-a7']"
+  },
+  {
+   "field": "stage copy",
+   "manifest": null,
+   "derived": "tools/cpu_tmpl_bzcopy.py --design {design} --module {module} --out {out}",
+   "status": "extra (rule proposes)",
+   "detail": "rules ['copy_chains']: manifest control chain roles present [generator not text-mode runnable]; built off-driver: ledger ['angelo5fix-copy-a1']"
+  }
+ ],
+ "apply_cfg": {
+  "date": "20261104",
+  "rst_idle": 1,
+  "env": {},
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "module": "A5TmplLfp",
+    "namespace": "TmplA5Lfp",
+    "ref": "results/r-tmpl-a5-lfp-20261104-b8",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--rounds",
+     "8",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_lfpnl.py",
+    "rules": [
+     "lfp_nolatch_cert"
+    ],
+    "note": "rule-derived (lfp_nolatch_cert)"
+   },
+   {
+    "name": "target",
+    "layer": "target",
+    "module": "A5TmplTarget",
+    "namespace": "TmplA5Target",
+    "cmd": [
+     "tools/cpu_tmpl_a5target.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-target-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_a5target.py",
+    "residual": true
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "module": "A5TmplEdge",
+    "namespace": "TmplA5Edge",
+    "ref": "results/r-tmpl-a5-edge-20261104-a2",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py",
+    "rules": [
+     "edge_derived_clock"
+    ],
+    "note": "rule-derived (edge_derived_clock)"
+   },
+   {
+    "name": "reset",
+    "layer": "reset",
+    "module": "A5TmplReset",
+    "namespace": "TmplA5Reset",
+    "ref": "results/r-tmpl-a5-reset-20261104-a2",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py",
+    "rules": [
+     "reset_events_layer"
+    ],
+    "note": "rule-derived (reset_events_layer)"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "module": "A5TmplStage",
+    "namespace": "TmplA5Stage",
+    "ref": "results/r-tmpl-a5-stage-20261104-a1",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py",
+    "rules": [
+     "stage_seqtree"
+    ],
+    "note": "rule-derived (stage_seqtree)"
+   },
+   {
+    "name": "rf",
+    "layer": "rf",
+    "module": "A5TmplRF",
+    "namespace": "TmplA5RF",
+    "ref": "results/r-tmpl-a5-rf-20261104-a1",
+    "cmd": [
+     "tools/cpu_tmpl_rf.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--rebased",
+     "{modq:edge}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_rf.py",
+    "rules": [
+     "rf_rebased_bank"
+    ],
+    "note": "rule-derived (rf_rebased_bank)"
+   },
+   {
+    "name": "dec",
+    "layer": "ctl",
+    "module": "A5TmplDec",
+    "namespace": "TmplA5Dec",
+    "cmd": [
+     "tools/cpu_tmpl_a5dec.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-dec-20261104-a3",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_a5dec.py",
+    "residual": true
+   },
+   {
+    "name": "alu",
+    "layer": "ctl",
+    "module": "A5TmplAlu",
+    "namespace": "TmplA5Alu",
+    "cmd": [
+     "tools/cpu_tmpl_a5alu.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-a5-alu-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_a5alu.py",
+    "residual": true
+   }
+  ],
+  "rule_applied": true,
+  "residual_stages": [
+   "target",
+   "dec",
+   "alu"
+  ],
+  "rule_stages": [
+   "lfp",
+   "edge",
+   "reset",
+   "stage",
+   "rf"
+  ],
+  "residual_obligations": [
+   {
+    "layer": "target",
+    "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+    "hint": []
+   },
+   {
+    "layer": "cycle",
+    "reason": "cycle composition / register values on the driven state",
+    "hint": []
+   },
+   {
+    "layer": "fetch",
+    "reason": "fetch link (instruction memory read = ROM word)",
+    "hint": []
+   },
+   {
+    "layer": "ctl",
+    "reason": "per-class control and datapath facts",
+    "hint": [
+     "engine_overlay:ExtendedSVSymExecOverlay",
+     "engine_fast4:ExtendedSVFast4",
+     "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain"
+    ]
+   },
+   {
+    "layer": "domain",
+    "reason": "domain premises (misaligned / trap = 0 from check_program)",
+    "hint": []
+   },
+   {
+    "layer": "lift",
+    "reason": "ISA lift of the provider facts",
+    "hint": [
+     "lift_isa",
+     "lift_overlay_provider"
+    ]
+   },
+   {
+    "layer": "closure",
+    "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+    "hint": [
+     "closure_staged"
+    ]
+   }
+  ]
+ }
+}

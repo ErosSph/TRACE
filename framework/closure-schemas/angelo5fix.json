@@ -1,0 +1,108 @@
+{
+ "schema_version": 1,
+ "design": "angelo5fix",
+ "shape": "state_inv",
+ "provenance": {
+  "source": "proof-optimization-log/20261104-template-angelo5fix.md (Continuation 11) + tools/angelo5_inv_sim2.py",
+  "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+ },
+ "module": "A5TmplClose",
+ "namespace": "TmplA5Close",
+ "doc": "(** angelo5fix (repaired AngeloJacobo/RISC-V 5-stage RV32I) D step and final theorem: the generic pipeline obligation skeleton\n    (CPUPipelineObligations) with [Runtime = State], no post-fetch stages in the skeleton (the 4 pipeline tokens live in the INV),\n    the joint INV [Inv] = real reset | operating [A5TmplInv.Op] (10 reachable control vectors; tokens at ISA positions\n    memory 0, execute v4, decode v4+v3), the commit condition = the target observer's own bit (writeback_ce on the driven state),\n    token = memoryaccess_pc, rank = [A5TmplInv.rank] (cycles to the next commit; jump refill: 4 silent cycles, ranks 4..1).\n    Final: from the real reset, the RTL ITree refines the ISA ITree for every program of the 29-class jump-family domain\n    [CPUJumpFamilyProgramDomain.check_program].\n    proof_author: LLM-generated: Claude Code (claude-opus-5-5); external_llm_api_calls=0. *)",
+ "stages": {
+  "count": 1,
+  "names": [
+   "MEM/WB token (writeback_ce 90 = m4.o_ce 305; pc 76 = m4.o_pc 286)"
+  ],
+  "token": {
+   "type": "Z",
+   "reg": 76,
+   "width": 32,
+   "meaning": "memoryaccess_pc on the driven state"
+  }
+ },
+ "runtime": "State",
+ "ast": "Angelo5.Angelo5FixedAST",
+ "imports": [
+  "TmplA5Target.A5TmplTarget",
+  "TmplA5Inv.A5TmplInv",
+  "TmplA5Step.A5TmplStep",
+  "TmplA5Boot.A5TmplBoot"
+ ],
+ "aliases": {
+  "TG": "TmplA5Target.A5TmplTarget.A5TmplTarget",
+  "IV": "TmplA5Inv.A5TmplInv.A5TmplInv",
+  "ST": "TmplA5Step.A5TmplStep.A5TmplStep",
+  "BT": "TmplA5Boot.A5TmplBoot.A5TmplBoot"
+ },
+ "target": {
+  "initial": "IV.initial",
+  "reset": "TG.actual_reset",
+  "cycle": "TG.actual_cycle",
+  "observe": "TG.actual_observe"
+ },
+ "valid": {
+  "kind": "bool_expr",
+  "coq": "Z.eqb (norm 1 (TG.rd (TG.driven s) 90%nat)) 1",
+  "meaning": "the target observer's own commit bit: writeback_ce on the driven state"
+ },
+ "token_expr": "TG.rd (TG.driven s) 76%nat",
+ "pending_view": {
+  "kind": "rebased_rf",
+  "bank": 128,
+  "rebase": 1,
+  "note": "RF lanes = ISA registers of the committed state; pending writes of the execute / memory tokens enter the operands through the forwarding unit (A5TmplFwdLift.fwd_op)"
+ },
+ "front": {
+  "kind": "per_state_pc",
+  "cursor": "front pc fr = fetch o_pc (v1) | prev_pc (ce) | o_iaddr; fr = decode pc + 4 (decode token) or the ISA pc after the in-flight tokens"
+ },
+ "boot": {
+  "phases": [
+   {
+    "name": "A (real reset)",
+    "state": "TG.actual_reset",
+    "rank": "BT.rank_reset",
+    "observe": "BT.observe_reset"
+   }
+  ],
+  "op_entry": {
+   "state": "BT.stO",
+   "lemma": "BT.op_O",
+   "rank": "(BT.rank_op _ HC)"
+  }
+ },
+ "operating": {
+  "inv": "IV.Op",
+  "step": "ST.op_commit",
+  "commit": "ST.op_commit",
+  "silent": "ST.op_silent",
+  "step_shape": "commit: exists y index', run1 f = (Some tt, y) /\\ token = pc f /\\ Op (cycle s) y index'; silent: Op (cycle s) f index /\\ rank decreases"
+ },
+ "observer": {
+  "commit_condition": "Z.eqb (norm 1 (TG.rd (TG.driven s) 90%nat)) 1",
+  "via": "A5TmplTarget.actual_observe (definitional)"
+ },
+ "rank": {
+  "expr": "IV.rank",
+  "meaning": "0 (memory token), 1 (execute), 2 (decode), 3 (fetch), 4/5/6 fetch refill phases"
+ },
+ "lo": {
+  "cyc": "A5TmplCyc (tools/cpu_tmpl_a5cyc.py)",
+  "hx": "A5TmplHx (tools/cpu_tmpl_a5hx.py)",
+  "inv": "A5TmplInv",
+  "aluout": "A5TmplAluOut (tools/cpu_tmpl_a5aluout.py)",
+  "decout": "A5TmplDecOut (tools/cpu_tmpl_a5decout.py)",
+  "fwd": "A5TmplFwdLift",
+  "steplib": "A5TmplStepLib",
+  "step": "A5TmplStepH + 13 A5TmplStepC* + A5TmplStep (tools/cpu_tmpl_a5step.py)",
+  "boot": "A5TmplBoot"
+ },
+ "domain": "CPUJumpFamilyProgramDomain.check_program",
+ "extra_loadpaths": [
+  [
+   "experiments/framework/generated/angelo5-fixed",
+   "Angelo5"
+  ]
+ ]
+}

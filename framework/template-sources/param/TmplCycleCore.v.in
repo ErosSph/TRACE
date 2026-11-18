@@ -1,0 +1,248 @@
+(* Hand-written @name:label@ cycle core (provenance: llm_written, proof_author: LLM-generated: Claude Code (claude-sonnet-5-5); external_llm_api_calls=0).
+   Reuses ONE Codex low-level RTL fact about the same AST: @name:lfp_module@.actual_driven_is_LFP. *)
+Notation P := @name:program@ (only parsing).
+Lemma inputs_unw : forall r, In r @idlist:ENV_INPUTS@%nat -> roots_unwrittenb r (processes P) = true.
+Proof. intros r H. cbn in H. repeat destruct H as [<-|H]; try contradiction; vm_compute; reflexivity. Qed.
+Lemma P_posedge : posedge_onlyb P @id:CLK@%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma comb_unw_in : forall r, In r @idlist:ENV_INPUTS@%nat -> comb_root_unwrittenb P r = true.
+Proof. intros r H. apply all_unwritten_comb. apply inputs_unw. exact H. Qed.
+Lemma clk_after_rise pre : read_signal (PhaseSemantics P rise pre) @id:CLK@%nat = 1.
+Proof. rewrite phase_input by (apply inputs_unw; cbn; tauto). cbn [changed_signal new_value rise]. rewrite read_signal_write_same. reflexivity. Qed.
+Section Cyc.
+Variable image : list Z.
+Variable s : Runtime.
+Local Notation rising := (PhaseSemantics P rise (rtl s)) (only parsing).
+Local Notation replied := (response (rom image) (rtl s) rising) (only parsing).
+Local Notation fallen := (PhaseSemantics P (fall replied) replied) (only parsing).
+Lemma replied_clk : read_signal replied @id:CLK@%nat = 1.
+Proof. unfold response. rewrite phase_input by (apply inputs_unw; cbn; tauto).
+ cbn [changed_signal]. rewrite read_signal_write_other by discriminate. apply clk_after_rise. Qed.
+Lemma fallen_clk : read_signal fallen @id:CLK@%nat = 0.
+Proof. rewrite phase_input by (apply inputs_unw; cbn; tauto).
+ cbn [changed_signal new_value fall]. rewrite read_signal_write_same. reflexivity. Qed.
+Lemma final_clk : read_signal (rtl (clock_cycle image s)) @id:CLK@%nat = 0.
+Proof. unfold clock_cycle. cbn [rtl]. unfold ram_response. rewrite phase_input by (apply inputs_unw; cbn; tauto).
+ cbn [changed_signal ram_event]. rewrite read_signal_write_other by discriminate. apply fallen_clk. Qed.
+Lemma frame3 : forall R, comb_root_unwrittenb P R = true -> R <> @id:CLK@%nat -> R <> @id:IBUS_DATA@%nat -> R <> @id:DBUS_RDATA@%nat ->
+ read_signal (rtl (clock_cycle image s)) R = read_signal rising R.
+Proof.
+ intros R HU H1 H5 H16. unfold clock_cycle. cbn [rtl]. unfold ram_response.
+ assert (HC1 := comb_unw_in @id:CLK@%nat ltac:(cbn;tauto)).
+ transitivity (read_signal fallen R).
+ { apply (frame_no_edge P @id:CLK@%nat (ram_event _ _) fallen R P_posedge HC1 HU).
+   - cbn [changed_signal ram_event]. congruence.
+   - right. rewrite read_signal_write_other by discriminate. rewrite fallen_clk. reflexivity. }
+ transitivity (read_signal replied R).
+ { apply (frame_no_edge P @id:CLK@%nat (fall _) replied R P_posedge HC1 HU).
+   - cbn [changed_signal fall]. congruence.
+   - left. rewrite replied_clk. reflexivity. }
+ { unfold response. apply (frame_no_edge P @id:CLK@%nat _ rising R P_posedge HC1 HU).
+   - cbn [changed_signal]. congruence.
+   - left. rewrite clk_after_rise. reflexivity. }
+Qed.
+End Cyc.
+
+Definition orig_w@id:STALL@:Expr:=(ECond 1 (ECond 32 (EVar 1 @id:DBUS_REQ@%nat) (EExtend 32 false (EUnary 1 UNot (EVar 1 @id:DBUS_ACK@%nat))) (EConst 32 0)) (EConst 1 1) (EUnary 1 URedOr (ECond 32 (EVar 1 @id:IBUS_REQ@%nat) (EExtend 32 false (EUnary 1 UNot (EVar 1 @id:IBUS_ACK@%nat))) (EConst 32 0)))).
+Theorem eq_w@id:STALL@ seed fixed:CombLFP P seed fixed->norm 1(read_signal fixed @id:STALL@%nat)=norm 1(eval_expr fixed orig_w@id:STALL@).
+Proof. intro HL. refine(checked_assignment_binding P _ @k:STALL@%nat @proc:STALL_COMB@ false orig_w@id:STALL@ @id:CLK@%nat @id:STALL@%nat seed fixed eq_refl _ _ _ _ HL).
+ all: first[vm_compute;reflexivity|(vm_compute;lia)]. Qed.
+Lemma halt_zero seed d : CombLFP P seed d -> norm 1 (read_signal d @id:IBUS_ACK@%nat) = 1 -> norm 1 (read_signal d @id:DBUS_ACK@%nat) = 1 -> norm 1 (read_signal d @id:STALL@%nat) = 0.
+Proof. intros HL H6 H17. rewrite (eq_w@id:STALL@ seed d HL). unfold orig_w@id:STALL@. cbn [eval_expr].
+ rewrite H6, H17. destruct (one_bit_cases d @id:DBUS_REQ@%nat) as [E8|E8]; destruct (one_bit_cases d @id:IBUS_REQ@%nat) as [E3|E3]; rewrite ?E8, ?E3; vm_compute; reflexivity. Qed.
+
+(* ---- register steps at the rising edge ---- *)
+Lemma comb_unw_@id:VALID_CTR@ : comb_root_unwrittenb P @id:VALID_CTR@%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma comb_unw_@id:RESET_REG@ : comb_root_unwrittenb P @id:RESET_REG@%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma writers_@id:VALID_CTR@ : filter (writes_rootb @id:VALID_CTR@%nat) (processes P) = [@proc:VALID_A@; @proc:PCSEQ@]. Proof. vm_compute; reflexivity. Qed.
+Lemma writers_@id:RESET_REG@ : filter (writes_rootb @id:RESET_REG@%nat) (processes P) = [@proc:XRES_A@; @proc:XRES_B@]. Proof. vm_compute; reflexivity. Qed.
+Lemma rise_clk pre : read_signal (phase_driven_state P rise pre) @id:CLK@%nat = 1.
+Proof. rewrite sampled_input by (apply inputs_unw; cbn; tauto). cbn [changed_signal new_value rise]. rewrite read_signal_write_same. reflexivity. Qed.
+Lemma rise_sel@id:VALID_CTR@ pre : read_signal pre @id:CLK@%nat = 0 ->
+ filter (process_matches_states pre (phase_driven_state P rise pre)) (filter (writes_rootb @id:VALID_CTR@%nat) (processes P)) = [@proc:PCSEQ@].
+Proof. intro H0. rewrite writers_@id:VALID_CTR@. cbn [filter].
+ rewrite (matches_rise @proc:PCSEQ@ pre _ @id:CLK@%nat eq_refl eq_refl H0 (rise_clk pre)).
+ assert (process_matches_states pre (phase_driven_state P rise pre) @proc:VALID_A@ = false) by reflexivity. rewrite H. reflexivity. Qed.
+Lemma rise_sel@id:RESET_REG@ pre : read_signal pre @id:CLK@%nat = 0 ->
+ filter (process_matches_states pre (phase_driven_state P rise pre)) (filter (writes_rootb @id:RESET_REG@%nat) (processes P)) = [@proc:XRES_B@].
+Proof. intro H0. rewrite writers_@id:RESET_REG@. cbn [filter].
+ rewrite (matches_rise @proc:XRES_B@ pre _ @id:CLK@%nat eq_refl eq_refl H0 (rise_clk pre)).
+ assert (process_matches_states pre (phase_driven_state P rise pre) @proc:XRES_A@ = false) by reflexivity. rewrite H. reflexivity. Qed.
+Lemma rise_xres pre : read_signal pre @id:CLK@%nat = 0 ->
+ norm 1 (read_signal (PhaseSemantics P rise pre) @id:RESET_REG@%nat) = norm 1 (eval_expr (phase_driven_state P rise pre) (EVar 1 @id:RESIN@%nat)).
+Proof. intro H0.
+ refine (seq_root_step P rise pre @id:RESET_REG@%nat process_1 _ 0%nat _ 1%nat comb_unw_@id:RESET_REG@ _ eq_refl _ _ (rise_sel@id:RESET_REG@ pre H0) eq_refl _ _).
+ all: try (vm_compute; reflexivity). all: cbn; try lia. Qed.
+Lemma rise_flush pre : read_signal pre @id:CLK@%nat = 0 ->
+ norm 2 (read_signal (PhaseSemantics P rise pre) @id:VALID_CTR@%nat) = norm 2 (eval_expr (phase_driven_state P rise pre) (ESel 2 (ECond 32 (EVar 1 @id:RESET_REG@%nat) (EConst 32 2) (ECond 32 (EVar 1 @id:STALL@%nat) (EExtend 32 false (EVar 2 @id:VALID_CTR@%nat)) (ECond 32 (EUnary 1 URedOr (EVar 2 @id:VALID_CTR@%nat)) (EBinary 32 BSub (EExtend 32 false (EVar 2 @id:VALID_CTR@%nat)) (EConst 32 1)) (ECond 32 (EVar 1 @id:JREQ@%nat) (EConst 32 2) (EConst 32 0))))) (EConst 32 0))).
+Proof. intro H0.
+ refine (seq_root_step P rise pre @id:VALID_CTR@%nat process_7 _ 0%nat _ 2 comb_unw_@id:VALID_CTR@ _ eq_refl _ _ (rise_sel@id:VALID_CTR@ pre H0) eq_refl _ _).
+ all: try (vm_compute; reflexivity). all: cbn; try lia. Qed.
+Local Transparent phase_driven_state.
+Lemma driven_read pre r : comb_root_unwrittenb P r = true -> r <> @id:CLK@%nat -> read_signal (phase_driven_state P rise pre) r = read_signal pre r.
+Proof. intros H H1. unfold phase_driven_state. rewrite lfp_candidate_preserves_unwritten_root by exact H.
+ cbn [changed_signal rise]. apply read_signal_write_other. congruence. Qed.
+Local Opaque phase_driven_state.
+Lemma cycle_xres image s : read_signal (rtl s) @id:CLK@%nat = 0 ->
+ norm 1 (read_signal (rtl (clock_cycle image s)) @id:RESET_REG@%nat) = norm 1 (read_signal (rtl s) @id:RESIN@%nat).
+Proof. intro H0. rewrite (frame3 image s @id:RESET_REG@%nat comb_unw_@id:RESET_REG@ ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite rise_xres by exact H0. cbn [eval_expr]. rewrite norm_idempotent.
+ rewrite driven_read by (try apply comb_unw_in; cbn; try tauto; discriminate). reflexivity. Qed.
+
+Lemma comb_unw_@id:RESIN@ : comb_root_unwrittenb P @id:RESIN@%nat = true. Proof. apply comb_unw_in; cbn; tauto. Qed.
+Lemma comb_unw_@id:IBUS_ACK@ : comb_root_unwrittenb P @id:IBUS_ACK@%nat = true. Proof. apply comb_unw_in; cbn; tauto. Qed.
+Lemma comb_unw_@id:DBUS_ACK@ : comb_root_unwrittenb P @id:DBUS_ACK@%nat = true. Proof. apply comb_unw_in; cbn; tauto. Qed.
+Lemma in_sub r : In r @idlist:ENV_ACKS@%nat -> In r @idlist:ENV_INPUTS@%nat.
+Proof. intro H. cbn in H. destruct H as [H|[H|[H|H]]]; subst; cbn; tauto. Qed.
+Lemma cycle_input image s r : In r @idlist:ENV_ACKS@%nat -> read_signal (rtl (clock_cycle image s)) r = read_signal (rtl s) r.
+Proof. intro H. pose proof (in_sub r H) as H'. cbn in H. 
+ assert (Hu : comb_root_unwrittenb P r = true) by (apply comb_unw_in; exact H').
+ assert (Hn : r <> @id:CLK@%nat /\ r <> @id:IBUS_DATA@%nat /\ r <> @id:DBUS_RDATA@%nat) by (destruct H as [H|[H|[H|H]]]; subst; try contradiction; repeat split; discriminate).
+ destruct Hn as [N1 [N5 N16]].
+ rewrite (frame3 image s r Hu N1 N5 N16).
+ rewrite phase_input by (apply inputs_unw; exact H'). cbn [changed_signal new_value rise].
+ apply read_signal_write_other. auto. Qed.
+Lemma cycle_flush_xres image s : read_signal (rtl s) @id:CLK@%nat = 0 -> norm 1 (read_signal (rtl s) @id:RESET_REG@%nat) = 1 ->
+ norm 2 (read_signal (rtl (clock_cycle image s)) @id:VALID_CTR@%nat) = 2.
+Proof. intros H0 HX. rewrite (frame3 image s @id:VALID_CTR@%nat comb_unw_@id:VALID_CTR@ ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite rise_flush by exact H0. cbn [eval_expr].
+ rewrite (driven_read (rtl s) @id:RESET_REG@%nat comb_unw_@id:RESET_REG@ ltac:(discriminate)). rewrite HX. cbn. reflexivity. Qed.
+Lemma cycle_flush_dec image s : read_signal (rtl s) @id:CLK@%nat = 0 -> norm 1 (read_signal (rtl s) @id:RESET_REG@%nat) = 0 ->
+ norm 1 (read_signal (rtl s) @id:IBUS_ACK@%nat) = 1 -> norm 1 (read_signal (rtl s) @id:DBUS_ACK@%nat) = 1 ->
+ norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) <> 0 ->
+ norm 2 (read_signal (rtl (clock_cycle image s)) @id:VALID_CTR@%nat) = norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) - 1.
+Proof. intros H0 HX H6 H17 HF.
+ pose proof (actual_driven_is_LFP rise (rtl s)) as HL.
+ rewrite (frame3 image s @id:VALID_CTR@%nat comb_unw_@id:VALID_CTR@ ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite rise_flush by exact H0. cbn [eval_expr].
+ assert (HH : norm 1 (read_signal (phase_driven_state P rise (rtl s)) @id:STALL@%nat) = 0).
+ { apply (halt_zero _ _ HL); rewrite driven_read by (first [exact comb_unw_@id:IBUS_ACK@ | exact comb_unw_@id:DBUS_ACK@ | discriminate]); assumption. }
+ rewrite HH. rewrite (driven_read (rtl s) @id:RESET_REG@%nat comb_unw_@id:RESET_REG@ ltac:(discriminate)), (driven_read (rtl s) @id:VALID_CTR@%nat comb_unw_@id:VALID_CTR@ ltac:(discriminate)). rewrite HX.
+ pose proof (ExtendedSVBankAlignment.norm_bounds 2 (read_signal (rtl s) @id:VALID_CTR@%nat)) as [B0 B1]. change (2 ^ Z.of_nat 2) with 4 in B1.
+ generalize dependent (norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat)). intros F HF B0 B1.
+ assert (F = 1 \/ F = 2 \/ F = 3) by lia. destruct H as [E|[E|E]]; rewrite E; cbn; reflexivity. Qed.
+
+(* ---- reset handling and the environment invariant ---- *)
+Lemma drop_frame pre R : comb_root_unwrittenb P R = true -> R <> @id:RESIN@%nat -> read_signal pre @id:CLK@%nat = 0 ->
+ read_signal (reset_drop pre) R = read_signal pre R.
+Proof. intros HU HN H0. unfold reset_drop.
+ apply (frame_no_edge P @id:CLK@%nat _ pre R P_posedge (comb_unw_in @id:CLK@%nat ltac:(cbn;tauto)) HU).
+ - cbn [changed_signal]. auto.
+ - right. cbn [changed_signal new_value]. rewrite read_signal_write_other by discriminate. rewrite H0. reflexivity. Qed.
+Lemma drop_res pre : read_signal (reset_drop pre) @id:RESIN@%nat = 0.
+Proof. unfold reset_drop. rewrite phase_input by (apply inputs_unw; cbn; tauto). cbn [changed_signal new_value].
+ rewrite read_signal_write_same. reflexivity. Qed.
+Lemma drop_clk pre : read_signal pre @id:CLK@%nat = 0 -> read_signal (reset_drop pre) @id:CLK@%nat = 0.
+Proof. intro H. rewrite (drop_frame pre @id:CLK@%nat (comb_unw_in @id:CLK@%nat ltac:(cbn;tauto)) ltac:(discriminate) H). exact H. Qed.
+Lemma final_clk_cycle image s : read_signal (rtl (clock_cycle image s)) @id:CLK@%nat = 0.
+Proof. apply final_clk. Qed.
+Lemma act_clk image s : read_signal (rtl (actual_cycle image s)) @id:CLK@%nat = 0.
+Proof. unfold actual_cycle. destruct (reset_cycles s) as [|[|n]]; cbn [rtl].
+ - apply final_clk. - apply drop_clk, final_clk. - apply final_clk. Qed.
+Lemma act_reg image s R : comb_root_unwrittenb P R = true -> R <> @id:RESIN@%nat ->
+ read_signal (rtl (actual_cycle image s)) R = read_signal (rtl (clock_cycle image s)) R.
+Proof. intros HU HN. unfold actual_cycle. destruct (reset_cycles s) as [|[|n]]; cbn [rtl]; try reflexivity.
+ apply drop_frame; [exact HU|exact HN|apply final_clk]. Qed.
+Lemma act_res image s : read_signal (rtl (actual_cycle image s)) @id:RESIN@%nat =
+ match reset_cycles s with S O => 0 | _ => read_signal (rtl s) @id:RESIN@%nat end.
+Proof. unfold actual_cycle. destruct (reset_cycles s) as [|[|n]]; cbn [rtl].
+ - apply cycle_input; cbn; tauto. - apply drop_res. - apply cycle_input; cbn; tauto. Qed.
+Lemma cc_rc image s : reset_cycles (clock_cycle image s) = reset_cycles s. Proof. reflexivity. Qed.
+Lemma act_rc image s : reset_cycles (actual_cycle image s) = Nat.pred (reset_cycles s).
+Proof. unfold actual_cycle. destruct (reset_cycles s) as [|[|n]] eqn:E; cbn [reset_cycles]; try reflexivity; rewrite cc_rc, E; reflexivity. Qed.
+
+Definition env_ok (s : Runtime) : Prop :=
+ read_signal (rtl s) @id:CLK@%nat = 0 /\ norm 1 (read_signal (rtl s) @id:IBUS_ACK@%nat) = 1 /\ norm 1 (read_signal (rtl s) @id:DBUS_ACK@%nat) = 1 /\
+ (reset_cycles s = 0%nat -> norm 1 (read_signal (rtl s) @id:RESIN@%nat) = 0 /\
+    (norm 1 (read_signal (rtl s) @id:RESET_REG@%nat) = 1 -> norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) = 2)) /\
+ (reset_cycles s <> 0%nat -> norm 1 (read_signal (rtl s) @id:RESIN@%nat) = 1 /\ norm 1 (read_signal (rtl s) @id:RESET_REG@%nat) = 1 /\
+    (norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) = 2 \/ norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) = 3)).
+
+Lemma env_ok_reset : env_ok actual_reset.
+Proof. unfold env_ok, actual_reset. cbn [rtl reset_cycles].
+ split;[vm_compute; reflexivity|]. split;[vm_compute; reflexivity|]. split;[vm_compute; reflexivity|].
+ split.
+ - intro H. discriminate H.
+ - intros _. split;[vm_compute; reflexivity|]. split;[vm_compute; reflexivity|]. vm_compute. right. reflexivity. Qed.
+
+Lemma act_ack image s r : (r = 6 \/ r = 17)%nat -> read_signal (rtl (actual_cycle image s)) r = read_signal (rtl s) r.
+Proof. intro H. assert (Hu : comb_root_unwrittenb P r = true) by (destruct H; subst; [exact comb_unw_@id:IBUS_ACK@|exact comb_unw_@id:DBUS_ACK@]).
+ assert (Hn : r <> @id:RESIN@%nat) by (destruct H; subst; discriminate).
+ rewrite (act_reg image s r Hu Hn). apply cycle_input. destruct H; subst; cbn; tauto. Qed.
+
+Lemma act_xres image s : norm 1 (read_signal (rtl (actual_cycle image s)) @id:RESET_REG@%nat) = norm 1 (read_signal (rtl s) @id:RESIN@%nat).
+Proof. rewrite (act_reg image s @id:RESET_REG@%nat comb_unw_@id:RESET_REG@ ltac:(discriminate)). apply cycle_xres. 
+ (* clock low is part of env_ok; discharged by the caller via cycle_xres_env *) Abort.
+Lemma act_xres image s : read_signal (rtl s) @id:CLK@%nat = 0 -> norm 1 (read_signal (rtl (actual_cycle image s)) @id:RESET_REG@%nat) = norm 1 (read_signal (rtl s) @id:RESIN@%nat).
+Proof. intro H. rewrite (act_reg image s @id:RESET_REG@%nat comb_unw_@id:RESET_REG@ ltac:(discriminate)). apply cycle_xres. exact H. Qed.
+Lemma act_flush_xres image s : read_signal (rtl s) @id:CLK@%nat = 0 -> norm 1 (read_signal (rtl s) @id:RESET_REG@%nat) = 1 ->
+ norm 2 (read_signal (rtl (actual_cycle image s)) @id:VALID_CTR@%nat) = 2.
+Proof. intros H X. rewrite (act_reg image s @id:VALID_CTR@%nat comb_unw_@id:VALID_CTR@ ltac:(discriminate)). apply cycle_flush_xres; assumption. Qed.
+
+Theorem env_step image s : env_ok s -> env_ok (actual_cycle image s).
+Proof.
+ intros [H0 [H6 [H17 [Hz Hnz]]]]. unfold env_ok.
+ rewrite act_rc, act_clk, (act_ack image s @id:IBUS_ACK@%nat ltac:(auto)), (act_ack image s @id:DBUS_ACK@%nat ltac:(auto)).
+ refine (conj eq_refl (conj H6 (conj H17 _))).
+ rewrite act_res. 
+ destruct (reset_cycles s) as [|[|n]] eqn:E; cbn [Nat.pred].
+ - destruct (Hz eq_refl) as [R0 _]. split.
+   + intros _. rewrite R0. split; [reflexivity|]. intro X. rewrite (act_xres image s H0), R0 in X. discriminate X.
+   + intro Hc. exfalso. apply Hc. reflexivity.
+ - assert (Hn : 1%nat <> 0%nat) by discriminate. destruct (Hnz Hn) as [R1 [X1 F1]]. split.
+   + intros _. split; [reflexivity|]. intro X. exact (act_flush_xres image s H0 X1).
+   + intro Hc. exfalso. apply Hc. reflexivity.
+ - assert (Hn : S (S n) <> 0%nat) by discriminate. destruct (Hnz Hn) as [R1 [X1 F1]]. split.
+   + intro Hc. discriminate Hc.
+   + intros _. rewrite R1. split; [reflexivity|]. split.
+     * rewrite (act_xres image s H0), R1. reflexivity.
+     * left. exact (act_flush_xres image s H0 X1).
+Qed.
+Print Assumptions env_step.
+
+Lemma norm_bits w v : (0 <= norm w v < 2 ^ Z.of_nat w).
+Proof. exact (ExtendedSVBankAlignment.norm_bounds w v). Qed.
+
+Lemma env_commit_xres s : env_ok s -> norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) = 0 -> norm 1 (read_signal (rtl s) @id:RESET_REG@%nat) = 0.
+Proof. intros [H0 [H6 [H17 [Hz Hnz]]]] HF.
+ destruct (reset_cycles s) eqn:E.
+ - destruct (Hz eq_refl) as [_ HX]. destruct (one_bit_cases (rtl s) @id:RESET_REG@%nat) as [A|A]; [exact A|]. specialize (HX A). congruence.
+ - destruct (Hnz ltac:(discriminate)) as [_ [_ F]]. destruct F; congruence. Qed.
+
+Lemma driven_halt s : env_ok s -> norm 1 (read_signal (phase_driven_state P rise (rtl s)) @id:STALL@%nat) = 0.
+Proof. intros [H0 [H6 [H17 _]]]. apply (halt_zero _ _ (actual_driven_is_LFP rise (rtl s)));
+ rewrite driven_read by (first [exact comb_unw_@id:IBUS_ACK@ | exact comb_unw_@id:DBUS_ACK@ | discriminate]); assumption. Qed.
+
+Lemma comb_unw_@id:EXEC_PC@ : comb_root_unwrittenb P @id:EXEC_PC@%nat = true. Proof. vm_compute; reflexivity. Qed.
+
+Theorem observe_eq s : env_ok s -> actual_observe s =
+ if Z.eqb (norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat)) 0 then OneCommit (norm 32 (read_signal (rtl s) @id:EXEC_PC@%nat)) else SilentCycle.
+Proof. intro HE. pose proof HE as HE'. unfold actual_observe. cbv zeta.
+ rewrite (driven_halt s HE).
+ rewrite (driven_read (rtl s) @id:RESET_REG@%nat comb_unw_@id:RESET_REG@ ltac:(discriminate)), (driven_read (rtl s) @id:VALID_CTR@%nat comb_unw_@id:VALID_CTR@ ltac:(discriminate)),
+   (driven_read (rtl s) @id:EXEC_PC@%nat comb_unw_@id:EXEC_PC@ ltac:(discriminate)).
+ destruct (Z.eqb (norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat)) 0) eqn:EF.
+ - apply Z.eqb_eq in EF. rewrite (env_commit_xres s HE EF). cbn. reflexivity.
+ - cbn. destruct (Z.eqb (norm 1 (read_signal (rtl s) @id:RESET_REG@%nat)) 0); reflexivity. Qed.
+
+Definition tmpl_rank (s : Runtime) : nat :=
+ (reset_cycles s + Z.to_nat (norm 1 (read_signal (rtl s) @id:RESET_REG@%nat)) + Z.to_nat (norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat)))%nat.
+
+Theorem rank_dec image s : env_ok s -> norm 2 (read_signal (rtl s) @id:VALID_CTR@%nat) <> 0 ->
+ (tmpl_rank (actual_cycle image s) < tmpl_rank s)%nat.
+Proof.
+ intros HE HF. pose proof HE as [H0 [H6 [H17 [Hz Hnz]]]]. unfold tmpl_rank. rewrite act_rc.
+ rewrite (act_xres image s H0).
+ destruct (reset_cycles s) as [|[|n]] eqn:E; cbn [Nat.pred].
+ - destruct (Hz eq_refl) as [R0 HX]. rewrite R0.
+   destruct (one_bit_cases (rtl s) @id:RESET_REG@%nat) as [X|X].
+   + rewrite (act_reg image s @id:VALID_CTR@%nat comb_unw_@id:VALID_CTR@ ltac:(discriminate)).
+     rewrite (cycle_flush_dec image s H0 X H6 H17 HF). rewrite X.
+     pose proof (norm_bits 2 (read_signal (rtl s) @id:VALID_CTR@%nat)) as [B0 B1]. cbn in B1. cbn. lia.
+   + rewrite (act_flush_xres image s H0 X). rewrite X. cbn. lia.
+ - destruct (Hnz ltac:(discriminate)) as [R1 [X1 F1]]. rewrite R1, X1, (act_flush_xres image s H0 X1).
+   cbn. destruct F1 as [F|F]; rewrite F; cbn; lia.
+ - destruct (Hnz ltac:(discriminate)) as [R1 [X1 F1]]. rewrite R1, X1, (act_flush_xres image s H0 X1).
+   cbn. destruct F1 as [F|F]; rewrite F; cbn; lia.
+Qed.
+Print Assumptions rank_dec.
+Print Assumptions observe_eq.

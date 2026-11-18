@@ -1,0 +1,249 @@
+{
+ "date": "20261104",
+ "rst_idle": 1,
+ "env": {},
+ "stages": [
+  {
+   "name": "lfp",
+   "layer": "lfp",
+   "module": "NervLfp",
+   "namespace": "TmplNervLfp",
+   "ref": "results/r-tmpl-nerv-lfp-20261104-a3",
+   "cmd": [
+    "tools/cpu_tmpl_lfpnl_lazy.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_lfpnl_lazy.py",
+   "rules": [
+    "lfp_nolatch_cert",
+    "lfp_lazy_exhaustive"
+   ],
+   "note": "rule-derived (lfp_nolatch_cert,lfp_lazy_exhaustive)"
+  },
+  {
+   "name": "target",
+   "layer": "target",
+   "module": "NervTmplTarget",
+   "namespace": "TmplNervTarget",
+   "cmd": [
+    "tools/cpu_tmpl_copy.py",
+    "--src",
+    "framework/template-sources/NervTmplTarget.v.in",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-nerv-target-20261104-a1",
+   "provenance": "llm_written",
+   "generator": "tools/cpu_tmpl_copy.py framework/template-sources/NervTmplTarget.v.in",
+   "residual": true
+  },
+  {
+   "name": "edge",
+   "layer": "edge",
+   "module": "NervTmplEdge",
+   "namespace": "TmplNervEdge",
+   "ref": "results/r-tmpl-nerv-edge-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_edge.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--fast-filter",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "rules": [
+    "edge_derived_clock",
+    "edge_fast_filter"
+   ],
+   "note": "rule-derived (edge_derived_clock,edge_fast_filter)"
+  },
+  {
+   "name": "edger",
+   "layer": "reset",
+   "module": "NervTmplEdgeR",
+   "namespace": "TmplNervEdgeR",
+   "ref": "results/r-tmpl-nerv-edger-20261104-a2",
+   "cmd": [
+    "tools/cpu_tmpl_edge.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--fast-filter",
+    "--reset-events",
+    "{mod:edge}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "rules": [
+    "reset_events_layer",
+    "edge_fast_filter"
+   ],
+   "note": "rule-derived (reset_events_layer,edge_fast_filter)"
+  },
+  {
+   "name": "stage",
+   "layer": "stage",
+   "module": "NervTmplStage",
+   "namespace": "TmplNervStage",
+   "ref": "results/r-tmpl-nerv-stage-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "stage_seqtree"
+   ],
+   "note": "rule-derived (stage_seqtree)"
+  },
+  {
+   "name": "rise",
+   "layer": "stage",
+   "module": "NervTmplRise",
+   "namespace": "TmplNervRise",
+   "cmd": [
+    "tools/cpu_tmpl_nvrise.py",
+    "gen",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-nerv-rise-20261104-a3",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_nvrise.py",
+   "residual": true
+  },
+  {
+   "name": "wire",
+   "layer": "wire",
+   "module": "NervTmplWire",
+   "namespace": "TmplNervWire",
+   "cmd": [
+    "tools/cpu_tmpl_nvwire.py",
+    "gen",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-nerv-wire-20261104-a2",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_nvwire.py",
+   "residual": true
+  },
+  {
+   "name": "ctlpre",
+   "layer": "ctl",
+   "module": "NervTmplCtlPre",
+   "namespace": "TmplNervCtlPre",
+   "cmd": [
+    "tools/cpu_tmpl_nvctl.py",
+    "gen-pre",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-nerv-ctlpre-20261104-a2",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_nvctl.py gen-pre",
+   "residual": true
+  },
+  {
+   "name": "ctl",
+   "layer": "ctl",
+   "module": "NervTmplCtl",
+   "namespace": "TmplNervCtl",
+   "cmd": [
+    "tools/cpu_tmpl_nvctl.py",
+    "gen-cls",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-nerv-ctl-20261104-a2",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_nvctl.py gen-cls",
+   "residual": true
+  }
+ ],
+ "rule_applied": true,
+ "residual_stages": [
+  "target",
+  "rise",
+  "wire",
+  "ctlpre",
+  "ctl"
+ ],
+ "rule_stages": [
+  "lfp",
+  "edge",
+  "edger",
+  "stage"
+ ],
+ "residual_obligations": [
+  {
+   "layer": "target",
+   "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+   "hint": []
+  },
+  {
+   "layer": "cycle",
+   "reason": "cycle composition / register values on the driven state",
+   "hint": []
+  },
+  {
+   "layer": "fetch",
+   "reason": "fetch link (instruction memory read = ROM word)",
+   "hint": []
+  },
+  {
+   "layer": "ctl",
+   "reason": "per-class control and datapath facts",
+   "hint": [
+    "engine_havoc:ExtendedSVSymExecHavoc",
+    "engine_overlay4:ExtendedSVSymExecOverlay4",
+    "engine_overlay:ExtendedSVSymExecOverlay",
+    "engine_fast4:ExtendedSVFast4",
+    "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain",
+    "slice_exec:ExtendedSVSliceExec",
+    "slice_root_fact:ExtendedSVSliceRootFact"
+   ]
+  },
+  {
+   "layer": "domain",
+   "reason": "domain premises (misaligned / trap = 0 from check_program)",
+   "hint": []
+  },
+  {
+   "layer": "lift",
+   "reason": "ISA lift of the provider facts",
+   "hint": [
+    "lift_isa",
+    "lift_expr_provider"
+   ]
+  },
+  {
+   "layer": "closure",
+   "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+   "hint": [
+    "closure_state_inv"
+   ]
+  }
+ ]
+}

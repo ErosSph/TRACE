@@ -1,0 +1,102 @@
+diff --git a/src/riscv/Platform/Memory.v b/src/riscv/Platform/Memory.v
+index 182e6a2..efe1279 100644
+--- a/src/riscv/Platform/Memory.v
++++ b/src/riscv/Platform/Memory.v
+@@ -15,16 +15,30 @@ Require Import coqutil.Z.Lia.
+ Require Import coqutil.Byte.
+ Require Import riscv.Utility.Utility.
+ 
+-Notation load_bytes sz (* : nat, value *) := (fun m addr =>
+-  match load_Z m addr sz with
+-  | Some z => Some (tuple.of_list (LittleEndianList.le_split sz z))
+-  | None => None
+-  end) (only parsing).
++(* Compatibility interface used by the VerilRocq artifact.  The newer
++   coqutil memory library stores byte lists; the RISC-V model and its proof
++   development use fixed-size tuples. *)
++Section MemAccess.
++  Context {width} {word: word width} {mem: map.map word byte}.
+ 
+-Definition store_bytes
+-  {width} {word: word width} {mem: map.map word byte}
+-  (sz: nat)(m: mem)(a: word)(v: tuple byte sz): option mem :=
+-  store_bytes m a (tuple.to_list v).
++  Definition footprint(a: word)(sz: nat): tuple word sz :=
++    tuple.unfoldn (fun w => word.add w (word.of_Z 1)) sz a.
++
++  Definition load_bytes(sz: nat)(m: mem)(addr: word): option (tuple byte sz) :=
++    map.getmany_of_tuple m (footprint addr sz).
++
++  Definition unchecked_store_bytes(sz: nat)(m: mem)(a: word)(bs: tuple byte sz): mem :=
++    map.putmany_of_tuple (footprint a sz) bs m.
++
++  Definition unchecked_store_byte_list(a: word)(l: list byte)(m: mem): mem :=
++    unchecked_store_bytes (length l) m a (tuple.of_list l).
++
++  Definition store_bytes(sz: nat)(m: mem)(a: word)(v: tuple byte sz): option mem :=
++    match load_bytes sz m a with
++    | Some _ => Some (unchecked_store_bytes sz m a v)
++    | None => None
++    end.
++End MemAccess.
+ 
+ Section MemAccess2.
+   Context {width} {word: word width} {mem: map.map word byte}.
+@@ -41,12 +55,43 @@ Section MemAccess2.
+   Definition storeDouble: mem -> word -> w64 -> option mem := store_bytes 8.
+ End MemAccess2.
+ 
++Lemma lift_option_match{A B: Type}: forall (x: option A) (f: A -> B) (a: A),
++    match x with
++    | Some y => f y
++    | None => f a
++    end =
++    f (match x with
++       | Some y => y
++       | None => a
++       end).
++Proof. intros. destruct x; reflexivity. Qed.
++
+ Lemma store_bytes_preserves_domain
+   {width} {word: word width} {mem: map.map word byte}
+   {wordOk: word.ok word}{memOk: map.ok mem}: forall n m a v m',
+     store_bytes n m a v = Some m' :> option mem ->
+     map.same_domain m m'.
+-Proof. intros; eapply same_domain_store_bytes; eauto. Qed.
++Proof.
++  unfold store_bytes, load_bytes.
++  induction n; intros.
++  - simpl in *. change (unchecked_store_bytes 0 m a v) with m in H.
++    inversion H. apply map.same_domain_refl.
++  - destruct (map.getmany_of_tuple m (footprint a (S n))) eqn: E; [|discriminate].
++    inversion H. subst m'. clear H.
++    unfold map.getmany_of_tuple in *. simpl in *.
++    destruct (map.get m a) eqn: E'; [|discriminate].
++    destruct_one_match_hyp; [|discriminate].
++    inversion E. subst t. clear E.
++    unfold unchecked_store_bytes in *. simpl.
++    destruct v as [v vs].
++    eapply map.same_domain_trans.
++    + eapply IHn. unfold map.getmany_of_tuple. rewrite E0. reflexivity.
++    + eapply map.same_domain_put_r.
++      * eapply map.same_domain_refl.
++      * rewrite map.putmany_of_tuple_to_putmany.
++        rewrite map.get_putmany_dec. rewrite E'.
++        rewrite lift_option_match. reflexivity.
++Qed.
+ 
+ Section MemoryHelpers.
+   Context {width} {word: word width} {word_ok: word.ok word}.
+diff --git a/src/riscv/Platform/RiscvMachine.v b/src/riscv/Platform/RiscvMachine.v
+index d774504..5f6174e 100644
+--- a/src/riscv/Platform/RiscvMachine.v
++++ b/src/riscv/Platform/RiscvMachine.v
+@@ -196,7 +196,7 @@ Section Machine.
+       (withPc addr
+       (withNextPc (word.add addr (word.of_Z 4))
+       (withXAddrs (addXAddrRange addr (4 * List.length prog) ma.(getXAddrs))
+-      (withMem (unchecked_store_bytes ma.(getMem) addr (Z32s_to_bytes prog)) ma)))).
++      (withMem (unchecked_store_byte_list addr (Z32s_to_bytes prog) ma.(getMem)) ma)))).
+ 
+   End WithBitwidth.
+ End Machine.

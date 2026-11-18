@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-load-word-infinite-loop",
+  "backend": "Actual repaired AST and original nine-round reset/rise/fall scheduler, shared coupled physical/frontend cycle",
+  "translation_equivalence": "External RTL-to-AST translation equivalence remains unmechanized; cumulative repaired derived DUT",
+  "verification_scope": "Actual repaired native AST with unchanged reset/rise/fall scheduler, original zero-RF/zero-RAM reset, original byte-ROM LW x1,0(x0) (8323) at PC0 and JAL x0,-4 at PC4 forever. Real load address/value-separated EX/MEM pending witnesses, actual RAM-selected MEM forwarding and RF retirement, original ISA run1, same physical/frontend joint and load-aware finite waiting. Complete PC/nextPC/whole RF/ROM/128-byte RAM relation. One explicit LW infinite program family, not arbitrary load data/addresses/programs or all38. No no-load assumption is substituted, no RTL/ISA/seed/environment change.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target CPULoadWordJALLoopDomain.words",
+  "certificate_harness": {
+    "certificate_interface": "cycle",
+    "imports": [
+      "Ex.External.CPUDesignTarget",
+      "Ex.External.CPULoadWordJALLoopDomain",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.BzeenoLoadUseJalLoadLoopInfiniteITree",
+      "Ex.External.BzeenoLoadUseJalLoadLoopEvents"
+    ],
+    "open_modules": [
+      "CPUDesignTarget"
+    ],
+    "binders": "",
+    "arguments": [],
+    "provider_applications": {
+      "CPUDesignTarget.Build_Certificate": [
+        {
+          "symbol": "BzeenoLoadUseJalNineProgramTarget.nine_target",
+          "arguments": [
+            {
+              "symbol": "CPULoadWordJALLoopDomain.words",
+              "arguments": []
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopEvents.EventCut",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopEvents.event_rank",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopInfiniteITree.actual_architecture_from_event",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopEvents.actual_startup",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopEvents.initial_event_cut",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopEvents.actual_event_safety",
+          "arguments": []
+        },
+        {
+          "symbol": "BzeenoLoadUseJalLoadLoopEvents.actual_event_progress",
+          "arguments": []
+        }
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {
+      "directory": "experiments/framework/generated/bzeeno-native-full",
+      "namespace": "BzeenoNative"
+    },
+    {
+      "directory": "experiments/framework/generated/bzeeno-load-use",
+      "namespace": "BzeenoLoadUse"
+    },
+    {
+      "directory": "experiments/framework/generated/bzeeno-load-use-jal",
+      "namespace": "BzeenoLoadUseJal"
+    }
+  ],
+  "proof_roots": [
+    "src/Ex/External/CPULoadWordJALLoopDomain.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadLoopPhysical.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadLoopEvents.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadLoopArchitecture.v",
+    "src/Ex/External/BzeenoLoadUseJalLoadLoopInfiniteITree.v"
+  ],
+  "preserve_roots": [
+    "src/Ex/External/BzeenoLoadUseJalBranchInfiniteITree.v"
+  ],
+  "bindings": {
+    "architecture": "Unchanged original ProgramArchRelated/nine_target, actual all128 RAM bytes and all RF lanes",
+    "control": "Actual opcode3/funct3=2 and x0 source, true EX loads and actual RAM forwarding; load-aware enable and occupancy rank",
+    "assembly": "Shared public CPUDesignTarget constructor with certified actual providers; architecture provider is imported from a module also exposing final infinite theorem, not claimed transitively independent"
+  },
+  "proof_providers": {
+    "certificate": "CPUDesignTarget.Build_Certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

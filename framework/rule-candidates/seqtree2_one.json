@@ -1,0 +1,38 @@
+{
+ "name": "seqtree2_one",
+ "kind": "generic_lemma",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {
+  "function": "p_seqtree2_one",
+  "description": "sequential process SSeq [SSeq l] (several statements, no reset test): seq_tree2m_value_one / seq_tree2s_value_one"
+ },
+ "content": {
+  "libraries": [
+   "src/Lang/ExtendedSVSeqTree2One.v"
+  ]
+ },
+ "instantiate": {
+  "type": "library",
+  "used_by_generators": [
+   "tools/cpu_tmpl_stage2one.py"
+  ]
+ },
+ "match": [
+  {
+   "library": "ExtendedSVSeqTree2One"
+  }
+ ],
+ "covers": [
+  "stage"
+ ],
+ "learned_from": "angelo5fix",
+ "learned_at": "2026-11-04T19:00",
+ "learned_evidence": [
+  "src/Lang/ExtendedSVSeqTree2One.v (angelo5fix closure, proof-optimization-log/20261104-template-angelo5fix.md Continuation 11)"
+ ],
+ "reused_by": [],
+ "gate": {
+  "library_module": "Lang.ExtendedSVSeqTree2One"
+ },
+ "origin": "angelo5fix closure (Continuation 11)"
+}

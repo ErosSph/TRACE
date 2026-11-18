@@ -1,0 +1,293 @@
+{
+  "module": "PipelineAllOutcome",
+  "preamble": "preamble.v.in",
+  "expected_classes": [
+    "Add",
+    "Sub",
+    "Sll",
+    "Slt",
+    "Sltu",
+    "Xor",
+    "Srl",
+    "Sra",
+    "Or",
+    "And",
+    "Addi",
+    "Slti",
+    "Sltiu",
+    "Xori",
+    "Ori",
+    "Andi",
+    "Slli",
+    "Srli",
+    "Srai",
+    "Lui",
+    "Auipc",
+    "Jal",
+    "Jalr",
+    "Beq",
+    "Bne",
+    "Blt",
+    "Bge",
+    "Bltu",
+    "Bgeu"
+  ],
+  "export": "ob_ex_@CLASS@",
+  "roles": {
+    "Add": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 1
+    },
+    "Sub": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 2
+    },
+    "Sll": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 128
+    },
+    "Slt": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 4
+    },
+    "Sltu": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 8
+    },
+    "Xor": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 16
+    },
+    "Srl": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 256
+    },
+    "Sra": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 512
+    },
+    "Or": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 32
+    },
+    "And": {
+      "ROLE_OPCODE": 1,
+      "ROLE_ALU": 64
+    },
+    "Addi": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 1
+    },
+    "Slti": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 4
+    },
+    "Sltiu": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 8
+    },
+    "Xori": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 16
+    },
+    "Ori": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 32
+    },
+    "Andi": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 64
+    },
+    "Slli": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 128
+    },
+    "Srli": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 256
+    },
+    "Srai": {
+      "ROLE_OPCODE": 2,
+      "ROLE_ALU": 512
+    },
+    "Lui": {
+      "ROLE_OPCODE": 128,
+      "ROLE_ALU": 1
+    },
+    "Auipc": {
+      "ROLE_OPCODE": 256,
+      "ROLE_ALU": 1
+    },
+    "Jal": {
+      "ROLE_OPCODE": 32,
+      "ROLE_ALU": 1
+    },
+    "Jalr": {
+      "ROLE_OPCODE": 64,
+      "ROLE_ALU": 1
+    },
+    "Beq": {
+      "ROLE_OPCODE": 16,
+      "ROLE_ALU": 1024
+    },
+    "Bne": {
+      "ROLE_OPCODE": 16,
+      "ROLE_ALU": 2048
+    },
+    "Blt": {
+      "ROLE_OPCODE": 16,
+      "ROLE_ALU": 4
+    },
+    "Bge": {
+      "ROLE_OPCODE": 16,
+      "ROLE_ALU": 4096
+    },
+    "Bltu": {
+      "ROLE_OPCODE": 16,
+      "ROLE_ALU": 8
+    },
+    "Bgeu": {
+      "ROLE_OPCODE": 16,
+      "ROLE_ALU": 8192
+    }
+  },
+  "families": [
+    {
+      "seed": "seed-Add.v.in",
+      "representative": "Add",
+      "classes": [
+        "Add"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExR.v",
+      "source_sha256": "95b54743ad0a8cf2b7fb078fde759fc14d1b55d977eb752ab71a1b74d9ed7cb2"
+    },
+    {
+      "seed": "seed-Sub.v.in",
+      "representative": "Sub",
+      "classes": [
+        "Sub",
+        "Xor",
+        "Or",
+        "And"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExR.v",
+      "source_sha256": "95b54743ad0a8cf2b7fb078fde759fc14d1b55d977eb752ab71a1b74d9ed7cb2"
+    },
+    {
+      "seed": "seed-Sll.v.in",
+      "representative": "Sll",
+      "classes": [
+        "Sll",
+        "Srl",
+        "Sra"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExR.v",
+      "source_sha256": "95b54743ad0a8cf2b7fb078fde759fc14d1b55d977eb752ab71a1b74d9ed7cb2"
+    },
+    {
+      "seed": "seed-Slt.v.in",
+      "representative": "Slt",
+      "classes": [
+        "Slt",
+        "Sltu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExR.v",
+      "source_sha256": "95b54743ad0a8cf2b7fb078fde759fc14d1b55d977eb752ab71a1b74d9ed7cb2"
+    },
+    {
+      "seed": "seed-Addi.v.in",
+      "representative": "Addi",
+      "classes": [
+        "Addi",
+        "Xori",
+        "Ori",
+        "Andi"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExI.v",
+      "source_sha256": "ff462a0e4bb510d764e15746a2b751259d13970b841c3825078e8e85a7131a76"
+    },
+    {
+      "seed": "seed-Slti.v.in",
+      "representative": "Slti",
+      "classes": [
+        "Slti",
+        "Sltiu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExI.v",
+      "source_sha256": "ff462a0e4bb510d764e15746a2b751259d13970b841c3825078e8e85a7131a76"
+    },
+    {
+      "seed": "seed-Slli.v.in",
+      "representative": "Slli",
+      "classes": [
+        "Slli",
+        "Srli",
+        "Srai"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExI.v",
+      "source_sha256": "ff462a0e4bb510d764e15746a2b751259d13970b841c3825078e8e85a7131a76"
+    },
+    {
+      "seed": "seed-Lui.v.in",
+      "representative": "Lui",
+      "classes": [
+        "Lui"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExI.v",
+      "source_sha256": "ff462a0e4bb510d764e15746a2b751259d13970b841c3825078e8e85a7131a76"
+    },
+    {
+      "seed": "seed-Auipc.v.in",
+      "representative": "Auipc",
+      "classes": [
+        "Auipc"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExI.v",
+      "source_sha256": "ff462a0e4bb510d764e15746a2b751259d13970b841c3825078e8e85a7131a76"
+    },
+    {
+      "seed": "seed-Jal.v.in",
+      "representative": "Jal",
+      "classes": [
+        "Jal"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExJ.v",
+      "source_sha256": "1fe9e7e246b7c160639feb0c211d8aed10dd8167ff5b0dd3dea69dc885c01caa"
+    },
+    {
+      "seed": "seed-Jalr.v.in",
+      "representative": "Jalr",
+      "classes": [
+        "Jalr"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExJ.v",
+      "source_sha256": "1fe9e7e246b7c160639feb0c211d8aed10dd8167ff5b0dd3dea69dc885c01caa"
+    },
+    {
+      "seed": "seed-Beq.v.in",
+      "representative": "Beq",
+      "classes": [
+        "Beq",
+        "Bne",
+        "Blt",
+        "Bge",
+        "Bltu",
+        "Bgeu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-c/A5RrExJ.v",
+      "source_sha256": "1fe9e7e246b7c160639feb0c211d8aed10dd8167ff5b0dd3dea69dc885c01caa"
+    }
+  ]
+}

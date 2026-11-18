@@ -1,0 +1,18 @@
+# TRACE fix: stall a second writer to the same destination until the older write-back (WAW hazard release bug)
+--- a/rtl/core/kronos_hcu.sv
++++ b/rtl/core/kronos_hcu.sv
+@@ -69,9 +69,12 @@
+ assign rs1_hazard = regrd_rs1_en & regwr_pending & rpend == rs1;
+ assign rs2_hazard = regrd_rs2_en & regwr_pending & rpend == rs2;
+ 
+-// Stall condition if either operand has a hazard,
++// A second writer to the same destination must not replace the pending
++// token before its predecessor reaches WB: otherwise that older WB can
++// incorrectly release a reader of the newer value.
++// Stall condition if either operand or the destination has a hazard,
+ // and register write back isn't ready
+-assign stall = (rs1_hazard | rs2_hazard) & ~(regwr_en & rpend == regwr_sel);
++assign stall = (rs1_hazard | rs2_hazard | (is_reg_write & regwr_pending & (rpend == rd))) & ~(regwr_en & rpend == regwr_sel);
+ 
+ always_ff @(posedge clk or negedge rstz) begin
+   if (~rstz) begin

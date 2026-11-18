@@ -1,0 +1,108 @@
+{
+ "schema_version": 1,
+ "design": "nerv",
+ "shape": "state_inv",
+ "provenance": {
+  "source": "proof-optimization-log/20261104-template-nerv.md (continuation 4) + tools/nerv_inv_sim.py; closure lower layers framework/template-sources/nerv-closure/ and tools/cpu_tmpl_nvop.py",
+  "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+ },
+ "module": "NervTmplStep",
+ "namespace": "TmplNervStep",
+ "doc": "(** NERV D step and final theorem: the generic pipeline obligation skeleton (CPUPipelineObligations, as SteelTmplStep) with\n    [Runtime = State], no post-fetch stages, the joint INV [Inv] = boot phase A (real reset, reset_q = 1) | operating [NervTmplOp.Op],\n    the commit condition = the target observer's own [committing] bit on the driven state (cycle_insn && !mem_rd_enable), rank = reset_q.\n    Final: from the real reset, the RTL ITree refines the ISA ITree for every program of the 29-class jump-family\n    domain [CPUJumpFamilyProgramDomain.check_program].\n    proof_author: LLM-generated: Claude Code (claude-opus-5-5); external_llm_api_calls=0. *)",
+ "stages": {
+  "count": 1,
+  "names": [
+   "single stage (fetch registered, decode/execute/write-back in one cycle)"
+  ],
+  "token": {
+   "type": "Z",
+   "reg": 45,
+   "width": 32,
+   "meaning": "pc on the driven state"
+  }
+ },
+ "runtime": "State",
+ "ast": "NervLit.NervLitAST",
+ "imports": [
+  "TmplNervTarget.NervTmplTarget",
+  "TmplNervTarget2.NervTmplTarget2",
+  "TmplNervCyc.NervTmplCyc",
+  "TmplNervOp.NervTmplOp",
+  "TmplNervBoot.NervTmplBoot"
+ ],
+ "aliases": {
+  "TG": "TmplNervTarget.NervTmplTarget.NervTmplTarget",
+  "T2": "TmplNervTarget2.NervTmplTarget2.NervTmplTarget2",
+  "CY": "TmplNervCyc.NervTmplCyc.NervTmplCyc",
+  "OP": "TmplNervOp.NervTmplOp.NervTmplOp",
+  "BT": "TmplNervBoot.NervTmplBoot.NervTmplBoot"
+ },
+ "target": {
+  "initial": "BT.initial",
+  "reset": "T2.actual_reset",
+  "cycle": "T2.actual_cycle",
+  "observe": "TG.actual_observe"
+ },
+ "valid": {
+  "kind": "bool_expr",
+  "coq": "TG.committing (TG.driven s)",
+  "meaning": "the target observer's own commit bit on the driven state: cycle_insn (112) = 1 and mem_rd_enable (33) = 0",
+  "driven_alias": [
+   "TG.driven s",
+   "CY.drv s"
+  ]
+ },
+ "token_expr": "TG.rd (TG.driven s) 45%nat",
+ "pending_view": {
+  "kind": "retired_view",
+  "bank": 42,
+  "rebase": 0,
+  "pad_lane": 0,
+  "note": "RF lane r = ISA register x_r for r in 1..31; lane 0 is free (written by x0 destinations, never read)"
+ },
+ "front": {
+  "kind": "cursor_equals_pc",
+  "cursor": "pc = ISA pc; imem_data = rom(pc) (synchronous ROM read registered at the previous edge)"
+ },
+ "boot": {
+  "phases": [
+   {
+    "name": "A (real reset, reset_q = 1)",
+    "state": "T2.actual_reset",
+    "rank": "BT.rank_reset",
+    "observe": "BT.observe_reset"
+   }
+  ],
+  "op_entry": {
+   "state": "T2.stO",
+   "lemma": "BT.op_O",
+   "rank": "BT.rank_op"
+  }
+ },
+ "operating": {
+  "inv": "OP.Op",
+  "step": "OP.op_step",
+  "step_shape": "exists y index', run1 f = (Some tt, y) /\\ committing = true /\\ token = pc f /\\ Op (cycle s) y index'"
+ },
+ "observer": {
+  "commit_condition": "TG.committing (TG.driven s)",
+  "via": "NervTmplTarget.actual_observe (definitional)"
+ },
+ "rank": {
+  "expr": "TG.nv_rank",
+  "meaning": "reset_q: 1 at the real reset, 0 in every operating state"
+ },
+ "domain": "CPUJumpFamilyProgramDomain.check_program",
+ "reference": {
+  "result": "results/r-tmpl-closure-nerv-20261104-a1",
+  "file": "NervTmplStep.v",
+  "theorem": "refinement"
+ },
+ "extra_loadpaths": [
+  [
+   "experiments/framework/generated/nerv-lit",
+   "NervLit"
+  ]
+ ],
+ "template": "state_inv_step_noinv"
+}

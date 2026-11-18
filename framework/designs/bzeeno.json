@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-rv32i-derived",
+  "backend": "legacy VerilRocq + opt-in phase semantics",
+  "frontend": "existing generated/imported Bzeeno AST",
+  "translation_equivalence": "design-specific evidence; not a generic parser theorem",
+  "verification_scope": "checked native source-fixed CPU infinite refinement for pinned two-ADDI/JAL-loop ROM, actual reset/rise/fall, full RF and bounded RAM-byte relation; NOT all38/arbitrary-program native refinement. Historical 38-case fast-adapter source equivalence remains pending",
+  "pinned_target": "BzeenoNativeDesignTarget.actual_target",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.BzeenoNativeDesignTarget", "Ex.External.BzeenoNativeGraphSimulationIdentity"],
+    "open_modules": ["CPUDesignTarget"], "binders": "", "arguments": []
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-comparator-fixed", "namespace": "ComparatorFix"},
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/BzeenoNativeDesignTarget.v",
+    "src/Ex/External/BzeenoNativeFixedProgramRefinement.v",
+    "src/Ex/External/BzeenoReq36All38Refinement.v",
+    "src/Ex/External/BzeenoNativePhaseTrace.v",
+    "src/Ex/External/BzeenoNativeRFFullPhase.v",
+    "src/Ex/External/BzeenoNativeCycleExecutionCertificate.v",
+    "src/Ex/External/BzeenoNativeGraphSimulationIdentity.v",
+    "src/Ex/External/BzeenoNativeRFXoriPhaseBridge.v"
+  ],
+  "preserve_roots": [
+    "src/Ex/External/BzeenoNativeProgramTokens.v",
+    "src/Ex/External/BzeenoNativeProgramTarget.v",
+    "src/Ex/External/BzeenoNative38ALU.v",
+    "src/Ex/External/BzeenoLLMAdapter.v",
+    "src/Ex/External/BzeenoLLMAdapterSlim.v",
+    "src/Ex/External/BzeenoBaselineRV32I38_BruteForce.v",
+    "src/Ex/Generated/BzeenoADDIAdapter_Firewalled.v",
+    "src/Ex/External/BzeenoImmDecodeFixed.v",
+    "src/Ex/External/BzeenoSourceFixedRegistry.v",
+    "src/Ex/External/BzeenoSourceFixedBoundaryCheck.v",
+    "src/Ex/External/BzeenoComparatorISAConnection.v"
+  ],
+  "bindings": {
+    "cycle": "BzeenoNativeExecutionTarget.target_step",
+    "commits": "BzeenoNativeExecutionTarget.target_commits",
+    "reset": "BzeenoNativeExecutionTarget.actual_reset",
+    "boot": "BzeenoNativeExecutionTarget.actual_boot",
+    "isa_initial": "BzeenoNativeISAConnection.isa0"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoNativeDesignTarget.checked_certificate",
+    "source_cycles": "BzeenoNativeLoopTrajectory.actual_cycle_valid",
+    "infinite": "BzeenoNativeDesignTarget.actual_source_certified_infinite_refinement",
+    "architecture_all_cycles": "BzeenoNativeDesignTarget.actual_architecture_at_every_cycle",
+    "whole_phase_rf_write": "BzeenoNativeRFFullPhase.actual_full_phase_rf_preserves_architecture (symbolic sampled-input premises; not all-program reachability)",
+    "dependent_xori_rf_run1": "BzeenoNativeRFXoriPhaseBridge.actual_dependent_xori_full_phase_rf_refines_run1 (separate XORI ROM; full RF bridge; checked infinite assembly is registered separately in bzeeno-xori.json, not a change to this target)"
+  },
+  "llm_replay_driver": "tools/llm_req36_replay.py",
+  "llm_driver_scope": "six family adapters over previously checked design-specific certificates"
+}

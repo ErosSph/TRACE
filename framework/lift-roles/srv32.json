@@ -1,0 +1,52 @@
+{
+ "design": "srv32",
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "kind": "ex_provider",
+ "provenance": {
+  "source": "tools/cpu_tmpl_lift.py reading the accepted srv32 EX module",
+  "rule": "generalized_rule G2"
+ },
+ "ast_require": "Srv32.Srv32AST",
+ "program": "Srv32AST.srv32_program",
+ "provider": {
+  "module": "TmplSrv32Ex.Srv32Ex.Srv32Ex",
+  "namespace": "TmplSrv32Ex",
+  "dir": "results/r-tmpl-srv32-ex-20261104-a4",
+  "file": "Srv32Ex.v"
+ },
+ "thm": {
+  "result": "{C}_ex_result",
+  "next": "{C}_ex_next",
+  "branch_t": "{C}_ex_branch_t",
+  "branch_n": "{C}_ex_branch_n",
+  "trap": "ex_trap_valid"
+ },
+ "wires": {
+  "result": 323,
+  "next_pc": 324,
+  "taken": 325,
+  "ill": 280,
+  "trap_a": 274,
+  "trap_b": 275
+ },
+ "operand_ports": [
+  {
+   "name": "rdata1",
+   "out": 245,
+   "zero": "rdata1_zero",
+   "fwd": "rdata1_fwd",
+   "bank": "rdata1_bank"
+  },
+  {
+   "name": "rdata2",
+   "out": 246,
+   "zero": "rdata2_zero",
+   "fwd": "rdata2_fwd",
+   "bank": "rdata2_bank"
+  }
+ ],
+ "ast_dir": [
+  "experiments/framework/generated/srv32",
+  "Srv32"
+ ]
+}

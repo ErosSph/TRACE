@@ -1,0 +1,43 @@
+{
+  "name": "boot_value_projection",
+  "kind": "generic_lemma",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_reset_level",
+    "description": "Candidate applicability only; kernel gates establish the rule instances."
+  },
+  "content": {
+    "libraries": [
+      "src/Lang/GeneralizedBootFacts.v"
+    ],
+    "generator": "tools/cpu_generalized_boot.py"
+  },
+  "instantiate": {
+    "type": "library"
+  },
+  "match": [
+    {
+      "library": "GeneralizedBootFacts"
+    }
+  ],
+  "covers": [
+    "boot"
+  ],
+  "learned_from": "angelo5fix",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "handoff-experiments-20261106.md \u00a77C"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-gpt-20261106/steel-boot-picks"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-boot-picks"
+  ],
+  "gate": {
+    "library_module": "Lang.GeneralizedBootFacts"
+  }
+}

@@ -1,0 +1,48 @@
+From Coq Require Import ZArith List Bool Lia.
+Require Import Lang.ExtendedSV Lang.ExtendedSVWordInvariant Lang.ExtendedSVRegisterBank Lang.ExtendedSVBankWriteStep Lang.ExtendedSVBankWriteBlk Lang.ExtendedSVBankAlignment Lang.ExtendedSVRootProjection Lang.ExtendedSVProcessSlice Srv32.Srv32AST TmplSrv32Edge.Srv32TmplEdge.
+Import ListNotations ExtendedSV ExtendedSVRegisterBank ExtendedSVBankWriteStep ExtendedSVBankWriteBlk ExtendedSVBankAlignment ExtendedSVRootProjection ExtendedSVProcessSlice Srv32AST.
+Local Open Scope Z_scope.
+Local Opaque PhaseSemantics phase_driven_state.
+Module @MOD@.
+Notation P := srv32_program (only parsing).
+Module E := TmplSrv32Edge.Srv32TmplEdge.Srv32TmplEdge.
+Lemma comb_unw_244 : comb_root_unwrittenb P 244%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma writers_244 : filter (writes_rootb 244%nat) (processes P) = [process_15]. Proof. vm_compute; reflexivity. Qed.
+Definition resetb_e : Expr := @RESETB@.
+Definition guard_e : Expr := @GUARD@.
+Definition data_e : Expr := @DATA@.
+Definition index_e : Expr := @INDEX@.
+Definition dst1 : Expr := @DST1@.
+Lemma body_shape : exists other, process_body process_15 = SSeq [SSeq [SIf resetb_e (SIf guard_e (SSeq [SAssign true data_e (LSel 32%nat (LVar 1024%nat 244%nat) index_e)]) SSkip) other]].
+Proof. eexists. unfold resetb_e, guard_e, data_e, index_e. vm_compute. reflexivity. Qed.
+Lemma idx_exact s : eval_expr s index_e = Z.of_nat 32 * eval_expr s dst1.
+Proof. unfold index_e, dst1. apply mul32_exact; [lia|vm_compute; lia|vm_compute; reflexivity]. Qed.
+Lemma idx_range s : 0 <= eval_expr s dst1 < 32.
+Proof. unfold dst1. cbn [eval_expr]. rewrite norm_mod. change (Z.of_nat 5) with 5. change (2 ^ 5) with 32. apply Z.mod_pos_bound; lia. Qed.
+Theorem rf_write_lane ev pre seed (i : Z) : changed_signal ev = 0%nat -> new_value ev = 1 -> read_signal pre 0%nat = 0 -> read_signal pre 1%nat = 1 -> E.NetWords pre -> CombLFP P seed pre ->
+  CombLFP P (write_signal pre (changed_signal ev) (new_value ev)) (phase_driven_state P ev pre) ->
+  eval_expr (phase_driven_state P ev pre) resetb_e <> 0 -> eval_expr (phase_driven_state P ev pre) guard_e <> 0 -> 0 <= i ->
+  lane_read 32%nat (read_signal (PhaseSemantics P ev pre) 244%nat) i =
+  if Z.eqb i (eval_expr (phase_driven_state P ev pre) dst1) then norm 32 (eval_expr (phase_driven_state P ev pre) data_e) else lane_read 32%nat (read_signal pre 244%nat) i.
+Proof. intros Hc Hv H0 H1 HW HL HD Hr Hg Hi. destruct body_shape as [other Hb].
+ refine (bank_phase_lane_guarded_blk P ev pre 244%nat process_15 resetb_e guard_e data_e 32%nat 1024%nat index_e other _ i comb_unw_244 _ Hb _ _ Hr Hg _ _ Hi).
+ - rewrite Hc; discriminate.
+ - vm_compute; lia.
+ - rewrite writers_244. cbn [filter]. rewrite (E.sel_rise_match_15 ev pre seed Hc Hv H0 H1 HW HL HD). reflexivity.
+ - apply idx_exact.
+ - pose proof (idx_range (phase_driven_state P ev pre)). lia.
+Qed.
+Theorem rf_write_off ev pre seed : changed_signal ev = 0%nat -> new_value ev = 1 -> read_signal pre 0%nat = 0 -> read_signal pre 1%nat = 1 -> E.NetWords pre -> CombLFP P seed pre ->
+  CombLFP P (write_signal pre (changed_signal ev) (new_value ev)) (phase_driven_state P ev pre) ->
+  eval_expr (phase_driven_state P ev pre) resetb_e <> 0 -> eval_expr (phase_driven_state P ev pre) guard_e = 0 ->
+  read_signal (PhaseSemantics P ev pre) 244%nat = read_signal pre 244%nat.
+Proof. intros Hc Hv H0 H1 HW HL HD Hr Hg. destruct body_shape as [other Hb].
+ refine (bank_phase_frame P ev pre 244%nat process_15 comb_unw_244 _ _ _).
+ - rewrite Hc; discriminate.
+ - rewrite writers_244. cbn [filter]. rewrite (E.sel_rise_match_15 ev pre seed Hc Hv H0 H1 HW HL HD). reflexivity.
+ - rewrite (process_updates_guard_off_blk P _ process_15 resetb_e guard_e _ other Hb ltac:(vm_compute; lia) Hr Hg). intros u [].
+Qed.
+End @MOD@.
+Print Assumptions @MOD@.rf_write_lane.
+Print Assumptions @MOD@.rf_write_off.
+

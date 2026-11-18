@@ -1,0 +1,16 @@
+
+From Coq Require Import ZArith List Bool Lia.
+Require Import coqutil.Z.BitOps Lang.ExtendedSV Lang.ExtendedSVSymExec Lang.ExtendedSVWordInvariant Lang.ExtendedSVSeqTree Lang.ExtendedSVRootProjection Lang.ExtendedSVBankAlignment
+ Lang.ExtendedSVCheckedAssignmentBinding Lang.ExtendedSVBankRebase Lang.ExtendedSVBankAlignment Ex.External.CPUImmediateShapes Steel.SteelAST
+ Ex.External.CPUISARegView Ex.External.CV32E40PReq40StateRel Ex.External.CPUClassTableInverse Ex.External.CPUGeneratedJointITree
+ Ex.External.CPUJumpFamilyProgramDomain Ex.External.CPUJumpFamilyProgramExecution Ex.External.CPUProgramROM Ex.External.CPUPipelineStages Ex.RvCore.FormalSpec
+ coqutil.Word.Interface coqutil.Word.Naive coqutil.Map.Interface coqutil.Map.Z_keyed_SortedListMap riscv.Utility.Utility riscv.Utility.Words32Naive riscv.Utility.DefaultMemImpl32 riscv.Utility.MkMachineWidth
+ TmplSteelLfp.SteelTmplLfp TmplSteelTarget.SteelTmplTarget TmplSteelCyc.SteelTmplCyc TmplSteelVal.SteelTmplVal TmplSteelFetch.SteelTmplFetch
+ TmplSteelRF.SteelTmplRF TmplSteelRam.SteelTmplRam TmplSteelFw.SteelTmplFw TmplSteelImm.SteelTmplImm TmplSteelImmJ.SteelTmplImmJ
+ TmplSteelCtl.SteelTmplCtl TmplLiftIsa.TmplLiftIsa TmplSteelLift.SteelTmplLift TmplSteelPre.SteelTmplPre.
+Import ListNotations ExtendedSVBankAlignment ExtendedSVRootProjection ExtendedSVSeqTree ExtendedSV ExtendedSVSymExec ExtendedSVWordInvariant ExtendedSVBankRebase ExtendedSVCheckedAssignmentBinding CPUImmediateShapes CV32E40PReq40StateRel SteelAST.
+Local Open Scope Z_scope.
+Local Opaque PhaseSemantics phase_driven_state.
+
+Require Import TmplSteelOp.SteelTmplOp.
+Import SteelTmplOp.SteelTmplOp.

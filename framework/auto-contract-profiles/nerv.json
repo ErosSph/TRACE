@@ -1,0 +1,1053 @@
+{
+ "pipeline_roles": {
+  "ast": {
+   "module": "NervLit.NervLitAST",
+   "file": "experiments/framework/generated/nerv-lit/NervLitAST.v",
+   "program": "NervLitAST.nerv_program",
+   "signal_table": "experiments/framework/generated/nerv-lit/report.json"
+  },
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "nerv_top.clock"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "nerv_top.reset"
+   }
+  },
+  "rf_write": {
+   "bank": {
+    "id": 42,
+    "width": 1024,
+    "path": "nerv_top.uut.regfile"
+   },
+   "process": "process_17"
+  }
+ },
+ "template_roles": {
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "nerv_top.clock"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "nerv_top.reset"
+   },
+   "clock_net": {
+    "id": 15,
+    "width": 1,
+    "path": "nerv_top.uut.clock"
+   },
+   "reset_idle_value": 0,
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential-process events are posedges that resolve through copy wires to primary input 0; no process is sensitive to the reset input (synchronous, active high: reset is read as data)",
+    "processes": [
+     "process_0",
+     "process_1",
+     "process_2",
+     "process_3",
+     "process_4",
+     "process_5",
+     "process_6",
+     "process_7",
+     "process_8",
+     "process_9",
+     "process_10",
+     "process_11",
+     "process_12",
+     "process_13",
+     "process_14",
+     "process_15",
+     "process_16",
+     "process_17"
+    ]
+   },
+   "convention": {
+    "source": "llm",
+    "rule": "active-high synchronous reset: \"idle\" is 0 (the template edge layer was written for active-low resetn = 1); the value is a manifest field, not an assumption about the design"
+   }
+  },
+  "reset_reg": {
+   "id": 109,
+   "width": 1,
+   "path": "nerv_top.uut.reset_q",
+   "process": "process_17",
+   "stall": {
+    "id": 17,
+    "width": 1,
+    "path": "nerv_top.uut.stall"
+   },
+   "stall_value": 0,
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential register assigned reset | (self & stall); stall is a comb constant"
+   }
+  },
+  "register_file": {
+   "bank": {
+    "id": 42,
+    "width": 1024,
+    "path": "nerv_top.uut.regfile"
+   },
+   "lanes": 32,
+   "lane_width": 32,
+   "process": "process_17",
+   "read_ports": [
+    {
+     "id": 54,
+     "width": 32,
+     "path": "nerv_top.uut.rs2_value",
+     "field": "rs2",
+     "index": "(EVar 5 48%nat)",
+     "word": 43
+    },
+    {
+     "id": 53,
+     "width": 32,
+     "path": "nerv_top.uut.rs1_value",
+     "field": "rs1",
+     "index": "(EVar 5 49%nat)",
+     "word": 43
+    }
+   ],
+   "write_index": {
+    "id": 107,
+    "width": 5,
+    "path": "nerv_top.uut.wr_rd"
+   },
+   "write_data": {
+    "id": 106,
+    "width": 32,
+    "path": "nerv_top.uut.next_rd"
+   },
+   "write_enable": {
+    "id": 105,
+    "width": 1,
+    "path": "nerv_top.uut.next_wr"
+   },
+   "write_index_scale": "(EBinary 12 BMul (EVar 5 107%nat) (EConst 12 32))",
+   "provenance": {
+    "source": "discovered",
+    "rule": "cpu_isa_trace: bank anchor, read ports bound to rs1/rs2 of the instruction word, write index bound to rd; the write is `if (en) bank[idx*32 +: 32] <= data` and is NOT guarded against index 0"
+   },
+   "x0": {
+    "source": "discovered",
+    "rule": "both read ports are `(field == 0) ? 0 : bank[field]` (read-side x0 gating, lane 0 is written but never observed); the ISA relation therefore leaves lane 0 free"
+   }
+  },
+  "instruction_word": {
+   "word": {
+    "id": 43,
+    "width": 32,
+    "path": "nerv_top.uut.insn"
+   },
+   "source_wire": {
+    "id": 20,
+    "width": 32,
+    "path": "nerv_top.uut.imem_data"
+   },
+   "opcode": {
+    "id": 52,
+    "width": 7,
+    "path": "nerv_top.uut.insn_opcode"
+   },
+   "funct3": {
+    "id": 50,
+    "width": 3,
+    "path": "nerv_top.uut.insn_funct3"
+   },
+   "funct7": {
+    "id": 47,
+    "width": 7,
+    "path": "nerv_top.uut.insn_funct7"
+   },
+   "rd": {
+    "id": 51,
+    "width": 5,
+    "path": "nerv_top.uut.insn_rd"
+   },
+   "rs1": {
+    "id": 49,
+    "width": 5,
+    "path": "nerv_top.uut.insn_rs1"
+   },
+   "rs2": {
+    "id": 48,
+    "width": 5,
+    "path": "nerv_top.uut.insn_rs2"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "the word is a comb copy of the synchronous instruction register imem_data; the field wires are the concatenation targets of the word (widths 7,5,5,3,5,7)"
+   }
+  },
+  "instruction_memory": {
+   "rom": {
+    "id": 2,
+    "width": 4096,
+    "path": "nerv_top.rom"
+   },
+   "data_reg": {
+    "id": 4,
+    "width": 32,
+    "path": "nerv_top.imem_data"
+   },
+   "address": {
+    "id": 7,
+    "width": 32,
+    "path": "nerv_top.imem_addr"
+   },
+   "process": "process_0",
+   "words": 128,
+   "index_bits": "address[8:2]",
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential register <= rom[address[8:2]] (registered read of the image array)"
+   },
+   "environment": {
+    "source": "llm",
+    "rule": "wrapper nerv_top.sv: image = the seeded initial value of the 128-word array (never written); fetch wraps above word 127 (the program domain stays inside the image); instruction memory is a SYNCHRONOUS port: data(t+1) = rom[addr(t)]"
+   }
+  },
+  "pc": {
+   "register": {
+    "id": 45,
+    "width": 32,
+    "path": "nerv_top.uut.pc"
+   },
+   "next": {
+    "id": 44,
+    "width": 32,
+    "path": "nerv_top.uut.npc"
+   },
+   "process": "process_17",
+   "reset_value_formula": "0 - (reset ? 4 : 0)",
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential register assigned from the comb next-pc wire; a later statement of the same block overrides it while reset | reset_q"
+   },
+   "instruction_address": {
+    "source": "discovered",
+    "rule": "the wrapper-visible instruction address is the comb copy chain imem_addr = npc, so the fetched word at t+1 is rom[npc(t)]"
+   }
+  },
+  "controller": {
+   "process": "process_354",
+   "next_pc": {
+    "id": 44,
+    "width": 32,
+    "path": "nerv_top.uut.npc"
+   },
+   "next_wr": {
+    "id": 105,
+    "width": 1,
+    "path": "nerv_top.uut.next_wr"
+   },
+   "next_rd": {
+    "id": 106,
+    "width": 32,
+    "path": "nerv_top.uut.next_rd"
+   },
+   "wr_rd": {
+    "id": 107,
+    "width": 5,
+    "path": "nerv_top.uut.wr_rd"
+   },
+   "cycle_insn": {
+    "id": 112,
+    "width": 1,
+    "path": "nerv_top.uut.cycle_insn"
+   },
+   "cycle_trap": {
+    "id": 113,
+    "width": 1,
+    "path": "nerv_top.uut.cycle_trap"
+   },
+   "cycle_intr": {
+    "id": 111,
+    "width": 1,
+    "path": "nerv_top.uut.cycle_intr"
+   },
+   "cycle_late_wr": {
+    "id": 114,
+    "width": 1,
+    "path": "nerv_top.uut.cycle_late_wr"
+   },
+   "mem_rd_enable": {
+    "id": 33,
+    "width": 1,
+    "path": "nerv_top.uut.mem_rd_enable"
+   },
+   "mem_wr_enable": {
+    "id": 29,
+    "width": 1,
+    "path": "nerv_top.uut.mem_wr_enable"
+   },
+   "illinsn": {
+    "id": 108,
+    "width": 1,
+    "path": "nerv_top.uut.illinsn"
+   },
+   "irq_num": {
+    "id": 104,
+    "width": 5,
+    "path": "nerv_top.uut.irq_num"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "the unique comb process that writes cycle_insn also writes npc, next_wr, next_rd, wr_rd (one `always @*` decision block; decoder flags are not registered)"
+   }
+  },
+  "commit": {
+   "condition": "cycle_insn = 1 /\\ mem_rd_enable = 0 (RVFI valid; cycle_trap/cycle_intr/cycle_late_wr cycles are outside the domain)",
+   "pc": {
+    "id": 45,
+    "width": 32,
+    "path": "nerv_top.uut.pc"
+   },
+   "insn_signal": {
+    "id": 112,
+    "width": 1,
+    "path": "nerv_top.uut.cycle_insn"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "ambiguous (the AST has no retirement signal; RVFI is compiled out). Decided from the RTL: regfile and pc are updated at the edge ending the cycle in which cycle_insn is 1, and the instruction is the one in imem_data at pc; nerv.sv computes next_rvfi_valid = (cycle_insn && !mem_rd_enable) || cycle_trap || cycle_late_wr; trap and late-write cycles do not occur in the jump-family domain and are proved absent. Matches the validated NervRun.step (1400 programs, 0 mismatches)"
+   }
+  },
+  "environment": {
+   "reset_edges": 1,
+   "reset_release": "after the falling edge of the reset cycle; the following cycle has reset_q = 1 (silent)",
+   "tied": {
+    "stall": 0,
+    "irq": 0,
+    "imem_fault": 0,
+    "dmem_fault": 0
+   },
+   "boot_address": 0,
+   "program_words_max": 101,
+   "provenance": {
+    "source": "llm",
+    "rule": "phase-A documented environment (20261104-nerv-import.md): nerv_top.sv wrapper, NV_BOOT = [(reset,1),(clock,1),(clock,0),(reset,0)], initial state all zero except the ROM image"
+   }
+  },
+  "classes": {
+   "count": 29,
+   "source": "tools/cpu_isa_classes.py",
+   "provenance": {
+    "source": "discovered",
+    "rule": "design-independent ISA class table; NERV has no registered decoder flags, the controller decides from the instruction fields in one process"
+   }
+  },
+  "kind": "pipelined_derived_clock",
+  "primary_clock": {
+   "id": 0,
+   "width": 1,
+   "path": "nerv_top.clock"
+  },
+  "primary_reset": {
+   "id": 1,
+   "width": 1,
+   "path": "nerv_top.reset"
+  },
+  "sequential_processes": [
+   {
+    "process": "process_0",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 3,
+      "width": 32,
+      "path": "nerv_top.ram0"
+     },
+     {
+      "id": 4,
+      "width": 32,
+      "path": "nerv_top.imem_data"
+     },
+     {
+      "id": 5,
+      "width": 32,
+      "path": "nerv_top.dmem_rdata"
+     }
+    ]
+   },
+   {
+    "process": "process_1",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 38,
+      "width": 1,
+      "path": "nerv_top.uut.mem_rd_enable_q"
+     },
+     {
+      "id": 39,
+      "width": 5,
+      "path": "nerv_top.uut.mem_rd_reg_q"
+     },
+     {
+      "id": 40,
+      "width": 5,
+      "path": "nerv_top.uut.mem_rd_func_q"
+     },
+     {
+      "id": 41,
+      "width": 1,
+      "path": "nerv_top.uut.mem_wr_enable_q"
+     }
+    ]
+   },
+   {
+    "process": "process_2",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 46,
+      "width": 32,
+      "path": "nerv_top.uut.imem_addr_q"
+     }
+    ]
+   },
+   {
+    "process": "process_3",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 137,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mstatus_value"
+     }
+    ]
+   },
+   {
+    "process": "process_4",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 141,
+      "width": 32,
+      "path": "nerv_top.uut.csr_misa_value"
+     }
+    ]
+   },
+   {
+    "process": "process_5",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 145,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mie_value"
+     }
+    ]
+   },
+   {
+    "process": "process_6",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 149,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mtvec_value"
+     }
+    ]
+   },
+   {
+    "process": "process_7",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 153,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mstatush_value"
+     }
+    ]
+   },
+   {
+    "process": "process_8",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 157,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mscratch_value"
+     }
+    ]
+   },
+   {
+    "process": "process_9",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 161,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mepc_value"
+     }
+    ]
+   },
+   {
+    "process": "process_10",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 165,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mcause_value"
+     }
+    ]
+   },
+   {
+    "process": "process_11",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 169,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mtval_value"
+     }
+    ]
+   },
+   {
+    "process": "process_12",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 173,
+      "width": 32,
+      "path": "nerv_top.uut.csr_mip_value"
+     }
+    ]
+   },
+   {
+    "process": "process_13",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 178,
+      "width": 1024,
+      "path": "nerv_top.uut.csr_hpm_counter_value"
+     }
+    ]
+   },
+   {
+    "process": "process_14",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 307,
+      "width": 1024,
+      "path": "nerv_top.uut.csr_hpm_counterh_value"
+     }
+    ]
+   },
+   {
+    "process": "process_15",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 436,
+      "width": 1024,
+      "path": "nerv_top.uut.csr_hpm_event_value"
+     }
+    ]
+   },
+   {
+    "process": "process_16",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 556,
+      "width": 32,
+      "path": "nerv_top.uut.csr_custom_value"
+     }
+    ]
+   },
+   {
+    "process": "process_17",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 15,
+       "width": 1,
+       "path": "nerv_top.uut.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "nerv_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 42,
+      "width": 1024,
+      "path": "nerv_top.uut.regfile"
+     },
+     {
+      "id": 45,
+      "width": 32,
+      "path": "nerv_top.uut.pc"
+     },
+     {
+      "id": 109,
+      "width": 1,
+      "path": "nerv_top.uut.reset_q"
+     }
+    ]
+   }
+  ],
+  "fires_on_rise": [
+   "process_0",
+   "process_1",
+   "process_2",
+   "process_3",
+   "process_4",
+   "process_5",
+   "process_6",
+   "process_7",
+   "process_8",
+   "process_9",
+   "process_10",
+   "process_11",
+   "process_12",
+   "process_13",
+   "process_14",
+   "process_15",
+   "process_16",
+   "process_17"
+  ],
+  "fires_on_fall": [],
+  "rf_write_edge": "rise",
+  "edge_provenance": {
+   "source": "discovered",
+   "rule": "sequential process event specs (Posedge clk, Negedge resetn); clock/reset nets traced through copy/not comb wires to the primary inputs (tools/cpu_tmpl_edge.py nets); fire lists computed by simulating the polarities"
+  }
+ },
+ "route": {
+  "date": "20261104",
+  "rst_idle": 1,
+  "note": "NERV: reset convention of the accepted chain = edge a1 (TMPL_RST_IDLE default 1; the reset layer edgeR states the explicit reset values, edge a2 with 0 was \"not needed\"). Missing vs Steel/srv32: cyc, val, rf, ram, fetch link, imm, mis, INV layers.",
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "module": "NervLfp",
+    "namespace": "TmplNervLfp",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl_lazy.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-lfp-20261104-a3",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_lfpnl_lazy.py"
+   },
+   {
+    "name": "target",
+    "layer": "target",
+    "module": "NervTmplTarget",
+    "namespace": "TmplNervTarget",
+    "cmd": [
+     "tools/cpu_tmpl_copy.py",
+     "--src",
+     "framework/template-sources/NervTmplTarget.v.in",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-target-20261104-a1",
+    "provenance": "llm_written",
+    "generator": "tools/cpu_tmpl_copy.py framework/template-sources/NervTmplTarget.v.in"
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "module": "NervTmplEdge",
+    "namespace": "TmplNervEdge",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-edge-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py --fast-filter"
+   },
+   {
+    "name": "edger",
+    "layer": "reset",
+    "module": "NervTmplEdgeR",
+    "namespace": "TmplNervEdgeR",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-edger-20261104-a2",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py --reset-events"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "module": "NervTmplStage",
+    "namespace": "TmplNervStage",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-stage-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py"
+   },
+   {
+    "name": "rise",
+    "layer": "stage",
+    "module": "NervTmplRise",
+    "namespace": "TmplNervRise",
+    "cmd": [
+     "tools/cpu_tmpl_nvrise.py",
+     "gen",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-rise-20261104-a3",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvrise.py"
+   },
+   {
+    "name": "wire",
+    "layer": "wire",
+    "module": "NervTmplWire",
+    "namespace": "TmplNervWire",
+    "cmd": [
+     "tools/cpu_tmpl_nvwire.py",
+     "gen",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-wire-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvwire.py"
+   },
+   {
+    "name": "ctlpre",
+    "layer": "ctl",
+    "module": "NervTmplCtlPre",
+    "namespace": "TmplNervCtlPre",
+    "cmd": [
+     "tools/cpu_tmpl_nvctl.py",
+     "gen-pre",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-ctlpre-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvctl.py gen-pre"
+   },
+   {
+    "name": "ctl",
+    "layer": "ctl",
+    "module": "NervTmplCtl",
+    "namespace": "TmplNervCtl",
+    "cmd": [
+     "tools/cpu_tmpl_nvctl.py",
+     "gen-cls",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-nerv-ctl-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_nvctl.py gen-cls"
+   }
+  ]
+ }
+}

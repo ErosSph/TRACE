@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "design": "picorv32-original-source-register-logic-loop",
+  "backend": "original imported ExtendedSV source; pinned dual-port RF configuration, arbitrary explicit unknown choices and real phase scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; not a four-state equivalence theorem",
+  "verification_scope": "true reset with existing zero RF seed; actual ADDI x1,x0,1 then ADDI x2,x0,7 startup; XOR/OR/AND x1,x1,x2 at PC8 and JAL x0,-4 at PC12 forever. Original run1 and full architectural cut relation PC nextPC whole RF byte-ROM and existing zero-RAM environment. Not arbitrary programs or all29. LOAD/STORE excluded by verification environment/user scope, not absent from Pico hardware",
+  "pinned_target": "PicoSourceRegisterLogicDesignTarget.actual_target op schedule",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.PicoSourceRegisterLogicDesignTarget", "Ex.External.PicoSourceLogicALU", "Ex.External.PicoSourceChoiceRuntime"],
+    "open_modules": ["PicoSourceRegisterLogicDesignTarget"],
+    "binders": "(op : PicoSourceLogicALU.LogicOp) (schedule : PicoSourceChoiceRuntime.ChoiceSchedule)",
+    "arguments": ["op", "schedule"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/pico-rf-writer", "namespace": "PicoRF"},
+    {"directory": "experiments/framework/generated/pico-unknown-candidate-final", "namespace": "PicoUnknown"}
+  ],
+  "proof_roots": ["src/Ex/External/PicoSourceRegisterLogicDesignTarget.v"],
+  "preserve_roots": ["src/Ex/External/PicoSourceLogicJALLoopITree.v", "src/Ex/External/PicoSourceRegisterLogicJALLoopITree.v", "src/Ex/External/CPUCommitBoundaryTarget.v"],
+  "bindings": {
+    "target": "framework pins original source runtime, scheduler, reset, boot, ISA image and complete architectural relation; candidate provides proof symbol only",
+    "initial_scope": "existing zero-seeded RF, not arbitrary power-on RF cleared by reset",
+    "source_version": "same PicoUnknownInputAST and explicit ChoiceSchedule as accepted original-source immediate logic loops"
+  },
+  "proof_providers": {
+    "certificate": "PicoSourceRegisterLogicDesignTarget.checked_certificate",
+    "infinite": "PicoSourceRegisterLogicDesignTarget.accepted_original_register_logic_infinite_refinement"
+  }
+}

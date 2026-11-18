@@ -1,0 +1,122 @@
+{
+ "design": "angelo5fix",
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "kind": "overlay_provider",
+ "lift_ready": false,
+ "provenance": {
+  "source": "proof-optimization-log/20261104-template-angelo5fix.md Continuations 5-10",
+  "rule": "roles prepared by lift stage; builder for overlay_provider not yet written"
+ },
+ "ast_dir": [
+  "experiments/framework/generated/angelo5-fixed",
+  "Angelo5"
+ ],
+ "providers": {
+  "decoder": {
+   "dir": "results/r-tmpl-a5-dec-20261104-a3",
+   "module": "TmplA5Dec.A5TmplDec.A5TmplDec",
+   "thm": "{C}_dec",
+   "facts": "facts_{C}",
+   "outs": "outs_{C}",
+   "shape": "DecOut d outs_C under FactsHold d facts_C (decoder constants i_alu 210 / i_opcode 221 / flags); immediates eval_aimm_{I,B,U,J}: eval_expr s (aimm_X W) = norm 32 (isa_imm_X (eval_expr s W))"
+  },
+  "alu": {
+   "dir": "results/r-tmpl-a5-alu-20261104-a1",
+   "module": "TmplA5Alu.A5TmplAlu.A5TmplAlu",
+   "thm": "{C}_alu",
+   "root": 270,
+   "shape": "norm 32 (read fixed 270) = norm 32 (eval_expr fixed alu_C), alu_C a closed Expr (overlay result) over the operand wires a = ECond (262|265) 226 213, b = ECond (257|261) 215 217"
+  },
+  "exec_control": {
+   "dir": "results/r-tmpl-a5-ovlex-20261104-a1",
+   "module": "TmplA5OvlEx.A5TmplOvlEx.A5TmplOvlEx",
+   "roots": {
+    "rd_d": 271,
+    "wr_rd_d": 272,
+    "rd_valid_d": 273,
+    "next_pc": 228,
+    "change_pc": 229,
+    "flush": 242,
+    "stall": 240,
+    "a_pc": 274
+   }
+  },
+  "csr_misalign": {
+   "dir": "results/r-tmpl-a5-ovlcsr-20261104-a1",
+   "module": "TmplA5OvlCsr.A5TmplOvlCsr.A5TmplOvlCsr",
+   "roots": {
+    "is_load_misaligned": 408,
+    "is_store_misaligned": 409,
+    "is_inst_addr_misaligned": 410,
+    "new_pc": 405
+   }
+  },
+  "writeback": {
+   "dir": "results/r-tmpl-a5-ovlwb-20261104-a1",
+   "module": "TmplA5OvlWb.A5TmplOvlWb.A5TmplOvlWb",
+   "premises": [
+    "opcode_load 319 = 0",
+    "opcode_system 320 = 0",
+    "go_to_trap 330 = 0",
+    "return_from_trap 331 = 0"
+   ]
+  },
+  "forwarding": {
+   "dir": "results/r-tmpl-a5-fwd-20261104-a7",
+   "module": "TmplA5Fwd.A5TmplFwd.A5TmplFwd",
+   "thm": [
+    "fwd_106",
+    "fwd_107",
+    "fwd_105"
+   ],
+   "shape": "norm 32 (read 106|107) = pure_N s b1..b7 (decision tree over 7 atom bits; leaves are reads of 111/115/101 or 0); force-stall 105"
+  },
+  "register_file": {
+   "dir": "results/r-tmpl-a5-rf-20261104-a1",
+   "module": "TmplA5RF.A5TmplRF.A5TmplRF"
+  },
+  "memory": {
+   "dir": "results/r-tmpl-a5-ovlmem-20261104-a2",
+   "module": "TmplA5OvlMem.A5TmplOvlMem.A5TmplOvlMem",
+   "roots": [
+    307,
+    309,
+    310,
+    311,
+    312
+   ]
+  }
+ },
+ "lift_obligations": [
+  {
+   "id": "A1",
+   "what": "{C}_alu_isa: unfold alu_C with eval_expr under facts_C, operands a/b wires -> uw (reg s rs1|rs2) / norm 32 imm; close with CPUClassValueBridge.bridge_C (result 270 = uw (result_word s i))",
+   "needs": "decoder (flags as constants), alu, operand-mux conditions 262/265/257/261 decided by facts_C"
+  },
+  {
+   "id": "A2",
+   "what": "forwarding atoms -> pend: atom1 = (norm 5 (read 103) = norm 5 (read 108) /\\ read 109 = 1 /\\ read 112 = 1) etc.; statement `norm 32 (read 106|107) = pend we rd v view rs` with rs universally quantified (same pattern as Srv32TmplLift.rdata1_pend / pend_sel)",
+   "needs": "stage tags from the INV (ALU tag, MEM tag, !110, 0==rs1, 0==rs2)"
+  },
+  {
+   "id": "A3",
+   "what": "exec_control next_pc 228 / change_pc 229 / flush 242 -> ipc / isa_branch_guard (LI.ipc, bridge_B*, clear0 lemmas as in SteelTmplLift)",
+   "needs": "overlay expressions over pc/imm/rs1 low bits; undecided branch guard y[0] stays an ECond merge: needs a destruct on the compare like the Steel branch closer"
+  },
+  {
+   "id": "A4",
+   "what": "is_inst_addr_misaligned 410 = 0 and go_to_trap 330 = 0 from TmplLiftIsa.isa_pc_ok (target mod 4 = 0); the repaired JALR clears bit 0 of new_pc 405, so misaligned follows arithmetically from a 4-aligned target (bit1_m4 / bit1_land of SteelTmplLift generalise)",
+   "needs": "CSR register invariant for go_to_trap_q / return_from_trap_q (stage2csr)"
+  },
+  {
+   "id": "A5",
+   "what": "register effect: rd_d 271 / wr_rd_d 272 / rd_valid_d 273 vs TmplLiftIsa.isa_eff (dpay); rd field via V.bs_norm (LiftRd)",
+   "needs": "one-cycle RF read delay relation (rf2_updates), not done by the driver"
+  }
+ ],
+ "reuse": [
+  "TmplLiftIsa (isa_eff, ipc, isa_pc, isa_pc_ok, isa_pc_even, clear0_jalr, tb0_norm, boolz_bool)",
+  "pend / fwd_we / RFV / pend_sel pattern of Srv32TmplLift (copy into the module, same text)",
+  "bit1_m4, bit1_land, m4_m2 helpers (SteelTmplLift2 header)"
+ ]
+}

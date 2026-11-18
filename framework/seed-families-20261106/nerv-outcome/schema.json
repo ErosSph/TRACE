@@ -1,0 +1,206 @@
+{
+  "module": "NervAllOutcome",
+  "preamble": "preamble.v.in",
+  "expected_classes": [
+    "Add",
+    "Sub",
+    "Sll",
+    "Slt",
+    "Sltu",
+    "Xor",
+    "Srl",
+    "Sra",
+    "Or",
+    "And",
+    "Addi",
+    "Slti",
+    "Sltiu",
+    "Xori",
+    "Ori",
+    "Andi",
+    "Slli",
+    "Srli",
+    "Srai",
+    "Lui",
+    "Auipc",
+    "Jal",
+    "Jalr",
+    "Beq",
+    "Bne",
+    "Blt",
+    "Bge",
+    "Bltu",
+    "Bgeu"
+  ],
+  "export": "ob_out_@CLASS@",
+  "roles": {
+    "Add": {},
+    "Sub": {},
+    "Sll": {},
+    "Slt": {},
+    "Sltu": {},
+    "Xor": {},
+    "Srl": {},
+    "Sra": {},
+    "Or": {},
+    "And": {},
+    "Addi": {},
+    "Slti": {},
+    "Sltiu": {},
+    "Xori": {},
+    "Ori": {},
+    "Andi": {},
+    "Slli": {},
+    "Srli": {},
+    "Srai": {},
+    "Lui": {},
+    "Auipc": {},
+    "Jal": {},
+    "Jalr": {},
+    "Beq": {},
+    "Bne": {},
+    "Blt": {},
+    "Bge": {},
+    "Bltu": {},
+    "Bgeu": {}
+  },
+  "families": [
+    {
+      "seed": "seed-Add.v.in",
+      "representative": "Add",
+      "classes": [
+        "Add"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Sub.v.in",
+      "representative": "Sub",
+      "classes": [
+        "Sub",
+        "Xor",
+        "Or",
+        "And"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Sll.v.in",
+      "representative": "Sll",
+      "classes": [
+        "Sll",
+        "Srl",
+        "Sra"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Slt.v.in",
+      "representative": "Slt",
+      "classes": [
+        "Slt",
+        "Sltu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Addi.v.in",
+      "representative": "Addi",
+      "classes": [
+        "Addi",
+        "Xori",
+        "Ori",
+        "Andi"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Slti.v.in",
+      "representative": "Slti",
+      "classes": [
+        "Slti",
+        "Sltiu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Slli.v.in",
+      "representative": "Slli",
+      "classes": [
+        "Slli",
+        "Srli",
+        "Srai"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Lui.v.in",
+      "representative": "Lui",
+      "classes": [
+        "Lui"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Auipc.v.in",
+      "representative": "Auipc",
+      "classes": [
+        "Auipc"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Jal.v.in",
+      "representative": "Jal",
+      "classes": [
+        "Jal"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Jalr.v.in",
+      "representative": "Jalr",
+      "classes": [
+        "Jalr"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    },
+    {
+      "seed": "seed-Beq.v.in",
+      "representative": "Beq",
+      "classes": [
+        "Beq",
+        "Bne",
+        "Blt",
+        "Bge",
+        "Bltu",
+        "Bgeu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "results/r-rerun-nerv-cls-20261106-a1/NervRrCls.v",
+      "source_sha256": "93ed294fa512c03c77ef1d84b663f57214b6881f98f999fcb1f3c2c4c22e0d38"
+    }
+  ]
+}

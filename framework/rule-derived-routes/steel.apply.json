@@ -1,0 +1,416 @@
+{
+ "date": "20261104",
+ "rst_idle": 0,
+ "env": {},
+ "stages": [
+  {
+   "name": "lfp",
+   "layer": "lfp",
+   "module": "SteelTmplLfp",
+   "namespace": "TmplSteelLfp",
+   "ref": "results/r-tmpl-steel-lfp-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_lfpnl.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_lfpnl.py",
+   "rules": [
+    "lfp_nolatch_cert"
+   ],
+   "note": "rule-derived (lfp_nolatch_cert)"
+  },
+  {
+   "name": "target",
+   "layer": "target",
+   "module": "SteelTmplTarget",
+   "namespace": "TmplSteelTarget",
+   "cmd": [
+    "tools/cpu_tmpl_sttarget.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--pad-seed",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-steel-target-20261104-a1",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_sttarget.py",
+   "supersedes": "results/r-tmpl-steel-target-20261104-a1",
+   "note": "seed_x padded to 334 cells (fixes Pre unsatisfiable at the real reset); the route-steel-20261104-reg1 dir was built with the unpadded a1 text (ref kept for comparison)",
+   "residual": true
+  },
+  {
+   "name": "edge",
+   "layer": "edge",
+   "module": "SteelTmplEdge",
+   "namespace": "TmplSteelEdge",
+   "ref": "results/r-tmpl-steel-edge-20261104-a3",
+   "cmd": [
+    "tools/cpu_tmpl_edge.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--fast-filter",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "rules": [
+    "edge_derived_clock",
+    "edge_fast_filter"
+   ],
+   "note": "rule-derived (edge_derived_clock,edge_fast_filter)"
+  },
+  {
+   "name": "stage",
+   "layer": "stage",
+   "module": "SteelTmplStage",
+   "namespace": "TmplSteelStage",
+   "ref": "results/r-tmpl-steel-stage-20261104-a3",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "stage_seqtree"
+   ],
+   "note": "rule-derived (stage_seqtree)"
+  },
+  {
+   "name": "frame",
+   "layer": "frame",
+   "module": "SteelTmplFrame",
+   "namespace": "TmplSteelFrame",
+   "ref": "results/r-tmpl-steel-frame-20261104-a1",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--frame",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "frame_fall_hold"
+   ],
+   "note": "rule-derived (frame_fall_hold)"
+  },
+  {
+   "name": "cyc",
+   "layer": "cycle",
+   "module": "SteelTmplCyc",
+   "namespace": "TmplSteelCyc",
+   "cmd": [
+    "tools/cpu_tmpl_stcyc.py",
+    "--stage",
+    "{dir:stage}",
+    "--frame",
+    "{dir:frame}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-steel-cyc-20261104-a1",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_stcyc.py",
+   "residual": true
+  },
+  {
+   "name": "val",
+   "layer": "value",
+   "module": "SteelTmplVal",
+   "namespace": "TmplSteelVal",
+   "cmd": [
+    "tools/cpu_tmpl_stval.py",
+    "--stage",
+    "{dir:stage}",
+    "--cyc",
+    "{dir:cyc}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-steel-val-20261104-a1",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_stval.py",
+   "residual": true
+  },
+  {
+   "name": "fetch",
+   "layer": "fetch",
+   "module": "SteelTmplFetch",
+   "namespace": "TmplSteelFetch",
+   "cmd": [
+    "tools/cpu_tmpl_stfetch.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "llm_written",
+   "generator": "tools/cpu_tmpl_stfetch.py + framework/template-sources/SteelFetchCore.v.in",
+   "note": "fetch link read_data = rom word (pack_word, fetch_link)",
+   "residual": true
+  },
+  {
+   "name": "rf",
+   "layer": "rf",
+   "module": "SteelTmplRF",
+   "namespace": "TmplSteelRF",
+   "cmd": [
+    "tools/cpu_tmpl_strf.py",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-steel-rf-20261104-a2",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_strf.py (src/Lang/ExtendedSVBankRebaseRst.v)",
+   "residual": true
+  },
+  {
+   "name": "ram",
+   "layer": "ram",
+   "module": "SteelTmplRam",
+   "namespace": "TmplSteelRam",
+   "cmd": [
+    "tools/cpu_tmpl_strf.py",
+    "--ram",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-steel-ram-20261104-a1",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_strf.py --ram",
+   "residual": true
+  },
+  {
+   "name": "ctl",
+   "layer": "ctl",
+   "module": "SteelTmplCtl",
+   "namespace": "TmplSteelCtl",
+   "cmd": [
+    "tools/cpu_tmpl_stctl_run.py",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-steel-ctl-20261104-a3",
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_stctl.py (Fast4 engine, eqchain2_out)",
+   "residual": true
+  },
+  {
+   "name": "mis",
+   "layer": "domain",
+   "module": "SteelTmplMis",
+   "namespace": "TmplSteelMis",
+   "cmd": [
+    "tools/cpu_tmpl_stctl_run.py",
+    "--kind",
+    "mis",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_stctl.py --kind mis",
+   "note": "misaligned_instruction_address (238) as a function of the jump-family data, without the premise 238 = 0",
+   "residual": true
+  },
+  {
+   "name": "imm",
+   "layer": "imm",
+   "module": "SteelTmplImm",
+   "namespace": "TmplSteelImm",
+   "cmd": [
+    "tools/cpu_tmpl_stctl_run.py",
+    "--kind",
+    "imm",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_stctl.py --kind imm",
+   "note": "immediates 205 = isa_imm_X w for 15 classes; kernel-hang fix: rewrite with eq_refl lemmas instead of cbn on the EReplicate wire 211",
+   "residual": true
+  },
+  {
+   "name": "fw",
+   "layer": "fetch",
+   "module": "SteelTmplFw",
+   "namespace": "TmplSteelFw",
+   "cmd": [
+    "tools/cpu_tmpl_stfw.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_stfw.py",
+   "note": "fetch wires: w_R (checked assignment binding) for 217,24,221,219,220,224,225 and fetch_wire: 217 = read_data when operating (203=0,170=1,230=0,263=0)",
+   "residual": true
+  }
+ ],
+ "rule_applied": true,
+ "residual_stages": [
+  "target",
+  "cyc",
+  "val",
+  "fetch",
+  "rf",
+  "ram",
+  "ctl",
+  "mis",
+  "imm",
+  "fw"
+ ],
+ "rule_stages": [
+  "lfp",
+  "edge",
+  "stage",
+  "frame"
+ ],
+ "fetch": {
+  "ram": 15,
+  "read_data": 11,
+  "hold_cond": 16,
+  "invalid": 17,
+  "word_index": 18,
+  "words": 128,
+  "ast": "Steel.SteelAST"
+ },
+ "hand_fields_kept": [
+  "fetch",
+  "fetchwire"
+ ],
+ "fetchwire": {
+  "word": 217,
+  "copy": 24,
+  "mem": 11,
+  "roots": [
+   217,
+   24,
+   221,
+   219,
+   220,
+   224,
+   225
+  ],
+  "conds": [
+   [
+    203,
+    1,
+    0
+   ],
+   [
+    170,
+    1,
+    1
+   ],
+   [
+    230,
+    1,
+    0
+   ],
+   [
+    263,
+    1,
+    0
+   ]
+  ]
+ },
+ "residual_obligations": [
+  {
+   "layer": "rf",
+   "reason": "rf_rebased_bank: write shape reset_first has no generic generator",
+   "hint": [
+    "ExtendedSVBankRebase",
+    "ExtendedSVBankRebaseRst"
+   ],
+   "rule": "rf_rebased_bank"
+  },
+  {
+   "layer": "target",
+   "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+   "hint": []
+  },
+  {
+   "layer": "cycle",
+   "reason": "cycle composition / register values on the driven state",
+   "hint": []
+  },
+  {
+   "layer": "fetch",
+   "reason": "fetch link (instruction memory read = ROM word)",
+   "hint": []
+  },
+  {
+   "layer": "ctl",
+   "reason": "per-class control and datapath facts",
+   "hint": [
+    "engine_fast4:ExtendedSVFast4",
+    "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain",
+    "slice_exec:ExtendedSVSliceExec",
+    "slice_root_fact:ExtendedSVSliceRootFact"
+   ]
+  },
+  {
+   "layer": "domain",
+   "reason": "domain premises (misaligned / trap = 0 from check_program)",
+   "hint": []
+  },
+  {
+   "layer": "lift",
+   "reason": "lift builder needs framework/lift-roles/<D>.json (provider module, wire roles)",
+   "hint": [
+    "lift_isa",
+    "lift_ctl_provider"
+   ]
+  },
+  {
+   "layer": "closure",
+   "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+   "hint": [
+    "closure_state_inv"
+   ]
+  }
+ ]
+}

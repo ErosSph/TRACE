@@ -1,0 +1,16 @@
+{
+ "name": "rf_rebased_reset_first",
+ "kind": "layer_generator",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {"function": "p_rf_rebased_reset_first", "description": "rebased bank written `if reset {constant lane writes} else if we {bank[(rd-1)*32 +: 32] <= wb}`"},
+ "content": {"libraries": ["src/Lang/ExtendedSVBankRebaseRst.v"], "generator": "tools/cpu_tmpl_strf.py"},
+ "instantiate": {"type": "stage", "layer": "rf", "name": "rf", "provenance": "generalized_rule",
+                 "cmd": ["tools/cpu_tmpl_strf.py", "--module", "{module}", "--out", "{out}"]},
+ "match": [{"script": "tools/cpu_tmpl_strf.py", "forbids_args": ["--ram"]}],
+ "covers": ["rf"],
+ "learned_from": "steel", "learned_at": "2026-11-04T12:41",
+ "learned_evidence": ["20261104-stage-driver.md (rebased RF with read-port operand clauses 258/259)"],
+ "reused_by": [],
+ "gate": {"module": "SteelTmplRF", "namespace": "TmplSteelRF"},
+ "origin": "Steel rf stage (generator written for Steel); candidate for promotion"
+}

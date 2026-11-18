@@ -1,0 +1,83 @@
+{
+  "design": "Bzeeno (repaired BzeenoLoadUseJal, configured input 556b0d6b)",
+  "module": "BzeenoSkeleton",
+  "mode": "ctx",
+  "requires": [
+    "GeneratedRuntimeInput.ConfiguredAST",
+    "Lang.ExtendedSV",
+    "Lang.ExtendedSVWordInvariant",
+    "Lang.ExtendedSVScalarHistory",
+    "Lang.ExtendedSVCaptureBirth",
+    "Lang.ExtendedSVCapturedPending",
+    "Lang.ExtendedSVPackedROM",
+    "Ex.External.CPUProgramROM",
+    "Ex.External.CPUOriginalISAReference",
+    "Ex.External.CPUBranchFamilyProgramDomain",
+    "coqutil.Word.Interface",
+    "coqutil.Word.Bitwidth",
+    "coqutil.Map.Interface",
+    "coqutil.Byte",
+    "riscv.Utility.Utility",
+    "GeneratedCapturedHistoryBoot.CapturedHistoryBoot",
+    "GeneratedPhasePendingCommit.PhasePendingCommit",
+    "GeneratedFetchReference.FetchReference",
+    "GeneratedBranchFrontier.BranchFrontier",
+    "GeneratedClockCycleJoint.CycleJoint",
+    "GeneratedBranchCycle.BranchCycle",
+    "GeneratedCommitPC.CommitPC",
+    "GeneratedNormalWrite.NormalWrite",
+    "GeneratedAdmissionQueue.AdmissionQueue",
+    "GeneratedBranchITree.BranchITree",
+    "Ex.External.BzeenoStagedRising",
+    "Ex.External.BzeenoStagedCycleShape",
+    "Ex.External.BzeenoStagedPhysical",
+    "Ex.External.BzeenoStagedPhysicalBack",
+    "Ex.External.BzeenoStagedCycle",
+    "Ex.External.BzeenoStagedLocal"
+  ],
+  "imports": [
+    "ExtendedSV",
+    "ExtendedSVWordInvariant",
+    "ExtendedSVScalarHistory",
+    "ExtendedSVCaptureBirth",
+    "CPUOriginalISAReference",
+    "BzeenoStagedPhysical",
+    "BzeenoStagedPhysicalBack"
+  ],
+  "prelude": [
+    "Local Notation reference_pc := GeneratedFetchReference.FetchReference.recorded_pc.",
+    "Local Opaque BzeenoLoadUseJalASTConfigured3122be4a95.bzeeno_load_use_jal_program PhaseSemantics phase_run."
+  ],
+  "module_prelude": [
+    "Module BI:=GeneratedBranchITree.BranchITree."
+  ],
+  "context": "Context {word:Interface.word 32}{BW:Bitwidth 32}{Registers:map.map Z word}{Mem:map.map word byte}\n {word_ok:word.ok word}{registers_ok:map.ok Registers}{mem_ok:map.ok Mem}.",
+  "params": "(words:list Z)(HC:CPUBranchFamilyProgramDomain.check_program words=true)",
+  "args": "words HC",
+  "runtime": "list Event",
+  "token": "Token",
+  "fields": {
+    "step": "BI.actual_cycle",
+    "commits": "BI.actual_observer words",
+    "effect": "eff",
+    "pc": "reference_pc",
+    "effect_sound": "BzeenoStagedCycle.eff_sound",
+    "stages": "stages words",
+    "arch": "arch words",
+    "front": "front words",
+    "stage": "stage_rel words"
+  },
+  "rank": "BI.actual_rank words",
+  "boot": "[]",
+  "initial": "initial words",
+  "reset": "[]",
+  "fill": {
+    "goals": {
+      "obligation": "BzeenoStagedLocal.obligation_ctx words HC",
+      "rank": "BzeenoStagedCycle.rank_decreases words",
+      "boot": "BzeenoStagedCycle.boot_joint words",
+      "startup": "ltac:(reflexivity)"
+    },
+    "reference": "BI.actual_checked_program_infinite_itree words HC"
+  }
+}

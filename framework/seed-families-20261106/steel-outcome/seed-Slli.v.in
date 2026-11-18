@@ -1,0 +1,12 @@
+Theorem @CLASS@_out d w (f:FormalSpec.State) @ARGS@ : Ctx d w f -> Decode.decode Decode.RV32I w = Decode.IInstruction (Decode.@CLASS@ @ARGS@) ->
+ LI.ipc f (Decode.@CLASS@ @ARGS@) mod 4 = 0 -> LI.jalr_ok (Decode.@CLASS@ @ARGS@) -> Outcome d f (Decode.@CLASS@ @ARGS@).
+Proof. intros C Hdec Hm Hj. pose proof C as [[seed HL] Hregs].
+ destruct (CI.inv_@CLASS@ w @ARGS@ Hdec) as [E Hb]. split_all.
+ pose proof (LT.@CLASS@_lift seed d f @ARGS@ (norm 32 (isa_imm_I w)) w) as K. subst_fields. cbn [LI.jalr_ok] in Hj.
+ pose proof (IM.@CLASS@_imm seed d w 0 0 0 0) as Q. discharge Q. destruct Q as [_ Q205].
+ discharge K. split_all.
+ unfold Outcome. cbn [LI.dwr LI.drd LI.dval].
+ match goal with K0 : DecOut d Pv.ctl_@CLASS@ |- _ => refine (conj (decout_sub d Pv.ctl_@CLASS@ ctl_common K0 ltac:(vm_compute; reflexivity)) (conj (K0 ((215%nat,1%nat),1) ltac:(cbv [Pv.ctl_@CLASS@]; pick_in)) _)) end.
+ refine (conj _ (conj _ (conj _ _))).
+ all: first [assumption | (intros _; split; assumption) | (let H := fresh in intro H; discriminate H)].
+Qed.

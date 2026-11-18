@@ -1,0 +1,50 @@
+{
+  "name": "boot_phase_certificate",
+  "kind": "generic_lemma",
+  "proof_author": "LLM-generated: OpenAI Astra medium; reviewed by OpenAI Codex",
+  "pattern": {
+    "function": "p_reset_level",
+    "description": "Final-phase length/LFP seal plus full read-table projections; concrete prefix length, equality witnesses, phase rules and NI facts remain explicit."
+  },
+  "content": {
+    "libraries": [
+      "framework/generalization-20261107/boot/BootCertificate.v"
+    ],
+    "generator": "tools/cpu_generalized_boot_v2.py"
+  },
+  "instantiate": {
+    "type": "generator",
+    "cmd": [
+      "tools/cpu_generalized_boot_v2.py",
+      "{schema}",
+      "--out",
+      "{out}"
+    ]
+  },
+  "match": [
+    {
+      "generator": "cpu_generalized_boot_v2"
+    }
+  ],
+  "covers": [
+    "boot"
+  ],
+  "learned_from": "angelo5fix",
+  "learned_at": "2026-11-07",
+  "learned_evidence": [
+    "results/generalization-20261107-boot-pipeline"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-20261107-boot-steel"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-20261107-boot-steel"
+  ],
+  "residual_llm_work": "Final-phase length/LFP seal plus full read-table projections; concrete prefix length, equality witnesses, phase rules and NI facts remain explicit.",
+  "gate": {
+    "validated_output": "results/generalization-20261107-boot-pipeline"
+  }
+}

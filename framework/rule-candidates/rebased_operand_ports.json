@@ -1,0 +1,55 @@
+{
+ "name": "rebased_operand_ports",
+ "kind": "layer_generator",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {
+  "function": "p_rebased_operand_ports",
+  "description": "forwarded zero-muxed read port `rs == 0 ? 0 : (FWD ? X : bank[(rs-1)*32 +: 32])` of a rebased bank; derives route.operands"
+ },
+ "content": {
+  "libraries": [
+   "src/Lang/ExtendedSVBankRebase.v (RFRelR, rebased_index, rebase_eval)",
+   "src/Lang/ExtendedSVBankOperand.v (eval_zero_guard, eval_packed_lane)"
+  ],
+  "generator": "tools/cpu_tmpl_srv32_op.py"
+ },
+ "instantiate": {
+  "type": "stage",
+  "layer": "rf",
+  "name": "op",
+  "provenance": "generalized_rule",
+  "route_fields": {
+   "operands": "operands"
+  },
+  "cmd": [
+   "tools/cpu_tmpl_srv32_op.py",
+   "--design",
+   "{design}",
+   "--module",
+   "{module}",
+   "--out",
+   "{out}"
+  ]
+ },
+ "match": [
+  {
+   "script": "tools/cpu_tmpl_srv32_op.py"
+  }
+ ],
+ "covers": [
+  "rf"
+ ],
+ "learned_from": "srv32",
+ "learned_at": "2026-11-04T14:02",
+ "learned_evidence": [
+  "proof-optimization-log/20261104-stage-driver.md Continuation (1): srv32 operand ports 245/246 in register-relation shape",
+  "route stage op (provenance llm_written)"
+ ],
+ "reused_by": [],
+ "gate": {
+  "module": "Srv32Op",
+  "namespace": "TmplSrv32Op",
+  "route_field_check": "operands"
+ },
+ "origin": "LLM-solved residual stage `op` of the srv32 route (llm_written); candidate for promotion"
+}

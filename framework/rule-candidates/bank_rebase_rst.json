@@ -1,0 +1,15 @@
+{
+ "name": "bank_rebase_rst",
+ "kind": "generic_lemma",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {"function": "p_rf_rebased_reset_first", "description": "rebased bank with a reset-first write process"},
+ "content": {"libraries": ["src/Lang/ExtendedSVBankRebaseRst.v"]},
+ "instantiate": {"type": "library", "used_by_generators": ["tools/cpu_tmpl_strf.py"]},
+ "match": [{"library": "ExtendedSVBankRebaseRst"}],
+ "covers": ["rf"],
+ "learned_from": "steel", "learned_at": "2026-11-04T12:41",
+ "learned_evidence": ["src/Lang/ExtendedSVBankRebaseRst.v (Steel rf stage)"],
+ "reused_by": [],
+ "gate": {"library_module": "Lang.ExtendedSVBankRebaseRst"},
+ "origin": "the library part of the rejected rf_rebased_reset_first candidate"
+}

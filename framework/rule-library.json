@@ -1,0 +1,3018 @@
+{
+ "schema_version": 1,
+ "title": "Reuse rule library of the template route (RTL -> ISA refinement): normalizations, layer generators, generic lemmas, proof strategies",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "external_llm_api_calls": 0,
+ "date": "2026-11-04",
+ "doc": "Each rule = pattern (executable applicability check, tools/cpu_rule_patterns.py:<function>, on the imported AST + manifest WITHOUT its route section) + content (generic Coq libraries / generator + options) + instantiate (how the driver tools/cpu_tmpl_route.py --match-rules/--apply-rules turns a match into route fields or stages) + learned_from / reused_by (from framework/template-route-ledger.json and the design logs). `match` says which already-built modules a rule produced (used by tools/cpu_rule_metrics.py). `reused_by` lists only reuse that the ledger/logs/module Requires show; independent re-implementations are listed under `reimplemented_by`. Log: proof-optimization-log/20261104-rule-library.md.",
+ "kinds": {
+  "normalization": "rewrites the input (frontend) or fixes a convention field before the layers are generated",
+  "layer_generator": "generator that emits a whole route layer from AST + manifest roles (output automatic)",
+  "generic_lemma": "design-independent Coq library consumed by generators",
+  "proof_strategy": "choice of a proof engine / proof shape / speed-up for a layer"
+ },
+ "stage_order": [
+  "lfp",
+  "target",
+  "edge",
+  "reset",
+  "stage",
+  "stage2",
+  "frame",
+  "cycle",
+  "value",
+  "fetch",
+  "rf",
+  "op",
+  "ram",
+  "ctl",
+  "domain",
+  "imm",
+  "wire",
+  "next",
+  "fwd",
+  "copy",
+  "lift",
+  "closure"
+ ],
+ "rules": [
+  {
+   "name": "fe_rebased_bank",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_fe_rebased_bank",
+    "description": "register file is a 31-lane bank `[31:1]` indexed `addr-1`: every bank write/read index is (x-1)*32"
+   },
+   "content": {
+    "frontend": [
+     "tools/steel_array_frontend.py (offset bank padded 31->32 cells)",
+     "tools/srv32_frontend.py (PaddedBankTranslator)",
+     "tools/angelo5_import.py (Angelo5Translator rebased bank)"
+    ],
+    "obligations": [
+     "(R) the pad lane 31 (= register x0) is only read in a dead ECond arm",
+     "(W) writes to the pad lane are never observed"
+    ]
+   },
+   "instantiate": {
+    "type": "frontend",
+    "translator_option": "padded offset bank",
+    "manifest_fields": {
+     "template_roles.register_file.rebase": 1,
+     "template_roles.register_file.padded_lanes": 32
+    }
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T09:37",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-steel-import.md (Import 1)",
+    "tools/steel_array_frontend.py"
+   ],
+   "reused_by": [],
+   "reimplemented_by": [
+    {
+     "design": "srv32",
+     "evidence": "tools/srv32_frontend.py PaddedBankTranslator (09:38, 20261104-srv32-import.md item 1)"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "tools/angelo5_import.py Angelo5Translator (09:55, 20261104-angelo5-import.md item 2)"
+    }
+   ],
+   "note": "the three imports ran in parallel sessions and each wrote its own subclass; the pattern is shared, the code is not (promotion would need one shared translator)."
+  },
+  {
+   "name": "fe_while_unroll",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_fe_while_unroll",
+    "description": "Verilator --xml-only left a constant-trip `while` loop (reset loop `for (i=1;i<32;i++) regs[i] <= 0`)"
+   },
+   "content": {
+    "frontend": [
+     "tools/steel_array_frontend.py (XML-level unroll, counter then unreferenced)",
+     "tools/srv32_frontend.py (31 nested guarded copies, runtime i kept)",
+     "tools/nerv_frontend.py (init; (body; step) x N, 21 loops)"
+    ]
+   },
+   "instantiate": {
+    "type": "frontend",
+    "translator_option": "static-trip-count while unroll"
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T09:37",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-steel-import.md (Import 2)"
+   ],
+   "reused_by": [],
+   "reimplemented_by": [
+    {
+     "design": "srv32",
+     "evidence": "20261104-srv32-import.md item 2"
+    },
+    {
+     "design": "nerv",
+     "evidence": "20261104-nerv-import.md item 2 (while)"
+    }
+   ]
+  },
+  {
+   "name": "fe_x_to_zero",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_fe_x_to_zero",
+    "description": "x literals (don't-care constants) in the elaborated XML"
+   },
+   "content": {
+    "frontend": [
+     "tools/nerv_frontend.py (x bits -> 0; checked by Verilator --x-assign 0/1 identical traces)"
+    ],
+    "obligations": [
+     "every use of an x constant is guarded"
+    ]
+   },
+   "instantiate": {
+    "type": "frontend",
+    "translator_option": "x constants to 0"
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T09:40",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-nerv-import.md (Import 1)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "fe_casez",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_fe_casez",
+    "description": "casez items with z (wildcard) bits"
+   },
+   "content": {
+    "frontend": [
+     "tools/nerv_frontend.py (casez -> priority SIf chain (scrut & care_mask) == value)"
+    ]
+   },
+   "instantiate": {
+    "type": "frontend",
+    "translator_option": "casez lowering"
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T09:40",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-nerv-import.md (Import 2)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "fe_generate_instances",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_fe_generate_instances",
+    "description": "module instances nested in generate blocks (base Translator.instantiate uses findall and silently drops them)"
+   },
+   "content": {
+    "frontend": [
+     "tools/angelo5_import.py (Angelo5Translator: module.iter('instance') + assertion translated instances == XML instances)"
+    ]
+   },
+   "instantiate": {
+    "type": "frontend",
+    "translator_option": "iterate nested instances",
+    "check": "translated instance count == XML <instance> count"
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-04T09:55",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-angelo5-import.md (silent drop found and fixed)"
+   ],
+   "reused_by": [],
+   "note": "the pattern run over the other five designs finds no nested instance, so their imports were not affected by the gap."
+  },
+  {
+   "name": "fe_literal_index",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_fe_literal_index",
+    "description": "unrolled loops write packed part-selects at an offset depending on the loop counter (lv_static of the LFP certificate needs literal offsets)"
+   },
+   "content": {
+    "frontend": [
+     "tools/nerv_frontend_lit.py (counter reads -> literals, constant index arithmetic folded)"
+    ],
+    "check": "equivalence on 135000 phases x 581 signals (results/nerv-lit-20261104/equiv.json)"
+   },
+   "instantiate": {
+    "type": "frontend",
+    "translator_option": "literal loop indices"
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T10:32",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-template-nerv.md (literal-index AST)",
+    "results/r-tmpl-nerv-lfp-20261104-a2-failed-known-false"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "reset_level",
+   "kind": "normalization",
+   "pattern": {
+    "function": "p_reset_level",
+    "description": "primary reset is active-high (0 in operation) or active-low (1 in operation)"
+   },
+   "content": {
+    "env": "TMPL_RST_IDLE",
+    "generators": [
+     "tools/cpu_tmpl_edge.py",
+     "tools/cpu_tmpl_stage.py"
+    ],
+    "default": 1
+   },
+   "instantiate": {
+    "type": "route_field",
+    "field": "rst_idle",
+    "from": "rst_idle",
+    "variants": {
+     "idle_level": "rst_idle = level of the reset input in operation (Steel)",
+     "asserted_level_plus_reset_layer": "rst_idle = 1 for an active-high reset: the edge layer describes the boot edges and the reset-events layer the operating edges (the accepted NERV chain)"
+    },
+    "default_variant": "idle_level"
+   },
+   "match": [
+    {
+     "env": {
+      "TMPL_RST_IDLE": "0"
+     }
+    },
+    {
+     "generator_text": "TMPL_RST_IDLE=0"
+    },
+    {
+     "generator_text": "RST_IDLE"
+    }
+   ],
+   "covers": [
+    "edge",
+    "stage",
+    "frame"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T11:35",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-template-steel.md 7.2 (FINDING: edge a1/a2 assumed reset = 1)",
+    "ledger steel-edge-a3, steel-stage-a3"
+   ],
+   "reused_by": [],
+   "checked_on": [
+    {
+     "design": "nerv",
+     "evidence": "results/route-nerv-20261104-reg1-failed-rst0-stage: rst_idle 0 breaks the accepted `rise` stage (expects pre 1 = 1); NERV keeps variant asserted_level_plus_reset_layer (20261104-stage-driver.md (3))"
+    }
+   ]
+  },
+  {
+   "name": "lfp_nolatch_cert",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lfp_nolatch_cert",
+    "description": "combinational processes are blocking-only: all-states bit-mask certificate with N = lfp_fuel rounds"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBitStabilityNoLatch.v",
+     "src/Lang/ExtendedSVPhaseLength.v"
+    ],
+    "generator": "tools/cpu_tmpl_lfpnl.py",
+    "options": [
+     "--rounds N (N = lfp_fuel, only when N != 1)"
+    ],
+    "derived_from": "src/Lang/ExtendedSVBitStability.v (CV32E40P certificate, latch-free variant)"
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "lfp",
+    "name": "lfp",
+    "provenance": "generalized_rule",
+    "cmd": [
+     "{gen}",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "{args}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_lfpnl.py"
+    },
+    {
+     "script": "tools/cpu_tmpl_lfpnl_lazy.py"
+    }
+   ],
+   "covers": [
+    "lfp"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T09:53",
+   "learned_evidence": [
+    "ledger steel-lib-bitstab-nolatch, steel-lfp-a1",
+    "proof-optimization-log/20261104-template-steel.md section 3"
+   ],
+   "reused_by": [
+    {
+     "design": "srv32",
+     "evidence": "ledger srv32-lfp-a1 (automatic, generator used unchanged)"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-lfp-a1 (--rounds 8; loadpath derived from the manifest)"
+    },
+    {
+     "design": "nerv",
+     "evidence": "ledger nerv-lfp-a3 (cpu_tmpl_lfpnl_lazy.py wraps cpu_tmpl_lfpnl.py)"
+    }
+   ]
+  },
+  {
+   "name": "lfp_lazy_exhaustive",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_lfp_lazy_exhaustive",
+    "description": "a comb case scrutinee wider than 16 bits: strict `exhaustive` enumerates 2^w under vm_compute"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBitStabilityLazy.v"
+    ],
+    "generator": "tools/cpu_tmpl_lfpnl_lazy.py"
+   },
+   "instantiate": {
+    "type": "modifier",
+    "target_stage": "lfp",
+    "set_generator": "tools/cpu_tmpl_lfpnl_lazy.py"
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_lfpnl_lazy.py"
+    },
+    {
+     "library": "ExtendedSVBitStabilityLazy"
+    }
+   ],
+   "covers": [
+    "lfp"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T10:23",
+   "learned_evidence": [
+    "ledger generic-bitstability-lazy",
+    "results/r-tmpl-nerv-lfp-20261104-a1-killed-timeout (16 CPU min, 80 GB)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "edge_derived_clock",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_edge_derived_clock",
+    "description": "every sequential event signal is a copy/inversion chain of the primary clock or reset"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVCheckedAssignmentBinding.v",
+     "src/Lang/ExtendedSVWordInvariant.v"
+    ],
+    "generator": "tools/cpu_tmpl_edge.py"
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "edge",
+    "name": "edge",
+    "provenance": "automatic",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "{args}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_edge.py",
+     "forbids_args": [
+      "--reset-events",
+      "--glue",
+      "--write-roles"
+     ]
+    }
+   ],
+   "covers": [
+    "edge"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T12:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-edge-a1, tmpl-bz-edge-a2"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "ledger steel-edge-a1 (shared generator unchanged)"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ledger srv32-edge-a1"
+    },
+    {
+     "design": "nerv",
+     "evidence": "ledger nerv-edge-a1"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-edge-a2"
+    }
+   ]
+  },
+  {
+   "name": "edge_fast_filter",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_edge_fast_filter",
+    "description": "selection lemmas cost ~ n_seq * n_processes; above 3000 use the computed process-index filter"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_edge.py",
+    "options": [
+     "--fast-filter"
+    ],
+    "statement_change": "none (same exported statements)"
+   },
+   "instantiate": {
+    "type": "modifier",
+    "target_stage": [
+     "edge",
+     "reset"
+    ],
+    "add_args": [
+     "--fast-filter"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_edge.py",
+     "requires_args": [
+      "--fast-filter"
+     ]
+    }
+   ],
+   "covers": [
+    "edge",
+    "reset"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T10:39",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-template-steel.md section 6 (1006 s -> 5.8 s, 170x)",
+    "results/r-tmpl-steel-edge-20261104-a1-slow-cbn-filter-1006s"
+   ],
+   "reused_by": [
+    {
+     "design": "nerv",
+     "evidence": "ledger nerv-edge-a1 (cpu_tmpl_edge.py --fast-filter); edger with --fast-filter"
+    }
+   ],
+   "calibration": "threshold 3000 separates the measured cases: bzeeno 7x270=1890 (11 s plain), srv32 16x90=1440 (25 s), angelo5fix 9x264=2376 (12 s), steel 22x210=4620 (1006 s plain), nerv 18x550=9900 (used --fast-filter). Fitted on these points only.",
+   "checked_on": [
+    {
+     "design": "bzeeno",
+     "evidence": "ledger bz-edge-a3-fastfilter: re-gate of the option on Bzeeno (14.9 s, same 17 statements); Bzeeno's accepted chain uses edge a2 without it"
+    }
+   ]
+  },
+  {
+   "name": "reset_events_layer",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_reset_events_layer",
+    "description": "the reset input is an (asynchronous) event of sequential processes: boot needs reset-edge selection lemmas"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_edge.py",
+    "options": [
+     "--reset-events EDGE_MODULE"
+    ]
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "reset",
+    "name": "reset",
+    "provenance": "automatic",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "{args}",
+     "--reset-events",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_edge.py",
+     "requires_args": [
+      "--reset-events"
+     ]
+    }
+   ],
+   "covers": [
+    "reset"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T18:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-resetedge-a1 (generalized_rule)"
+   ],
+   "reused_by": [
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-reset-a2 (existing option)"
+    },
+    {
+     "design": "nerv",
+     "evidence": "route stage edger (results/r-tmpl-nerv-edger-20261104-a2; NERV: synchronous active-high, used with variant asserted_level_plus_reset_layer)"
+    }
+   ]
+  },
+  {
+   "name": "rf_fall_glue",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_rf_fall_glue",
+    "description": "RF write process fires on the falling edge: glue module RF-at-fall between edge and RF layers"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_edge.py",
+    "options": [
+     "--glue EDGE_MODULE RF_MODULE",
+     "--variant V"
+    ]
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "rf",
+    "name": "rffall",
+    "provenance": "automatic",
+    "runnable": false,
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--glue",
+     "{mod:edge}",
+     "{mod:rf}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_edge.py",
+     "requires_args": [
+      "--glue"
+     ]
+    }
+   ],
+   "covers": [
+    "rf"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T11:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-rffall-a1 (value-level per-process sel_*_match_<i> lemmas instead of filter_in over the program record)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "reset_phase_layers",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_reset_phase_layers",
+    "description": "async reset: register steps / frames / RAM hold at the asserted reset level (boot phases)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_stage.py",
+    "options": [
+     "--reset-stage",
+     "--reset-frame",
+     "--reset-ram (with a ram role)",
+     "--edger RESET_EDGE_MODULE"
+    ]
+   },
+   "instantiate": {
+    "type": "stages",
+    "provenance": "generalized_rule",
+    "runnable": false,
+    "stages": [
+     {
+      "layer": "reset",
+      "name": "resetstage",
+      "cmd": [
+       "tools/cpu_tmpl_stage.py",
+       "--design",
+       "{design}",
+       "--module",
+       "{module}",
+       "--edger",
+       "{mod:reset}",
+       "--reset-stage",
+       "--out",
+       "{out}"
+      ]
+     },
+     {
+      "layer": "reset",
+      "name": "resetframe",
+      "cmd": [
+       "tools/cpu_tmpl_stage.py",
+       "--design",
+       "{design}",
+       "--module",
+       "{module}",
+       "--edger",
+       "{mod:reset}",
+       "--reset-frame",
+       "--out",
+       "{out}"
+      ]
+     },
+     {
+      "layer": "reset",
+      "name": "resetram",
+      "if": "ram",
+      "cmd": [
+       "tools/cpu_tmpl_stage.py",
+       "--design",
+       "{design}",
+       "--module",
+       "{module}",
+       "--edger",
+       "{mod:reset}",
+       "--reset-ram",
+       "--out",
+       "{out}"
+      ]
+     }
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_stage.py",
+     "requires_args": [
+      "--reset-stage"
+     ]
+    },
+    {
+     "script": "tools/cpu_tmpl_stage.py",
+     "requires_args": [
+      "--reset-frame"
+     ]
+    },
+    {
+     "script": "tools/cpu_tmpl_stage.py",
+     "requires_args": [
+      "--reset-ram"
+     ]
+    }
+   ],
+   "covers": [
+    "reset"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T18:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-resetstage-a1, tmpl-bz-resetframe-a1, tmpl-bz-resetram-a1"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "stage_seqtree",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_stage_seqtree",
+    "description": "a rising sequential process is ONE decision tree with NBA leaves (ExtendedSVSeqTree.conv); the others are skipped and recorded"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSeqTree.v",
+     "src/Lang/ExtendedSVRootProjection.v",
+     "src/Lang/ExtendedSVProcessSlice.v"
+    ],
+    "generator": "tools/cpu_tmpl_stage.py"
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "stage",
+    "name": "stage",
+    "provenance": "automatic",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "derived_fields": {
+     "rise_procs": "convertible (equal text with or without --rise-procs: the generator skips non-convertible bodies itself)"
+    }
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_stage.py",
+     "forbids_args": [
+      "--frame",
+      "--ram",
+      "--reset-stage",
+      "--reset-frame",
+      "--reset-ram"
+     ]
+    }
+   ],
+   "covers": [
+    "stage"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T09:45",
+   "learned_evidence": [
+    "ledger tmpl-seqtree-lib, tmpl-bz-stage-a1/a2"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "ledger steel-stage-a2/a3"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ledger srv32-stage-a1"
+    },
+    {
+     "design": "nerv",
+     "evidence": "route stage (1 theorem)"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-stage-a1 (rise_150)"
+    }
+   ]
+  },
+  {
+   "name": "seqtree_flat",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_seqtree_flat",
+    "description": "sequential body SSeq [t] without the inner SSeq wrapper"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSeqTreeFlat.v"
+    ],
+    "generator": "tools/cpu_tmpl_stage.py (automatic branch)"
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_stage.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSeqTreeFlat"
+    }
+   ],
+   "covers": [
+    "stage",
+    "cycle",
+    "value"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T10:40",
+   "learned_evidence": [
+    "ledger steel-lib-seqtree-flat",
+    "proof-optimization-log/20261104-template-steel.md section 6"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "seqtree2",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_seqtree2",
+    "description": "process has several decision trees below the reset test (ordered multi-writer semantics)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSeqTree2.v"
+    ],
+    "generator": "tools/cpu_tmpl_stage2.py",
+    "options": [
+     "--procs LIST"
+    ],
+    "driver_status": "generator has no text-mode CLI default matching the accepted texts (20261104-stage-driver.md (3))"
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "stage2",
+    "name": "stage2",
+    "provenance": "generalized_rule",
+    "runnable": false,
+    "cmd": [
+     "tools/cpu_tmpl_stage2.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--procs",
+     "{b:processes}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_stage2.py",
+     "forbids_args": [
+      "--slices"
+     ]
+    }
+   ],
+   "covers": [
+    "stage2"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-04T12:07",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-template-angelo5fix.md Continuation 8",
+    "ledger angelo5fix-stage2-a2, angelo5fix-stage2csr-a1"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "seqtree2_slice",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_seqtree2_slice",
+    "description": "a multi-tree process writes part-selects of a register (slice-aware ordered fold lastws)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSeqTree2Slice.v"
+    ],
+    "generator": "tools/cpu_tmpl_stage2.py --slices"
+   },
+   "instantiate": {
+    "type": "modifier",
+    "target_stage": "stage2",
+    "add_args": [
+     "--slices"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_stage2.py",
+     "requires_args": [
+      "--slices"
+     ]
+    },
+    {
+     "library": "ExtendedSVSeqTree2Slice"
+    }
+   ],
+   "covers": [
+    "stage2"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-04T12:15",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-template-angelo5fix.md Continuation 9",
+    "ledger angelo5fix-stage2s-a1/a2"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "nb_symexec",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_nb_override",
+    "description": "sequential body with several statements (`x <= y; if (r) x <= 0`, guarded lane writes next to other NBAs)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymExecNb.v"
+    ],
+    "generator": "tools/cpu_tmpl_nvrise.py (NERV-specific text)"
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "stage",
+     "rf"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecNb"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSymExecNb"
+    }
+   ],
+   "covers": [
+    "stage"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T12:21",
+   "learned_evidence": [
+    "ledger nerv-nb-lib",
+    "proof-optimization-log/20261104-template-nerv.md Continuation 3"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "frame_fall_hold",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_frame_fall_hold",
+    "description": "registers not written on the falling edge keep their value over the fall phase"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_stage.py",
+    "options": [
+     "--frame"
+    ]
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "frame",
+    "name": "frame",
+    "provenance": "automatic",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--frame",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_stage.py",
+     "requires_args": [
+      "--frame"
+     ]
+    }
+   ],
+   "covers": [
+    "frame"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T12:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-frame-a1"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "ledger steel-frame-a1 (automatic)"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ledger srv32-frame-a1 (automatic)"
+    }
+   ]
+  },
+  {
+   "name": "ram_hold_role",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_ram_hold_role",
+    "description": "manifest RAM role: array written only by a guarded store process"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_stage.py",
+    "options": [
+     "--ram"
+    ]
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "ram",
+    "name": "ram",
+    "provenance": "automatic",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--stage",
+     "{mod:stage}",
+     "--ram",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_stage.py",
+     "requires_args": [
+      "--ram"
+     ]
+    }
+   ],
+   "covers": [
+    "ram"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T12:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-ram-a1"
+   ],
+   "reused_by": [],
+   "note": "Steel's RAM hold (process 2: write_request & !invalid over four strobe ifs) did not fit (no manifest ram role); it was written as tools/cpu_tmpl_strf.py --ram (design-specific)."
+  },
+  {
+   "name": "rf_plain_bank",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_rf_plain_bank",
+    "description": "zero-based bank (lane = idx) written at idx*32 / idx<<5"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBankWriteStep.v",
+     "src/Lang/ExtendedSVBankOperand.v"
+    ],
+    "generator": "tools/cpu_tmpl_rf.py",
+    "options": [
+     "--variant bzeeno-configured (falling-edge configured AST)"
+    ]
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "rf",
+    "name": "rf",
+    "provenance": "generalized_rule",
+    "cmd": [
+     "tools/cpu_tmpl_rf.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_rf.py",
+     "forbids_args": [
+      "--rebased"
+     ]
+    }
+   ],
+   "covers": [
+    "rf"
+   ],
+   "learned_from": "darkriscv",
+   "learned_at": "2026-11-03T14:00",
+   "learned_evidence": [
+    "proof-optimization-log/20261103-template-rf.md (DarkRISCV bank 63)",
+    "ledger tmpl-bank-write, tmpl-bank-operand, tmpl-dark-rf-a1"
+   ],
+   "reused_by": [
+    {
+     "design": "bzeeno",
+     "evidence": "20261103-template-rf.md genericity test; ledger tmpl-bzeeno-rf-a1, tmpl-bz-rf-a1 (--variant bzeeno-configured)"
+    }
+   ]
+  },
+  {
+   "name": "rf_rebased_bank",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_rf_rebased_bank",
+    "description": "register file is a 31-lane bank indexed `addr-1` (lane j = x(j+1), pad lane 31); variant by write-process shape"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBankRebase.v (RFRelR, operand_clause_rebased, rf2_lane_write, rf2_frame)"
+    ],
+    "generator": "tools/cpu_tmpl_rf.py --rebased EDGE_MODULE",
+    "variants": {
+     "rf2_guard_first": "tools/cpu_tmpl_rf.py --rebased (generic)",
+     "reset_first": "src/Lang/ExtendedSVBankRebaseRst.v + tools/cpu_tmpl_strf.py (Steel-specific text: residual generator)",
+     "blk1": "src/Lang/ExtendedSVBankWriteBlk.v + framework/template-sources/Srv32RfCore.v.in via tools/cpu_tmpl_srv32_rf.py (srv32-specific: residual generator)"
+    }
+   },
+   "instantiate": {
+    "type": "variant_stage",
+    "layer": "rf",
+    "name": "rf",
+    "from": "variant",
+    "variants": {
+     "rf2_guard_first": {
+      "provenance": "generalized_rule",
+      "cmd": [
+       "tools/cpu_tmpl_rf.py",
+       "--design",
+       "{design}",
+       "--module",
+       "{module}",
+       "--rebased",
+       "{modq:edge}",
+       "--out",
+       "{out}"
+      ]
+     },
+     "reset_first": {
+      "residual": true,
+      "hint": [
+       "ExtendedSVBankRebase",
+       "ExtendedSVBankRebaseRst"
+      ]
+     },
+     "blk1": {
+      "residual": true,
+      "hint": [
+       "ExtendedSVBankWriteBlk"
+      ]
+     }
+    }
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_rf.py",
+     "requires_args": [
+      "--rebased"
+     ]
+    },
+    {
+     "script": "tools/cpu_tmpl_srv32_rf.py"
+    },
+    {
+     "library": "ExtendedSVBankRebase"
+    }
+   ],
+   "covers": [
+    "rf"
+   ],
+   "learned_from": "srv32",
+   "learned_at": "2026-11-04T11:05",
+   "learned_evidence": [
+    "ledger srv32-rf-a1 (form of the rise-edge write theorems: SelHyps, rf_write_lane/off)",
+    "ledger tmpl-rf-rebased-generator (reuse: follows Srv32RfCore.v.in)",
+    "ledger tmpl-bankrebase-lib (angelo5fix, 11:10)"
+   ],
+   "reused_by": [
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger tmpl-rf-rebased-generator / angelo5fix-rf-a1: generator --rebased + library ExtendedSVBankRebase"
+    },
+    {
+     "design": "steel",
+     "evidence": "tools/cpu_tmpl_strf.py builds on ExtendedSVBankRebase (+ new ExtendedSVBankRebaseRst, 12:41); route-steel rf stage"
+    }
+   ],
+   "note": "back-reuse on the learning design: the srv32 route stage op (Srv32Op) uses operand_clause_rebased / RFRelR of the generalised library ExtendedSVBankRebase written on angelo5fix."
+  },
+  {
+   "name": "bank_write_blk",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_bank_write_blk",
+    "description": "bank slice write wrapped in a block under reset/guard (if resetn {if guard {bank[..] <= e}} else ...)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBankWriteBlk.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_srv32_rf.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVBankWriteBlk"
+    }
+   ],
+   "covers": [
+    "rf"
+   ],
+   "learned_from": "srv32",
+   "learned_at": "2026-11-04T11:04",
+   "learned_evidence": [
+    "ledger srv32-lib-bankwriteblk"
+   ],
+   "reused_by": [],
+   "note": "the pattern also matches the zero-based Bzeeno write process (same blk1 shape); Bzeeno's RF predates the library (BankWriteStep shape B)."
+  },
+  {
+   "name": "copy_chains",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_copy_chains",
+    "description": "stage enables / stall / flush / addresses copied between pipeline registers (control-chain roles)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_bzcopy.py",
+    "options": [
+     "--design D"
+    ]
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "copy",
+    "name": "copy",
+    "provenance": "generalized_rule",
+    "runnable": false,
+    "cmd": [
+     "tools/cpu_tmpl_bzcopy.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_bzcopy.py"
+    }
+   ],
+   "covers": [
+    "copy"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T20:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-archcopy-a1"
+   ],
+   "reused_by": [
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-copy-a1 (--design added)"
+    }
+   ]
+  },
+  {
+   "name": "role_param_cores",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_role_param_cores",
+    "description": "Dark-like core role ids present (template_roles.core_ids)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_params.py + tools/cpu_tmpl_paramize.py",
+    "sources": [
+     "framework/template-sources/param/TmplCycleCore.v.in",
+     "framework/template-sources/param/TmplFetchCore.v.in",
+     "framework/template-sources/param/TmplCursorCore.v.in"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_arch.py",
+     "tools/cpu_tmpl_archtop.py",
+     "tools/cpu_tmpl_dstep.py"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_params.py"
+    }
+   ],
+   "covers": [
+    "cycle",
+    "fetch"
+   ],
+   "learned_from": "darkriscv",
+   "learned_at": "2026-11-03T10:00",
+   "learned_evidence": [
+    "ledger tmpl-dark-cycle-core, tmpl-dark-fetch-core",
+    "ledger tmpl-bz-params (Dark outputs of all 13 generators byte-identical)"
+   ],
+   "reused_by": [
+    {
+     "design": "bzeeno",
+     "evidence": "ledger tmpl-bz-params (agent bzeeno) (tooling entry; the parameterised cores are consumed through generator strings, so no module Requires a library of this rule: not visible to --check-reuse)"
+    }
+   ]
+  },
+  {
+   "name": "class_table",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_class_table",
+    "description": "RV32I jump-family classes decoded from one instruction word"
+   },
+   "content": {
+    "libraries": [
+     "src/Ex/External/CPUClassTableCheck.v",
+     "src/Ex/External/CPUClassValueBridge.v",
+     "src/Ex/External/CPUClassTableInverse.v"
+    ],
+    "generator": "tools/cpu_class_table.py"
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_controls.py",
+     "tools/cpu_tmpl_stctl.py",
+     "tools/cpu_tmpl_stop.py",
+     "tools/cpu_tmpl_lift.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "CPUClassTableInverse"
+    },
+    {
+     "library": "CPUClassValueBridge"
+    }
+   ],
+   "covers": [
+    "ctl",
+    "lift",
+    "closure"
+   ],
+   "learned_from": "darkriscv",
+   "learned_at": "2026-11-03T10:00",
+   "learned_evidence": [
+    "ledger tmpl-class-table-bridge, tmpl-class-inverse (template route core, 20261103-template-route.md)"
+   ],
+   "reused_by": [
+    {
+     "design": "bzeeno",
+     "evidence": "9 Bzeeno modules Require CPUClassTableInverse"
+    },
+    {
+     "design": "steel",
+     "evidence": "tools/cpu_tmpl_stop.py / ctl Require CPUClassValueBridge / CPUClassTableInverse"
+    },
+    {
+     "design": "srv32",
+     "evidence": "1 srv32 module Requires CPUClassValueBridge"
+    }
+   ]
+  },
+  {
+   "name": "immediate_shapes",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_immediate_shapes",
+    "description": "immediates assembled from instruction-word slices and replicated sign bits"
+   },
+   "content": {
+    "libraries": [
+     "src/Ex/External/CPUImmediateShapes.v",
+     "src/Ex/External/CPUImmediateRtlShapes.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_imm.py",
+     "tools/cpu_tmpl_a5dec.py",
+     "tools/cpu_tmpl_stctl.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "CPUImmediateShapes"
+    },
+    {
+     "library": "CPUImmediateRtlShapes"
+    }
+   ],
+   "covers": [
+    "imm",
+    "ctl"
+   ],
+   "learned_from": "darkriscv",
+   "learned_at": "2026-11-03T12:00",
+   "learned_evidence": [
+    "ledger tmpl-imm-shapes",
+    "ledger tmpl-dark-imm"
+   ],
+   "reused_by": [
+    {
+     "design": "bzeeno",
+     "evidence": "Bzeeno ex/imm modules Require CPUImmediateShapes"
+    },
+    {
+     "design": "steel",
+     "evidence": "imm/ctl modules"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ex modules"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "dec a3 (rimm_I/rimm_B)"
+    }
+   ]
+  },
+  {
+   "name": "engine_symexec_chain",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_engine_symexec_chain",
+    "description": "comb control constants per class by forward fact propagation along the comb order"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymExec.v",
+     "src/Lang/ExtendedSVFactChain.v"
+    ],
+    "planner": "tools/cpu_tmpl_symexec.py"
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl",
+     "wire"
+    ],
+    "libraries": [
+     "ExtendedSVSymExec",
+     "ExtendedSVFactChain"
+    ],
+    "priority": 0
+   },
+   "match": [
+    {
+     "library": "ExtendedSVFactChain"
+    }
+   ],
+   "covers": [
+    "ctl",
+    "wire"
+   ],
+   "learned_from": "cv32e40p",
+   "learned_at": "2026-11-03T09:39",
+   "learned_evidence": [
+    "ledger tmpl-cv-symexec, tmpl-cv-factchain"
+   ],
+   "reused_by": [
+    {
+     "design": "bzeeno",
+     "evidence": "Bzeeno ctl modules"
+    },
+    {
+     "design": "steel",
+     "evidence": "ctl"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ex/cap/wire"
+    },
+    {
+     "design": "nerv",
+     "evidence": "ctlpre/ctl/wire"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "dec/fwd"
+    }
+   ]
+  },
+  {
+   "name": "engine_fast4",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_engine_fast4",
+    "description": "1-bit and/or with one side decided by the class facts and the other undecided (short-circuit)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVFast4.v (check_shared4, frun4, shared store)"
+    ]
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVFast4"
+    ],
+    "priority": 1
+   },
+   "match": [
+    {
+     "library": "ExtendedSVFast4"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "cv32e40p",
+   "learned_at": "2026-11-04T04:58",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-template-steel.md 7.3 (REUSED UNCHANGED: the CV32E40P fast engine)"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "ledger steel-ctl-a3 (Fast4 engine for all control constants, one vm_compute check)"
+    }
+   ]
+  },
+  {
+   "name": "engine_overlay",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_engine_overlay",
+    "description": "comb process reads its own earlier assignments: pex refuses, overlay executor"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymExecOverlay.v (oxexec, oxrun_comb_lfp)"
+    ]
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecOverlay"
+    ],
+    "priority": 2
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSymExecOverlay"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "cv32e40p",
+   "learned_at": "2026-11-03T20:25",
+   "learned_evidence": [
+    "ledger tmpl-cv-symexec (overlay variant, CV32E40P)"
+   ],
+   "reused_by": [
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-dec-a1/a3, angelo5fix-alu-a1, ovl jobs (process 182 reads 268/269 then 270)"
+    },
+    {
+     "design": "steel",
+     "evidence": "TmplSteelCtl/Imm/Mis Require ExtendedSVSymExecOverlay (imported by tools/cpu_tmpl_stctl.py next to Fast4)"
+    }
+   ]
+  },
+  {
+   "name": "engine_overlay4",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_engine_overlay4",
+    "description": "overlay executor with xeval4 guards (stronger guard evaluation, needed under the havoc executor)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymExecOverlay4.v"
+    ]
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecOverlay4"
+    ],
+    "priority": 3
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSymExecOverlay4"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T10:42",
+   "learned_evidence": [
+    "ledger generic-overlay4"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "engine_havoc",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_engine_havoc",
+    "description": "process contains CSR/counter code undecidable from the class facts next to the control outputs"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymExecHavoc.v",
+     "src/Lang/ExtendedSVSymExecHavocMulti.v"
+    ]
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl",
+     "wire"
+    ],
+    "libraries": [
+     "ExtendedSVSymExecHavoc"
+    ],
+    "priority": 4
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSymExecHavoc"
+    }
+   ],
+   "covers": [
+    "ctl",
+    "wire"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T12:16",
+   "learned_evidence": [
+    "ledger nerv-havoc-lib",
+    "proof-optimization-log/20261104-template-nerv.md Continuation 3 step 1"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "engine_symalias_nba",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_engine_symalias_nba",
+    "description": "datapath equations of comb blocks (non-blocking or blocking) by alias chains eqchain2_out"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymAliasNba.v"
+    ],
+    "planner": "tools/cpu_tmpl_bzex.py (Session planner)"
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSymAliasNba"
+    ],
+    "priority": 0
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSymAliasNba"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T10:26",
+   "learned_evidence": [
+    "ledger tmpl-symaliasnba-lib"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "20261104-template-steel.md 7.3: eqchain2_out + the Bzeeno Session planner for the data equations"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ledger srv32-ex-tool (Bzeeno planner/emitter unchanged)"
+    }
+   ],
+   "note": "its pattern (comb processes with NBAs) only matches Bzeeno; Steel and srv32 used the engine for blocking processes, so the pattern is narrower than the actual applicability."
+  },
+  {
+   "name": "slice_exec",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_slice_root_fact",
+    "description": "roots written by several single-slice processes (slice-overlay path executor)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSliceExec.v",
+     "src/Lang/ExtendedSVSliceBits.v"
+    ]
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSliceExec"
+    ],
+    "priority": 0
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSliceExec"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "cv32e40p",
+   "learned_at": "2026-11-03T16:00",
+   "learned_evidence": [
+    "proof-optimization-log/20261103-template-slice-exec.md",
+    "ledger lib-ExtendedSVSliceExec"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "ctl a3 (slchain_out for alu_operation_code 161)"
+    }
+   ]
+  },
+  {
+   "name": "slice_root_fact",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_slice_root_fact",
+    "description": "a root written by several comb slice processes whose slices cover it: full-root EVar fact"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSliceRootFact.v"
+    ]
+   },
+   "instantiate": {
+    "type": "engine",
+    "layers": [
+     "ctl"
+    ],
+    "libraries": [
+     "ExtendedSVSliceRootFact"
+    ],
+    "priority": 0
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSliceRootFact"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T10:56",
+   "learned_evidence": [
+    "ledger steel-lib-slicerootfact",
+    "20261104-template-steel.md 7.3"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "comparison_atoms",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_comparison_atoms",
+    "description": "forwarding is an if-chain whose guards compare signals (register tags): facts keyed by the guard expressions"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSymAlias.v (FactsHold over any Expr)"
+    ],
+    "generator": "tools/cpu_tmpl_a5fwd.py (role-parametric: manifest forwarding.outputs/stall_out)",
+    "planner": "tools/cpu_tmpl_symexec.py _Atoms (Bzeeno variant)"
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "fwd",
+    "name": "fwd",
+    "provenance": "generalized_rule",
+    "runnable": false,
+    "cmd": [
+     "tools/cpu_tmpl_a5fwd.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--dec",
+     "{modq:dec}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_a5fwd.py"
+    },
+    {
+     "generator_text": "--atoms"
+    }
+   ],
+   "covers": [
+    "fwd",
+    "ctl"
+   ],
+   "learned_from": "cv32e40p",
+   "learned_at": "2026-11-03T15:00",
+   "learned_evidence": [
+    "tools/cpu_tmpl_cv_rfsel.py (CV32E40P expression-keyed facts)",
+    "20261104-template-angelo5fix.md Continuation 6 (coordinator's pattern; FactsG library gap retracted)"
+   ],
+   "reused_by": [
+    {
+     "design": "bzeeno",
+     "evidence": "ledger tmpl-bz-ctl-a3/a4 (--atoms: outermost 1-bit equality sub-expressions as facts, 945 theorems)"
+    },
+    {
+     "design": "angelo5fix",
+     "evidence": "ledger angelo5fix-fwd-a7 (7 guard atoms of process 175)"
+    }
+   ]
+  },
+  {
+   "name": "case_mux",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_case_mux",
+    "description": "comb `case sel k: out = in_k`"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVCaseMux.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_bzfwd.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVCaseMux"
+    }
+   ],
+   "covers": [
+    "fwd"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T10:30",
+   "learned_evidence": [
+    "ledger tmpl-casemux-lib, tmpl-bz-fwd-a1"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "subsign33",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_subsign33",
+    "description": "33-bit sign/zero-extended subtraction whose sign bit is the signed/unsigned compare"
+   },
+   "content": {
+    "libraries": [
+     "src/Ex/External/CPUSubSign33.v (slt_signbit, sltu_signbit, sub33_zero)"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_srv32_ex.py",
+     "tools/cpu_tmpl_stctl.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "CPUSubSign33"
+    }
+   ],
+   "covers": [
+    "ctl"
+   ],
+   "learned_from": "srv32",
+   "learned_at": "2026-11-04T10:32",
+   "learned_evidence": [
+    "ledger srv32-lib-subsign33"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "TmplSteelCtl / SteelTmplMis Require CPUSubSign33 (results/route-steel-20261104-reg1/ctl)"
+    }
+   ],
+   "note": "Steel's compare is not a 33-bit subtraction, so the pattern does not match Steel; the library was reused for its compare lemmas."
+  },
+  {
+   "name": "lift_isa",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lift_isa",
+    "description": "design-independent ISA lift lemmas (isa_eff, ipc, isa_pc, isa_pc_ok, clear0_jalr)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_lift.py --kinds isa",
+    "module": "TmplLiftIsa (results/r-tmpl-lift-isa-20261104-a1)"
+   },
+   "instantiate": {
+    "type": "shared_module",
+    "layer": "lift",
+    "module": "TmplLiftIsa",
+    "dir": "results/r-tmpl-lift-isa-20261104-a1"
+   },
+   "match": [
+    {
+     "library": "TmplLiftIsa"
+    }
+   ],
+   "covers": [
+    "lift"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-04T13:00",
+   "learned_evidence": [
+    "ledger lift-isa (generalises BzTmplTrIsa, tmpl-bz-trisa-a1)"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "ledger steel-lift, steel-lift-a2"
+    },
+    {
+     "design": "srv32",
+     "evidence": "ledger srv32-lift"
+    }
+   ]
+  },
+  {
+   "name": "lift_wire_provider",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lift_wire_provider",
+    "description": "provider = Bzeeno-style EX interface wires (planner modules)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_lift.py --kinds iface",
+    "roles": "framework/lift-roles/<D>.json kind wire_provider"
+   },
+   "instantiate": {
+    "type": "lift",
+    "kind": "wire_provider",
+    "cmd": [
+     "tools/cpu_tmpl_lift.py",
+     "--design",
+     "{design}",
+     "--kinds",
+     "iface",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_lift.py",
+     "requires_args": [
+      "iface"
+     ]
+    }
+   ],
+   "covers": [
+    "lift"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-04T13:00",
+   "learned_evidence": [
+    "20261104-stage-lift.md (--regress: 23 <C>_ex_isa regenerated text-identical)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "lift_ctl_provider",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lift_ctl_provider",
+    "description": "provider = per-class ctl module with variable roles (Fast4 controls + data equations)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_lift.py --kinds lift|lift2",
+    "roles": "framework/lift-roles/<D>.json kind ctl_provider"
+   },
+   "instantiate": {
+    "type": "lift",
+    "kind": "ctl_provider",
+    "cmd": [
+     "tools/cpu_tmpl_lift.py",
+     "--design",
+     "{design}",
+     "--kinds",
+     "lift2",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_lift.py",
+     "design": "steel"
+    }
+   ],
+   "covers": [
+    "lift"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T13:30",
+   "learned_evidence": [
+    "ledger steel-lift, steel-lift-a2"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "lift_ex_provider",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lift_ex_provider",
+    "description": "provider = EX-stage result/next/branch theorems (commit observed at EX)"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_lift.py --kinds lift",
+    "roles": "framework/lift-roles/<D>.json kind ex_provider"
+   },
+   "instantiate": {
+    "type": "lift",
+    "kind": "ex_provider",
+    "cmd": [
+     "tools/cpu_tmpl_lift.py",
+     "--design",
+     "{design}",
+     "--kinds",
+     "lift",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_lift.py",
+     "design": "srv32"
+    }
+   ],
+   "covers": [
+    "lift"
+   ],
+   "learned_from": "srv32",
+   "learned_at": "2026-11-04T13:30",
+   "learned_evidence": [
+    "ledger srv32-lift"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "lift_overlay_provider",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lift_overlay_provider",
+    "description": "provider facts are closed overlay Exprs (needs a cbn [eval_expr] normalisation step first)"
+   },
+   "content": {
+    "roles": "framework/lift-roles/angelo5fix.json kind overlay_provider (lift_ready: false)"
+   },
+   "instantiate": {
+    "type": "lift",
+    "kind": "overlay_provider",
+    "runnable": false
+   },
+   "match": [],
+   "covers": [
+    "lift"
+   ],
+   "status": "not_ready",
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-04T14:00",
+   "learned_evidence": [
+    "20261104-stage-lift.md (why not generated)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "lift_expr_provider",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_lift_expr_provider",
+    "description": "provider facts are `norm W (read r) = norm W (eval_expr d E)` (havoc controls)"
+   },
+   "content": {
+    "roles": "framework/lift-roles/nerv.json kind expr_provider (lift_ready: false)"
+   },
+   "instantiate": {
+    "type": "lift",
+    "kind": "expr_provider",
+    "runnable": false
+   },
+   "match": [],
+   "covers": [
+    "lift"
+   ],
+   "status": "not_ready",
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T14:00",
+   "learned_evidence": [
+    "20261104-stage-lift.md"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "closure_counter",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_closure_counter",
+    "description": "N=0 pipeline, commit iff the validity (kill) counter is 0"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_closure.py",
+    "templates": [
+     "tools/closure_templates/counter_extra.v.tmpl"
+    ],
+    "schema_shape": "counter"
+   },
+   "instantiate": {
+    "type": "closure",
+    "shape": "counter",
+    "cmd": [
+     "tools/cpu_tmpl_closure.py",
+     "--design",
+     "{design}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_dstep.py"
+    },
+    {
+     "script": "tools/cpu_tmpl_closure.py",
+     "design": "darkriscv"
+    }
+   ],
+   "covers": [
+    "closure"
+   ],
+   "learned_from": "darkriscv",
+   "learned_at": "2026-11-03T20:00",
+   "learned_evidence": [
+    "ledger tmpl-dark-step-a6",
+    "20261104-stage-closure.md (regression source-identical)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "closure_staged",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_closure_staged",
+    "description": "stage relations with stored valid bits, observer valid register"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_closure.py",
+    "templates": [
+     "tools/closure_templates/staged_proved.v.tmpl",
+     "tools/closure_templates/staged_rank.v.tmpl",
+     "tools/closure_templates/staged_transport.v.tmpl",
+     "tools/closure_templates/staged_final.v.tmpl"
+    ],
+    "schema_shape": "staged"
+   },
+   "instantiate": {
+    "type": "closure",
+    "shape": "staged",
+    "cmd": [
+     "tools/cpu_tmpl_closure.py",
+     "--design",
+     "{design}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_bzdstep.py"
+    },
+    {
+     "script": "tools/cpu_tmpl_bzstepfinal.py"
+    },
+    {
+     "script": "tools/cpu_tmpl_closure.py",
+     "design": "bzeeno"
+    }
+   ],
+   "covers": [
+    "closure"
+   ],
+   "learned_from": "bzeeno",
+   "learned_at": "2026-11-03T22:00",
+   "learned_evidence": [
+    "ledger tmpl-bz-step-a1 (a4)",
+    "framework/closure-schemas/bzeeno.json"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "closure_state_inv",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_closure_state_inv",
+    "description": "single-issue core, Runtime = RTL state, joint INV = boot phases | operating INV"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_closure.py",
+    "templates": [
+     "tools/closure_templates/state_inv_step.v.tmpl"
+    ],
+    "schema_shape": "state_inv",
+    "op_generator": "tools/cpu_tmpl_stop.py",
+    "lower_layer_note": "the operating INV module (tools/cpu_tmpl_stop.py) is Steel-specific text and is not part of the rule"
+   },
+   "instantiate": {
+    "type": "closure",
+    "shape": "state_inv",
+    "cmd": [
+     "tools/cpu_tmpl_closure.py",
+     "--design",
+     "{design}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_closure.py",
+     "design": "steel"
+    }
+   ],
+   "covers": [
+    "closure"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T14:30",
+   "learned_evidence": [
+    "ledger steel-closure-gen-step-a1 (results/r-tmpl-closure-steel-20261104-a1)",
+    "20261104-stage-closure.md Increment 5"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "closure_pulse",
+   "kind": "proof_strategy",
+   "pattern": {
+    "function": "p_closure_pulse",
+    "description": "commit observed at EX, valid = not (OR of shift-register pulse bits); junk slots are silent cycles with a decreasing rank"
+   },
+   "content": {
+    "generator": "tools/cpu_tmpl_closure.py (state_inv shape, operating.commit/silent)",
+    "schema_shape": "state_inv+pulse"
+   },
+   "instantiate": {
+    "type": "closure",
+    "shape": "pulse",
+    "cmd": [
+     "tools/cpu_tmpl_closure.py",
+     "--design",
+     "{design}",
+     "--out",
+     "{out}"
+    ],
+    "runnable": false
+   },
+   "match": [],
+   "covers": [
+    "closure"
+   ],
+   "status": "in_progress (srv32 closure owned by another agent; no accepted module yet)",
+   "learned_from": "srv32",
+   "learned_at": "2026-11-04T14:45",
+   "learned_evidence": [
+    "20261104-stage-closure.md Increment 6 (state_inv shape extended to the srv32 pulse variant, additive)"
+   ],
+   "reused_by": []
+  },
+  {
+   "name": "rebased_operand_ports",
+   "kind": "layer_generator",
+   "pattern": {
+    "function": "p_rebased_operand_ports",
+    "description": "forwarded zero-muxed read port `rs == 0 ? 0 : (FWD ? X : bank[(rs-1)*32 +: 32])` of a rebased bank; derives route.operands"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBankRebase.v (RFRelR, rebased_index, rebase_eval)",
+     "src/Lang/ExtendedSVBankOperand.v (eval_zero_guard, eval_packed_lane)"
+    ],
+    "generator": "tools/cpu_tmpl_srv32_op.py"
+   },
+   "instantiate": {
+    "type": "stage",
+    "layer": "rf",
+    "name": "op",
+    "provenance": "generalized_rule",
+    "route_fields": {
+     "operands": "operands"
+    },
+    "cmd": [
+     "tools/cpu_tmpl_srv32_op.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "script": "tools/cpu_tmpl_srv32_op.py"
+    }
+   ],
+   "covers": [
+    "rf"
+   ],
+   "learned_from": "srv32",
+   "learned_at": "2026-11-04T14:02",
+   "learned_evidence": [
+    "proof-optimization-log/20261104-stage-driver.md Continuation (1): srv32 operand ports 245/246 in register-relation shape",
+    "route stage op (provenance llm_written)"
+   ],
+   "reused_by": [],
+   "origin": "LLM-solved residual stage `op` of the srv32 route (llm_written); candidate for promotion",
+   "status": "promoted",
+   "promotion": {
+    "date": "2026-11-04T15:19",
+    "evidence": "results/rule-promote-rebased-operand-ports-20261104-a1",
+    "coqchk": "deferred (registered)"
+   }
+  },
+  {
+   "name": "bank_rebase_rst",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_rf_rebased_reset_first",
+    "description": "rebased bank with a reset-first write process"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVBankRebaseRst.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_strf.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVBankRebaseRst"
+    }
+   ],
+   "covers": [
+    "rf"
+   ],
+   "learned_from": "steel",
+   "learned_at": "2026-11-04T12:41",
+   "learned_evidence": [
+    "src/Lang/ExtendedSVBankRebaseRst.v (Steel rf stage)"
+   ],
+   "reused_by": [],
+   "origin": "the library part of the rejected rf_rebased_reset_first candidate",
+   "status": "promoted",
+   "promotion": {
+    "date": "2026-11-04T15:19",
+    "evidence": "results/rule-promote-bank-rebase-rst-20261104-a1",
+    "coqchk": "deferred (registered)"
+   }
+  },
+  {
+   "name": "lane_word",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_immediate_shapes",
+    "description": "sign-extend nodes over the instruction word cone: signed_value = signExtend of the normalised value (sv_se, se_norm); the same library carries the packed-bank lane read-back after a guarded lane write (lane_write) and the packed-ROM word lemma (pack_word)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVLaneWord.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_nvop.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVLaneWord"
+    }
+   ],
+   "covers": [
+    "imm",
+    "rf",
+    "fetch"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-04T20:00",
+   "learned_evidence": [
+    "src/Lang/ExtendedSVLaneWord.v (NERV closure, proof-optimization-log/20261104-template-nerv.md Continuation 4); the same proofs were first written inside results/r-tmpl-nerv-op-closure-20261104-a1 (lane_write, rom_word) and results/r-tmpl-nerv-dec-closure-20261104-a1 (sv_se, se_norm)"
+   ],
+   "reused_by": [],
+   "origin": "NERV closure (Continuation 4)",
+   "status": "promoted",
+   "promotion": {
+    "date": "2026-11-04T19:55",
+    "evidence": "results/rule-promote-lane-word-20261104-b",
+    "coqchk": "deferred (registered)"
+   }
+  },
+  {
+   "name": "expr_resolve",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_comb_resolution",
+    "description": "resolve wire/next-state expressions through single-assignment comb bindings (esub_sound, esub_sound2)"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVExprResolve.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_a5cyc.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVExprResolve"
+    }
+   ],
+   "covers": [
+    "cyc"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-04T19:00",
+   "learned_evidence": [
+    "src/Lang/ExtendedSVExprResolve.v (angelo5fix closure, proof-optimization-log/20261104-template-angelo5fix.md Continuation 11)"
+   ],
+   "reused_by": [],
+   "origin": "angelo5fix closure (Continuation 11)",
+   "status": "promoted",
+   "promotion": {
+    "date": "2026-11-04T22:02",
+    "evidence": "results/rule-promote-expr-resolve-20261104-w1",
+    "coqchk": "deferred (registered)"
+   }
+  },
+  {
+   "name": "seqtree2_one",
+   "kind": "generic_lemma",
+   "pattern": {
+    "function": "p_seqtree2_one",
+    "description": "sequential process SSeq [SSeq l] (several statements, no reset test): seq_tree2m_value_one / seq_tree2s_value_one"
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/ExtendedSVSeqTree2One.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library",
+    "used_by_generators": [
+     "tools/cpu_tmpl_stage2one.py"
+    ]
+   },
+   "match": [
+    {
+     "library": "ExtendedSVSeqTree2One"
+    }
+   ],
+   "covers": [
+    "stage"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-04T19:00",
+   "learned_evidence": [
+    "src/Lang/ExtendedSVSeqTree2One.v (angelo5fix closure, proof-optimization-log/20261104-template-angelo5fix.md Continuation 11)"
+   ],
+   "reused_by": [],
+   "origin": "angelo5fix closure (Continuation 11)",
+   "status": "promoted",
+   "promotion": {
+    "date": "2026-11-04T22:02",
+    "evidence": "results/rule-promote-seqtree2-one-20261104-w1",
+    "coqchk": "deferred (registered)"
+   }
+  },
+  {
+   "name": "scheduler_observer_agreement",
+   "kind": "generic_lemma",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_class_table",
+    "description": "Candidate applicability only; kernel gates establish the rule instances."
+   },
+   "content": {
+    "libraries": [
+     "src/Ex/External/CPUGeneralizedScheduler.v"
+    ]
+   },
+   "instantiate": {
+    "type": "library"
+   },
+   "match": [
+    {
+     "library": "CPUGeneralizedScheduler"
+    }
+   ],
+   "covers": [
+    "closure",
+    "observer"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "handoff-experiments-20261106.md \u00a77C"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-gpt-20261106/steel-scheduler-a2"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-scheduler-a2"
+   ],
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-gpt-20261106/promote-scheduler",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "boot_value_projection",
+   "kind": "generic_lemma",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_reset_level",
+    "description": "Candidate applicability only; kernel gates establish the rule instances."
+   },
+   "content": {
+    "libraries": [
+     "src/Lang/GeneralizedBootFacts.v"
+    ],
+    "generator": "tools/cpu_generalized_boot.py"
+   },
+   "instantiate": {
+    "type": "library"
+   },
+   "match": [
+    {
+     "library": "GeneralizedBootFacts"
+    }
+   ],
+   "covers": [
+    "boot"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "handoff-experiments-20261106.md \u00a77C"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-gpt-20261106/steel-boot-picks"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-boot-picks"
+   ],
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-gpt-20261106/promote-boot",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "binary_register_outcome_seed",
+   "kind": "proof_strategy",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_class_table",
+    "description": "Binary register family Add/Sub/Xor/Or/And; requires a design-local ADD seed and optional encoding table. Other families are residual."
+   },
+   "content": {
+    "generator": "tools/cpu_generalized_outcome.py"
+   },
+   "instantiate": {
+    "type": "generator",
+    "cmd": [
+     "tools/cpu_generalized_outcome.py",
+     "framework/generalization-gpt/{design}-outcome.json",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "generator": "cpu_generalized_outcome"
+    }
+   ],
+   "covers": [
+    "outcome"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "results/generalization-gpt-20261106/nerv-outcome",
+    "results/generalization-gpt-20261106/pipeline-outcome"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-gpt-20261106/steel-outcome"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-outcome"
+   ],
+   "residual_llm_work": "One adapted ADD seed per design; new families and design helpers remain LLM work. Four instances per seed, not 29.",
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-gpt-20261106/promote-outcome",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "role_nba_output",
+   "kind": "proof_strategy",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_stage_seqtree",
+    "description": "Sequential output rule with explicit edge selection, facts and residue; applicability and expression equality are checked by Coq."
+   },
+   "content": {
+    "generator": "tools/cpu_role_nba.py"
+   },
+   "instantiate": {
+    "type": "generator",
+    "cmd": [
+     "tools/cpu_role_nba.py",
+     "framework/generalization-gpt/{design}-nba.json",
+     "--out",
+     "{out}"
+    ]
+   },
+   "covers": [
+    "stage"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "results/generalization-gpt-20261106/nerv-nba"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-gpt-20261106/steel-nba"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-nba"
+   ],
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-gpt-20261106/promote-nba",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "obligation_record_assembly",
+   "kind": "proof_strategy",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_class_table",
+    "description": "Applicability hint; explicit schema and measured cross-design gates required."
+   },
+   "content": {
+    "generator": "tools/cpu_generalized_assembly.py"
+   },
+   "instantiate": {
+    "type": "generator",
+    "cmd": [
+     "tools/cpu_generalized_assembly.py",
+     "framework/generalization-gpt/{design}-assembly.json",
+     "--out",
+     "{out}"
+    ]
+   },
+   "covers": [
+    "closure"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "results/generalization-gpt-20261106/nerv-assembly-a2"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-gpt-20261106/steel-assembly-a3"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-assembly-a3"
+   ],
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-gpt-20261106/promote-assembly",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "role_array_frontend",
+   "kind": "normalization",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_fe_generate_instances",
+    "description": "Applicability hint; explicit schema and measured cross-design gates required."
+   },
+   "content": {
+    "frontend": [
+     "tools/cpu_role_array_import.py"
+    ]
+   },
+   "instantiate": {
+    "type": "frontend",
+    "cmd": [
+     "tools/cpu_role_array_import.py",
+     "framework/generalization-gpt/import-{design}.json",
+     "--out",
+     "{out}"
+    ]
+   },
+   "covers": [
+    "frontend"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "results/generalization-gpt-20261106/pipeline-import-kernel"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-gpt-20261106/steel-import-kernel"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-import-kernel"
+   ],
+   "translation_equivalence": "not_mechanized_from_original_rtl",
+   "byte_identity_evidence": [
+    "results/generalization-gpt-20261106/import-steel-a3/report.json",
+    "results/generalization-gpt-20261106/import-angelo5fix-a3/report.json"
+   ],
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-gpt-20261106/promote-frontend",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "instruction_family_seed_renderer",
+   "kind": "proof_strategy",
+   "proof_author": "LLM-generated: OpenAI Codex",
+   "pattern": {
+    "function": "p_class_table",
+    "description": "Exact class partition and scalar ISA/role substitution over explicit narrow Coq seeds; 29-class outcomes tested on three designs. The renderer, not every proof schema, transfers."
+   },
+   "content": {
+    "generator": "tools/cpu_seed_families.py"
+   },
+   "instantiate": {
+    "type": "generator",
+    "cmd": [
+     "tools/cpu_seed_families.py",
+     "{schema}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "generator": "cpu_seed_families"
+    }
+   ],
+   "covers": [
+    "outcome"
+   ],
+   "learned_from": "nerv",
+   "learned_at": "2026-11-06",
+   "learned_evidence": [
+    "results/handoff-gpt-20261106-b1/nerv-outcome",
+    "results/handoff-gpt-20261106-b1/pipeline-outcome"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/handoff-gpt-20261106-b1/steel-outcome"
+    }
+   ],
+   "held_out_evidence": [
+    "results/handoff-gpt-20261106-b1/steel-outcome"
+   ],
+   "residual_llm_work": "Design-local helper proofs and seeds remain: NERV 12, pipeline 12, held-out Steel 5 adapted seeds for outcome. Decoder 2 and misalignment 3 pipeline-only seeds. Existing seeds migrated, no new narrow authorship claimed. Extends the five-class binary renderer; do not add their overlapping coverage.",
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/handoff-gpt-20261106-family-promotion",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "boot_phase_certificate",
+   "kind": "generic_lemma",
+   "proof_author": "LLM-generated: OpenAI Astra medium; reviewed by OpenAI Codex",
+   "pattern": {
+    "function": "p_reset_level",
+    "description": "Final-phase length/LFP seal plus full read-table projections; concrete prefix length, equality witnesses, phase rules and NI facts remain explicit."
+   },
+   "content": {
+    "libraries": [
+     "framework/generalization-20261107/boot/BootCertificate.v"
+    ],
+    "generator": "tools/cpu_generalized_boot_v2.py"
+   },
+   "instantiate": {
+    "type": "generator",
+    "cmd": [
+     "tools/cpu_generalized_boot_v2.py",
+     "{schema}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "generator": "cpu_generalized_boot_v2"
+    }
+   ],
+   "covers": [
+    "boot"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-07",
+   "learned_evidence": [
+    "results/generalization-20261107-boot-pipeline"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-20261107-boot-steel"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-20261107-boot-steel"
+   ],
+   "residual_llm_work": "Final-phase length/LFP seal plus full read-table projections; concrete prefix length, equality witnesses, phase rules and NI facts remain explicit.",
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-20261107-promote-boot",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  },
+  {
+   "name": "cycle_phase_observation",
+   "kind": "proof_strategy",
+   "proof_author": "LLM-generated: OpenAI Astra medium; reviewed by OpenAI Codex",
+   "pattern": {
+    "function": "p_stage_seqtree",
+    "description": "Compose checked rise values and fall frames via readiness; custom NBA roots, invariant synthesis and downstream full-cycle replacement remain residual."
+   },
+   "content": {
+    "libraries": [
+     "framework/generalization-20261107/cycle/GeneralizedCycle.v"
+    ],
+    "generator": "tools/cpu_cycle_compose.py"
+   },
+   "instantiate": {
+    "type": "generator",
+    "cmd": [
+     "tools/cpu_cycle_compose.py",
+     "{schema}",
+     "--out",
+     "{out}"
+    ]
+   },
+   "match": [
+    {
+     "generator": "cpu_cycle_compose"
+    }
+   ],
+   "covers": [
+    "cycle"
+   ],
+   "learned_from": "angelo5fix",
+   "learned_at": "2026-11-07",
+   "learned_evidence": [
+    "results/generalization-20261107-cycle-pipeline"
+   ],
+   "reused_by": [
+    {
+     "design": "steel",
+     "evidence": "results/generalization-20261107-cycle-steel"
+    }
+   ],
+   "held_out_evidence": [
+    "results/generalization-20261107-cycle-steel"
+   ],
+   "residual_llm_work": "Compose checked rise values and fall frames via readiness; custom NBA roots, invariant synthesis and downstream full-cycle replacement remain residual.",
+   "status": "promoted",
+   "promotion": {
+    "evidence": "results/generalization-20261107-promote-cycle",
+    "coqchk": "immediate own-module exit 0",
+    "proof_author": "LLM-generated: OpenAI Codex"
+   }
+  }
+ ]
+}

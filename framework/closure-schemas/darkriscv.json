@@ -1,0 +1,197 @@
+{
+ "schema_version": 1,
+ "design": "darkriscv",
+ "shape": "counter",
+ "provenance": {
+  "source": "extracted from tools/cpu_tmpl_dstep.py + framework/auto-contract-profiles/darkriscv.json (accepted r-tmpl-dark-step-20261103-a6)",
+  "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)"
+ },
+ "module": "DarkTmplStep",
+ "namespace": "TmplDarkStep",
+ "reference": {
+  "result": "results/r-tmpl-dark-step-20261103-a6",
+  "file": "DarkTmplStep.v",
+  "theorem": "refinement"
+ },
+ "stages": {
+  "count": 3,
+  "names": [
+   "IF",
+   "ID",
+   "EX"
+  ],
+  "token": {
+   "type": "Z",
+   "reg": 65,
+   "width": 32,
+   "meaning": "slot pc of the committing instruction"
+  }
+ },
+ "valid": {
+  "kind": "counter_zero",
+  "reg": 43,
+  "width": 2,
+  "meaning": "commit iff the validity counter is 0 (N=0 plan)"
+ },
+ "pending_view": {
+  "kind": "retired_view",
+  "bank": 63,
+  "arch_clauses": [
+   "TmplDarkRF.DarkTmplRF.DarkTmplRF.RFZero(read_signal(rtl s){bank}%nat)isa",
+   "getInstMem isa=FormalSpec.formal_initial_imem(image_program image)",
+   "BytesRelated 128(ram s)(getDataMem isa)",
+   "holds(initial image)(jf_domain image HC)isa"
+  ],
+  "note": "no pending write: RF bank is rebased to the ISA register view (RFZero)"
+ },
+ "front": {
+  "kind": "coherent_cursor",
+  "cursor_clauses": [
+   "architectural_cursor(rtl s)=word.unsigned(getPc f)",
+   "word.unsigned(getNextPc f)=norm 32(architectural_cursor(rtl s)+4)"
+  ]
+ },
+ "boot": {
+  "phases": [
+   "actual_reset"
+  ],
+  "proof": "inv_init + staged_initial"
+ },
+ "observer": {
+  "valid_reg": 43,
+  "width": 2,
+  "via": "observe_eq"
+ },
+ "rank": {
+  "module": "cyc",
+  "expr": "tmpl_rank",
+  "decrease_lemma": "rank_dec"
+ },
+ "lo": {
+  "inv": "TmplDarkInv.DarkTmplInv.DarkTmplInv",
+  "cyc": "TmplDarkCycle.DarkTmplCycle.DarkTmplCycle",
+  "arch": "TmplDarkArch.DarkTmplArch.DarkTmplArch",
+  "cursor": "TmplDarkCursor.DarkTmplCursor.DarkTmplCursor",
+  "rf": "TmplDarkRF.DarkTmplRF.DarkTmplRF"
+ },
+ "binders": "(image:list Z)(HC:CPUJumpFamilyProgramDomain.check_program image=true)",
+ "args": "image HC",
+ "design_for_params": "darkriscv",
+ "extra_loadpaths": [
+  [
+   "experiments/framework/generated/dark38-derived",
+   "Dark38"
+  ],
+  [
+   "experiments/framework/generated/dark-array-final",
+   "DarkArray"
+  ],
+  [
+   "experiments/framework/generated/bzeeno-native-full",
+   "BzeenoNative"
+  ]
+ ],
+ "skeleton": {
+  "design": "darkriscv (template route)",
+  "module": "DarkTmplStep",
+  "mode": "plan",
+  "requires": [
+   "Lang.ExtendedSV",
+   "Ex.External.CPUProgramDomain",
+   "Ex.External.DarkRISCV38DerivedTarget",
+   "Ex.External.DarkRISCV38DerivedProgramDomain",
+   "Ex.External.CPUByteBankArchitecture",
+   "Ex.External.CPUJumpFamilyProgramDomain",
+   "Ex.External.CPUJumpFamilyProgramExecution",
+   "TmplDarkRF.DarkTmplRF",
+   "TmplDarkArch.DarkTmplArch",
+   "TmplDarkCursor.DarkTmplCursor",
+   "TmplDarkInv.DarkTmplInv",
+   "TmplDarkCycle.DarkTmplCycle",
+   "Dark38.DarkRISCV38DerivedAST",
+   "coqutil.Word.Interface",
+   "riscv.Utility.Utility"
+  ],
+  "imports": [
+   "ExtendedSV",
+   "CPUProgramDomain",
+   "DarkRISCV38DerivedTarget.DarkRISCV38DerivedTarget",
+   "DarkRISCV38DerivedProgramDomain",
+   "CPUByteBankArchitecture"
+  ],
+  "prelude": [
+   "Local Open Scope Z_scope.",
+   "Local Opaque PhaseSemantics phase_driven_state actual_cycle actual_observe."
+  ],
+  "params": "(image:list Z)(HC:CPUJumpFamilyProgramDomain.check_program image=true)",
+  "args": "image HC",
+  "runtime": "Runtime",
+  "token": "Z",
+  "fields": {
+   "step": "actual_cycle image",
+   "commits": "actual_observe",
+   "effect": "checked_pc_effect",
+   "pc": "fun pc=>pc",
+   "effect_sound": "checked_pc_effect_sound",
+   "stages": "fun _=>[]",
+   "arch": "tmpl_arch image HC",
+   "front": "tmpl_front image",
+   "stage": "fun _ _ _ _=>True"
+  },
+  "plan_shape": "tmpl_plan_shape",
+  "plan_next": "tmpl_plan_next",
+  "rank": "tmpl_rank",
+  "boot": "actual_reset",
+  "initial": "initial image",
+  "reset": "actual_reset",
+  "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)"
+ },
+ "layers": [
+  {
+   "name": "inv",
+   "module": "DarkTmplInv",
+   "argv": [
+    "tools/cpu_tmpl_inv.py",
+    "--design",
+    "darkriscv",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-dark-inv-20261103-a1"
+  },
+  {
+   "name": "cycle",
+   "module": "DarkTmplCycle",
+   "argv": [
+    "tools/cpu_tmpl_cycle.py",
+    "--design",
+    "darkriscv",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-dark-cycle-20261103-a2"
+  },
+  {
+   "name": "cursor",
+   "module": "DarkTmplCursor",
+   "argv": [
+    "tools/cpu_tmpl_cursor.py",
+    "--design",
+    "darkriscv",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-dark-cursor-20261103-a1"
+  },
+  {
+   "name": "arch",
+   "module": "DarkTmplArch",
+   "argv": [
+    "tools/cpu_tmpl_archtop.py",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-dark-arch-20261103-a1"
+  }
+ ]
+}

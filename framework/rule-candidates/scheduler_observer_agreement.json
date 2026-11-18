@@ -1,0 +1,43 @@
+{
+  "name": "scheduler_observer_agreement",
+  "kind": "generic_lemma",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_class_table",
+    "description": "Candidate applicability only; kernel gates establish the rule instances."
+  },
+  "content": {
+    "libraries": [
+      "src/Ex/External/CPUGeneralizedScheduler.v"
+    ]
+  },
+  "instantiate": {
+    "type": "library"
+  },
+  "match": [
+    {
+      "library": "CPUGeneralizedScheduler"
+    }
+  ],
+  "covers": [
+    "closure",
+    "observer"
+  ],
+  "learned_from": "nerv",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "handoff-experiments-20261106.md \u00a77C"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-gpt-20261106/steel-scheduler-a2"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-scheduler-a2"
+  ],
+  "gate": {
+    "library_module": "Ex.External.CPUGeneralizedScheduler"
+  }
+}

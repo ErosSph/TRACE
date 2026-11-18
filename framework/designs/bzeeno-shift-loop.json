@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-six-shift-infinite-loop",
+  "backend": "actual repaired-source AST, nine-round full LFP and original reset/rising/falling scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; original cumulative AUIPC/load-use/JAL repaired derived DUT, not unmodified upstream",
+  "verification_scope": "Six explicit SLLI/SRLI/SRAI x1,x1,1 or SLL/SRL/SRA x1,x1,x2 at PC0, JAL x0,-4 at PC4; original zero RF seed and response environment, unbounded real reset/rising/falling execution. Current loops retain x1=x2=0; not nonzero/negative operand regression, arbitrary programs or all38. Local source producer proofs retain arbitrary fresh operands and exact low5-bit shift amount. Original whole architecture relation.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUDataOpJALLoopDomain.words (BzeenoLoadUseJalShiftProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": [
+      "Ex.External.CPUCommitBoundaryTarget",
+      "Ex.External.BzeenoLoadUseJalCertifiedEvidenceLoop",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.CPUDataOpJALLoopDomain",
+      "Ex.External.BzeenoLoadUseJalShiftProgram",
+      "Ex.External.BzeenoLoadUseJalShiftISA",
+      "Ex.External.BzeenoLoadUseJalShiftPhysicalReachable"
+    ],
+    "open_modules": [
+      "CPUCommitBoundaryTarget"
+    ],
+    "binders": "(op : BzeenoLoadUseJalShiftISA.Op)",
+    "arguments": [
+      "op"
+    ],
+    "provider_applications": {
+      "BzeenoLoadUseJalCertifiedEvidenceLoop.checked_certificate": [
+        {
+          "symbol": "BzeenoLoadUseJalShiftProgram.metadata",
+          "arguments": [
+            {
+              "binder": "op"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalShiftProgram.sequential_checked",
+          "arguments": [
+            {
+              "binder": "op"
+            }
+          ]
+        },
+        {
+          "symbol": "BzeenoLoadUseJalShiftPhysicalReachable.actual_physical_history",
+          "arguments": [
+            {
+              "binder": "op"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {
+      "directory": "experiments/framework/generated/bzeeno-native-full",
+      "namespace": "BzeenoNative"
+    },
+    {
+      "directory": "experiments/framework/generated/bzeeno-load-use",
+      "namespace": "BzeenoLoadUse"
+    },
+    {
+      "directory": "experiments/framework/generated/bzeeno-load-use-jal",
+      "namespace": "BzeenoLoadUseJal"
+    }
+  ],
+  "proof_roots": [
+    "src/Ex/External/BzeenoLoadUseJalShiftPhysicalReachable.v",
+    "src/Ex/External/BzeenoLoadUseJalCertifiedEvidenceLoop.v"
+  ],
+  "preserve_roots": [
+    "src/Ex/External/BzeenoLoadUseJalRegisterArithmeticInfiniteITree.v",
+    "src/Ex/External/BzeenoLoadUseJalRegisterComparePhysicalReachable.v"
+  ],
+  "bindings": {
+    "architecture": "unchanged ProgramArchRelated: PC nextPC full RF ROM all128 RAM bytes",
+    "control": "actual MemoryCodeCert and SequentialCodeCert, not a widened opcode whitelist",
+    "producer": "Actual six shift decode, low5-bit I-shamt, original native ALU and capture; closed same-Joint history"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalCertifiedEvidenceLoop.checked_certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

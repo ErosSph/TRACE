@@ -1,0 +1,11 @@
+{
+ "design": "bzeeno",
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "kind": "wire_provider",
+ "provenance": {"source": "regression of tools/cpu_tmpl_bzex.py iface (accepted r-tmpl-bz-ex-iface-20261103-a1)", "rule": "generalized_rule G2"},
+ "ast_require": "GeneratedRuntimeInput.ConfiguredAST",
+ "ast_dir": ["results/pending-configured-input-20261024-a4-bzeeno", "GeneratedRuntimeInput"],
+ "program": "bzeeno_load_use_jal_program",
+ "provider": {"module": "TmplBzExIface.BzTmplExIface.BzTmplExIface", "namespace": "TmplBzExIface", "dir": "results/r-tmpl-bz-ex-iface-20261103-a1", "file": "BzTmplExIface.v"},
+ "wires": {"result": 259, "a": 246, "b_rs2": 247, "b_imm": 248, "pc": 245, "link": 249, "slt_bit": 243}
+}

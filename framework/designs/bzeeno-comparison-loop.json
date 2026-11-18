@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-comparison-infinite-loop",
+  "backend": "actual repaired-source AST, nine-round full LFP and original reset/rising/falling scheduler",
+  "translation_equivalence": "external RTL-to-AST equivalence remains unmechanized; repaired derived DUT, not unmodified upstream",
+  "verification_scope": "SLTI/SLTIU x1,x1,1 at PC0; JAL x0,-4 at PC4, genuine reset and unbounded execution. Full original PC/nextPC/RF/ROM/128-byte RAM relation at every cycle. Not arbitrary comparison programs or all38",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUDataOpJALLoopDomain.words (BzeenoLoadUseJalComparisonProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalComparisonInfiniteITree", "Ex.External.BzeenoLoadUseJalNineProgramTarget", "Ex.External.CPUDataOpJALLoopDomain", "Ex.External.BzeenoLoadUseJalComparisonProgram", "Ex.External.BzeenoLoadUseJalComparisonControl"],
+    "open_modules": ["BzeenoLoadUseJalComparisonInfiniteITree"],
+    "binders": "(op : BzeenoLoadUseJalComparisonControl.Op)",
+    "arguments": ["op"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalComparisonInfiniteITree.v"],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalImmediateLogicInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalLoopInfiniteITree.v"],
+  "bindings": {
+    "architecture": "original ProgramArchRelated including whole RF and all128 RAM bytes",
+    "state": "same frontend and physical result Joint proved from real reset",
+    "operation": "real ID comparison and captured EX result; signed and unsigned original ISA behavior"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalComparisonInfiniteITree.checked_certificate",
+    "infinite": "BzeenoLoadUseJalComparisonInfiniteITree.actual_infinite_refinement"
+  }
+}

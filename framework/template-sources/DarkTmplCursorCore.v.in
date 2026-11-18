@@ -1,0 +1,401 @@
+(* Hand-written Dark cursor core (provenance: llm_written; proof_author: LLM-generated: Claude Code (claude-sonnet-5-5); external_llm_api_calls=0).
+ Parts: (1) pcseq invariant over a whole actual_cycle; (2) bit-slice and coherent-field helpers; (3) @GEN@ generated dispatch;
+ (4) committing-cycle cursor (jump families); (5) silent cycles and the goal_cursor body. Reuses ONE Codex low-level RTL fact:
+ DarkRISCV38DerivedLFP.actual_driven_is_LFP (through the accepted Cycle/Fetch modules). *)
+Local Notation rd s n := (read_signal (rtl s) n%nat) (only parsing).
+Local Notation drv s := (phase_driven_state P rise (rtl s)) (only parsing).
+
+Definition pcseq (s : Runtime) : Prop :=
+ (norm 2 (rd s 43) = 0 -> norm 32 (rd s 64) = norm 32 (norm 32 (rd s 65) + 4) /\ norm 32 (rd s 24) = norm 32 (norm 32 (rd s 65) + 8)) /\
+ (norm 2 (rd s 43) = 1 -> norm 32 (rd s 24) = norm 32 (norm 32 (rd s 64) + 4)) /\
+ (norm 1 (rd s 22) = 1 -> norm 32 (rd s 24) = 0 /\ norm 32 (rd s 64) = 0 /\ norm 32 (rd s 65) = 0) /\
+ (reset_cycles s = 0%nat -> norm 2 (rd s 43) <> 3).
+
+Theorem pcseq_reset : pcseq actual_reset.
+Proof. unfold pcseq, actual_reset. cbn [rtl reset_cycles].
+ refine (conj (fun H => _) (conj (fun H => _) (conj (fun H => _) (fun H => _)))).
+ - exfalso. vm_compute in H. discriminate H.
+ - exfalso. vm_compute in H. discriminate H.
+ - repeat split; vm_compute; reflexivity.
+ - discriminate H.
+Qed.
+
+Lemma cyc_flush image s : env_ok s ->
+ norm 2 (rd (actual_cycle image s) 43) = norm 2 (eval_expr (drv s) TmplDarkControls.DarkTmplControls.DarkTmplControls.orig_t_next_flush).
+Proof. intro HE. pose proof HE as [H0 _].
+ rewrite (act_reg image s 43%nat comb_unw_43 ltac:(discriminate)).
+ rewrite (frame3 image s 43%nat comb_unw_43 ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite (rise_flush (rtl s) H0). reflexivity. Qed.
+Lemma cyc_ifpc image s : env_ok s ->
+ norm 32 (rd (actual_cycle image s) 24) = norm 32 (eval_expr (drv s) TmplDarkControls.DarkTmplControls.DarkTmplControls.orig_t_next_fetch_pc).
+Proof. intro HE. pose proof HE as [H0 _].
+ rewrite (act_reg image s 24%nat comb_unw_24 ltac:(discriminate)).
+ rewrite (frame3 image s 24%nat comb_unw_24 ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite (rise_c24 (rtl s) H0). reflexivity. Qed.
+Module Ctl := TmplDarkControls.DarkTmplControls.DarkTmplControls.
+
+Lemma gated_off d x : norm 2 (read_signal d 43%nat) <> 0 ->
+ norm 1 (eval_expr d (ESel 1 (ECond 32 (EUnary 1 URedOr (EVar 2 43%nat)) (EConst 32 0) (EExtend 32 false (EVar 1 x))) (EConst 32 0))) = 0.
+Proof. intro HF. cbn [eval_expr]. 
+ assert (E : Z.eqb (norm 2 (read_signal d 43%nat)) 0 = false) by (apply Z.eqb_neq; exact HF).
+ rewrite norm_idempotent, E. cbn. reflexivity. Qed.
+
+Lemma jreq_off seed d : CombLFP P seed d -> norm 2 (read_signal d 43%nat) <> 0 -> norm 1 (read_signal d 84%nat) = 0.
+Proof. intros HL HF. rewrite (Ctl.eq_w84 seed d HL). unfold Ctl.orig_w84. cbn [eval_expr].
+ assert (H54 : norm 1 (read_signal d 54%nat) = 0) by (rewrite (Ctl.eq_w54 seed d HL); unfold Ctl.orig_w54; exact (gated_off d _ HF)).
+ assert (H55 : norm 1 (read_signal d 55%nat) = 0) by (rewrite (Ctl.eq_w55 seed d HL); unfold Ctl.orig_w55; exact (gated_off d _ HF)).
+ assert (H56 : norm 1 (read_signal d 56%nat) = 0) by (rewrite (Ctl.eq_w56 seed d HL); unfold Ctl.orig_w56; exact (gated_off d _ HF)).
+ rewrite ?norm_idempotent, H54, H55, H56. vm_compute. reflexivity. Qed.
+
+
+Ltac drv_prep s HE :=
+ rewrite ?(driven_halt s HE), ?(driven_read (rtl s) 22%nat comb_unw_22 ltac:(discriminate)), ?(driven_read (rtl s) 43%nat comb_unw_43 ltac:(discriminate)),
+   ?(driven_read (rtl s) 24%nat comb_unw_24 ltac:(discriminate)).
+
+Lemma flush_x0f0 image s : env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) = 0 ->
+ norm 2 (rd (actual_cycle image s) 43) = if Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0 then 0 else 2.
+Proof. intros HE HX HF. rewrite (cyc_flush image s HE). unfold Ctl.orig_t_next_flush. cbn [eval_expr].
+ drv_prep s HE. rewrite HX, HF. cbn. destruct (Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0); reflexivity. Qed.
+Lemma arith_dec F : 1 <= F <= 3 -> norm 2 (norm 32 (norm 32 F - 1)) = F - 1.
+Proof. intro H. assert (F = 1 \/ F = 2 \/ F = 3) by lia. destruct H0 as [E|[E|E]]; subst; vm_compute; reflexivity. Qed.
+Lemma flush_x0fn image s : env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) <> 0 ->
+ norm 2 (rd (actual_cycle image s) 43) = norm 2 (rd s 43) - 1.
+Proof. intros HE HX HF. rewrite (cyc_flush image s HE). unfold Ctl.orig_t_next_flush. cbn [eval_expr].
+ drv_prep s HE. rewrite HX.
+ assert (E : Z.eqb (norm 2 (rd s 43)) 0 = false) by (apply Z.eqb_neq; exact HF).
+ rewrite E. cbn. rewrite !norm_idempotent.
+ pose proof (norm_bits 2 (rd s 43)) as [B0 B1]. cbn in B1.
+ apply arith_dec. lia. Qed.
+Lemma flush_x1 image s : env_ok s -> norm 1 (rd s 22) = 1 -> norm 2 (rd (actual_cycle image s) 43) = 2.
+Proof. intros [H0 _] HX. exact (act_flush_xres image s H0 HX). Qed.
+
+Lemma ifpc_x1 image s : env_ok s -> norm 1 (rd s 22) = 1 -> norm 32 (rd (actual_cycle image s) 24) = 0.
+Proof. intros HE HX. rewrite (cyc_ifpc image s HE). unfold Ctl.orig_t_next_fetch_pc. cbn [eval_expr].
+ drv_prep s HE. rewrite HX. cbn. reflexivity. Qed.
+Lemma ifpc_x0 image s : env_ok s -> norm 1 (rd s 22) = 0 ->
+ norm 32 (rd (actual_cycle image s) 24) = if Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0 then norm 32 (norm 32 (rd s 24) + 4) else norm 32 (read_signal (drv s) 85%nat).
+Proof. intros HE HX. rewrite (cyc_ifpc image s HE). unfold Ctl.orig_t_next_fetch_pc. cbn [eval_expr].
+ drv_prep s HE. rewrite HX. cbn [Z.eqb]. rewrite ?norm_idempotent.
+ destruct (Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0); rewrite ?norm_idempotent; [|reflexivity].
+ rewrite Z.add_comm. reflexivity. Qed.
+
+Lemma nadd w a b : norm w (norm w a + b) = norm w (a + b).
+Proof. rewrite !ExtendedSVBankAlignment.norm_mod. rewrite Z.add_mod_idemp_l by (apply Z.pow_nonzero; lia; lia). reflexivity. Qed.
+Lemma nadd_r w a b : norm w (a + norm w b) = norm w (a + b).
+Proof. rewrite Z.add_comm, nadd, Z.add_comm. reflexivity. Qed.
+
+Lemma flush_ne3 image s : env_ok s -> norm 2 (rd (actual_cycle image s) 43) <> 3.
+Proof. intro HE. destruct (one_bit_cases (rtl s) 22%nat) as [HX|HX].
+ - destruct (Z.eq_dec (norm 2 (rd s 43)) 0) as [HF|HF].
+   + rewrite (flush_x0f0 image s HE HX HF). destruct (Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0); discriminate.
+   + rewrite (flush_x0fn image s HE HX HF). pose proof (norm_bits 2 (rd s 43)) as [B0 B1]. cbn in B1. lia.
+ - rewrite (flush_x1 image s HE HX). discriminate. Qed.
+
+Lemma jreq_zero_nf s : norm 2 (rd s 43) <> 0 -> norm 1 (read_signal (drv s) 84%nat) = 0.
+Proof. intro HF. apply (jreq_off _ _ (actual_driven_is_LFP rise (rtl s))).
+ rewrite (driven_read (rtl s) 43%nat comb_unw_43 ltac:(discriminate)). exact HF. Qed.
+
+Lemma pow32 : 2 ^ Z.of_nat 32 = 4294967296. Proof. reflexivity. Qed.
+Ltac nlia := repeat rewrite ExtendedSVBankAlignment.norm_mod; rewrite ?pow32; repeat first [rewrite Z.add_mod_idemp_l by lia | rewrite Z.add_mod_idemp_r by lia | rewrite <- Z.add_assoc]; f_equal; lia.
+Lemma n32_4 a : norm 32 (norm 32 a + 4) = norm 32 (a + 4). Proof. apply nadd. Qed.
+
+Theorem pcseq_step image s : env_ok s -> pcseq s -> pcseq (actual_cycle image s).
+Proof. intros HE [P1 [P2 [P3 P4]]]. pose proof HE as HE'. destruct HE' as [H0 [H6 [H17 [Hz Hnz]]]].
+ pose proof (act_idpc image s HE) as A64. pose proof (act_pc image s HE) as A65.
+ unfold pcseq. refine (conj _ (conj _ (conj _ _))).
+ - (* F' = 0 *) intro HF'.
+   destruct (one_bit_cases (rtl s) 22%nat) as [HX|HX].
+   + destruct (Z.eq_dec (norm 2 (rd s 43)) 0) as [HF|HF].
+     * rewrite (flush_x0f0 image s HE HX HF) in HF'.
+       destruct (Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0) eqn:EJ; [|discriminate].
+       apply Z.eqb_eq in EJ. destruct (P1 HF) as [Q1 Q2].
+       assert (HI : norm 32 (rd (actual_cycle image s) 24) = norm 32 (norm 32 (rd s 24) + 4)).
+       { rewrite (ifpc_x0 image s HE HX), EJ. reflexivity. }
+       rewrite A65, A64 in *. rewrite HI, Q1, Q2.
+       split; nlia.
+     * rewrite (flush_x0fn image s HE HX HF) in HF'.
+       pose proof (norm_bits 2 (rd s 43)) as [B0 B1]. cbn in B1.
+       assert (HF1 : norm 2 (rd s 43) = 1) by lia.
+       pose proof (jreq_zero_nf s HF) as EJ.
+       assert (HI : norm 32 (rd (actual_cycle image s) 24) = norm 32 (norm 32 (rd s 24) + 4)).
+       { rewrite (ifpc_x0 image s HE HX), EJ. reflexivity. }
+       pose proof (P2 HF1) as Q.
+       rewrite A65, A64. rewrite HI, Q.
+       split; nlia.
+   + rewrite (flush_x1 image s HE HX) in HF'. discriminate.
+ - (* F' = 1 *) intro HF'.
+   destruct (one_bit_cases (rtl s) 22%nat) as [HX|HX].
+   + destruct (Z.eq_dec (norm 2 (rd s 43)) 0) as [HF|HF].
+     * rewrite (flush_x0f0 image s HE HX HF) in HF'.
+       destruct (Z.eqb (norm 1 (read_signal (drv s) 84%nat)) 0); discriminate.
+     * pose proof (jreq_zero_nf s HF) as EJ.
+       assert (HI : norm 32 (rd (actual_cycle image s) 24) = norm 32 (norm 32 (rd s 24) + 4)).
+       { rewrite (ifpc_x0 image s HE HX), EJ. reflexivity. }
+       rewrite A64, HI. nlia.
+   + rewrite (flush_x1 image s HE HX) in HF'. discriminate.
+ - (* XRES' = 1 *) intro HX'.
+   rewrite (act_xres image s H0) in HX'.
+   destruct (reset_cycles s) eqn:ERC.
+   + destruct (Hz eq_refl) as [R0 _]. rewrite R0 in HX'. discriminate.
+   + destruct (Hnz ltac:(discriminate)) as [_ [HX _]].
+     destruct (P3 HX) as [Q1 [Q2 Q3]].
+     rewrite (ifpc_x1 image s HE HX), A64, A65, Q1, Q2. repeat split; vm_compute; reflexivity.
+ - intro Hrc. apply flush_ne3. exact HE. Qed.
+
+(* ---- (2) helpers ---- *)
+Module Inv := TmplDarkInv.DarkTmplInv.DarkTmplInv.
+Module Imm := TmplDarkImm.DarkTmplImm.DarkTmplImm.
+Module RF := TmplDarkRF.DarkTmplRF.DarkTmplRF.
+Module Cls := CPUClassTableInverse.CPUClassTableInverse.
+Module Shp := CPUImmediateShapes.CPUImmediateShapes.
+
+Lemma comb_unw_29 : comb_root_unwrittenb P 29%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma comb_unw_63 : comb_root_unwrittenb P 63%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma comb_unw_41 : comb_root_unwrittenb P 41%nat = true. Proof. vm_compute; reflexivity. Qed.
+
+Lemma coh_regs : forall r, In r (seq 29 14) -> comb_root_unwrittenb P r = true.
+Proof. intros r H. cbn in H. repeat destruct H as [<-|H]; try contradiction; vm_compute; reflexivity. Qed.
+
+Lemma coh_drv s : Inv.CoherentFields (rtl s) -> Inv.CoherentFields (drv s).
+Proof. intro H. assert (A : forall r, (29 <= r <= 42)%nat -> read_signal (drv s) r = rd s r).
+ { intros r Hr. apply driven_read; [apply coh_regs; apply in_seq; lia | lia]. }
+ unfold Inv.CoherentFields in *. cbn [eval_expr] in *.
+ repeat (rewrite ?(A 29%nat ltac:(lia)), ?(A 30%nat ltac:(lia)), ?(A 31%nat ltac:(lia)), ?(A 32%nat ltac:(lia)), ?(A 33%nat ltac:(lia)), ?(A 34%nat ltac:(lia)), ?(A 35%nat ltac:(lia)), ?(A 36%nat ltac:(lia)), ?(A 37%nat ltac:(lia)), ?(A 38%nat ltac:(lia)), ?(A 39%nat ltac:(lia)), ?(A 40%nat ltac:(lia)), ?(A 41%nat ltac:(lia)), ?(A 42%nat ltac:(lia))).
+ exact H. Qed.
+
+Lemma bs_gen w k n : 0 <= k -> 0 < n -> bitSlice w k (k + n) = norm (Z.to_nat n) (Z.shiftr w k).
+Proof. intros Hk Hn. rewrite coqutil.Z.BitOps.bitSlice_alt by lia.
+ unfold coqutil.Z.BitOps.bitSlice'. rewrite ExtendedSVBankAlignment.norm_mod, Z.shiftr_div_pow2 by lia.
+ rewrite Z2Nat.id by lia. replace (k + n - k) with n by lia. reflexivity. Qed.
+Lemma bs_0_7 w : bitSlice w 0 7 = norm 7 w.
+Proof. pose proof (bs_gen w 0 7 ltac:(lia) ltac:(lia)) as H. cbn in H. rewrite H. try rewrite Z.shiftr_0_r. reflexivity. Qed.
+Lemma bs_12_15 w : bitSlice w 12 15 = norm 3 (Z.shiftr w 12).
+Proof. exact (bs_gen w 12 3 ltac:(lia) ltac:(lia)). Qed.
+Lemma bs_25_32 w : bitSlice w 25 32 = norm 7 (Z.shiftr w 25).
+Proof. exact (bs_gen w 25 7 ltac:(lia) ltac:(lia)). Qed.
+Lemma bs_15_20 w : bitSlice w 15 20 = norm 5 (Z.shiftr w 15).
+Proof. exact (bs_gen w 15 5 ltac:(lia) ltac:(lia)). Qed.
+Lemma bs_20_25 w : bitSlice w 20 25 = norm 5 (Z.shiftr w 20).
+Proof. exact (bs_gen w 20 5 ltac:(lia) ltac:(lia)). Qed.
+Lemma bs_shift7 w : norm 7 (Z.shiftr w 25) = bitSlice w 25 26 + 2 * bitSlice w 26 32.
+Proof. rewrite !coqutil.Z.BitOps.bitSlice_alt by lia. unfold coqutil.Z.BitOps.bitSlice'.
+ rewrite ExtendedSVBankAlignment.norm_mod, Z.shiftr_div_pow2 by lia.
+ change (2 ^ Z.of_nat 7) with 128. change (2 ^ (26 - 25)) with 2. change (2 ^ (32 - 26)) with 64.
+ replace (w / 2 ^ 26) with ((w / 2 ^ 25) / 2) by (rewrite Z.div_div by lia; reflexivity).
+ generalize (w / 2 ^ 25) as a. intro a.
+ pose proof (Z.div_mod a 2 ltac:(lia)). pose proof (Z.div_mod a 128 ltac:(lia)). pose proof (Z.div_mod (a/2) 64 ltac:(lia)).
+ pose proof (Z.mod_pos_bound a 2 ltac:(lia)). pose proof (Z.mod_pos_bound a 128 ltac:(lia)). pose proof (Z.mod_pos_bound (a/2) 64 ltac:(lia)).
+ assert (Z.div a 128 = Z.div (Z.div a 2) 64) by (rewrite Z.div_div by lia; reflexivity). lia. Qed.
+
+Definition base (d : State) : Prop := norm 1 (read_signal d 22%nat) = 0 /\ norm 1 (read_signal d 23%nat) = 0 /\ norm 2 (read_signal d 43%nat) = 0.
+
+(*@GEN@*)
+
+Lemma cursor_jreq0 image s : env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) = 0 -> pcseq s ->
+ norm 1 (read_signal (drv s) 84%nat) = 0 ->
+ architectural_cursor (rtl (actual_cycle image s)) = norm 32 (norm 32 (rd s 65) + 4).
+Proof. intros HE HX HF Hp EJ.
+ pose proof (flush_x0f0 image s HE HX HF) as F'. rewrite EJ in F'. cbn in F'.
+ unfold architectural_cursor. rewrite F'. cbn [Z.eqb Pos.eqb].
+ rewrite (act_pc image s HE). destruct Hp as [P1 _]. destruct (P1 HF) as [Q _]. exact Q. Qed.
+Lemma cursor_jreq1 image s : env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) = 0 ->
+ norm 1 (read_signal (drv s) 84%nat) = 1 ->
+ architectural_cursor (rtl (actual_cycle image s)) = norm 32 (read_signal (drv s) 85%nat).
+Proof. intros HE HX HF EJ.
+ pose proof (flush_x0f0 image s HE HX HF) as F'. rewrite EJ in F'. cbn in F'.
+ unfold architectural_cursor. rewrite F'. cbn [Z.eqb Pos.eqb].
+ rewrite (ifpc_x0 image s HE HX), EJ. reflexivity. Qed.
+
+Definition concl image s (post : FormalSpec.State) : Prop :=
+ architectural_cursor (rtl (actual_cycle image s)) = word.unsigned (getPc post) /\
+ word.unsigned (getNextPc post) = norm 32 (architectural_cursor (rtl (actual_cycle image s)) + 4).
+
+Section W.
+Context {word : Interface.word 32} {word_ok : word.ok word}.
+Lemma ua (x : word) c : word.unsigned (word.add x (word.of_Z c)) = norm 32 (word.unsigned x + c).
+Proof. rewrite word.unsigned_add, word.unsigned_of_Z. unfold word.wrap. rewrite ExtendedSVBankAlignment.norm_mod.
+ change (2 ^ Z.of_nat 32) with (2 ^ 32). rewrite Z.add_mod_idemp_r by lia. reflexivity. Qed.
+Lemma uw_norm (x : word) : norm 32 (word.unsigned x) = word.unsigned x.
+Proof. pose proof (word.unsigned_range x) as H. rewrite ExtendedSVBankAlignment.norm_mod.
+ change (2 ^ Z.of_nat 32) with (2 ^ 32). rewrite Z.mod_small; [reflexivity|]. exact H. Qed.
+End W.
+
+Lemma jalr_arith imm : norm 32 (Z.shiftl (Z.shiftr (norm 32 (0 + norm 32 imm)) 1) 1) = Z.land (imm mod 2 ^ 32) (2 ^ 32 - 2).
+Proof. assert (E : 2 ^ 32 - 2 = Z.land (Z.ones 32) (Z.lnot 1)) by reflexivity. rewrite E.
+ assert (E2 : imm mod 2 ^ 32 = Z.land imm (Z.ones 32)) by (rewrite Z.land_ones by lia; reflexivity). rewrite E2.
+ rewrite Z.add_0_l, !norm_ones. change (Z.of_nat 32) with 32.
+ prove_Zeq_bitwise. all: (assert (Hb : forall j, 0 <= j -> Z.testbit 1 j = Z.eqb 0 j) by (intros j Hj; change 1 with (2 ^ 0); rewrite Z.pow2_bits_eqb by lia; reflexivity)).
+ - assert (i = 0) by lia. subst i. rewrite (Hb 0 ltac:(lia)). cbn. rewrite andb_false_r. reflexivity.
+ - replace (i - 1 + 1) with i by lia. rewrite (Hb i Hi). destruct (Z.eqb_spec 0 i); [lia|]. rewrite andb_true_r. reflexivity. Qed.
+
+
+Lemma fin_seq image s (post : FormalSpec.State) : env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) = 0 -> pcseq s ->
+ norm 1 (read_signal (drv s) 84%nat) = 0 ->
+ word.unsigned (getPc post) = norm 32 (norm 32 (rd s 65) + 4) ->
+ getNextPc post = word.add (getPc post) (word.of_Z 4) -> concl image s post.
+Proof. intros HE HX HF Hp EJ Hpc Hnx. unfold concl. rewrite (cursor_jreq0 image s HE HX HF Hp EJ). split; [symmetry; exact Hpc|].
+ rewrite Hnx, ua, Hpc. nlia. Qed.
+Lemma fin_jump image s (post : FormalSpec.State) T : env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) = 0 ->
+ norm 1 (read_signal (drv s) 84%nat) = 1 -> norm 32 (read_signal (drv s) 85%nat) = T ->
+ word.unsigned (getPc post) = T ->
+ getNextPc post = word.add (getPc post) (word.of_Z 4) -> concl image s post.
+Proof. intros HE HX HF EJ HT Hpc Hnx. unfold concl. rewrite (cursor_jreq1 image s HE HX HF EJ), HT. split; [symmetry; exact Hpc|].
+ rewrite Hnx, ua, Hpc. reflexivity. Qed.
+
+Lemma s1_field seed d : CombLFP P seed d -> norm 5 (read_signal d 45%nat) = bitSlice (norm 32 (read_signal d 29%nat)) 15 20.
+Proof. intro HL. rewrite (eq_w45 seed d HL). unfold orig_w45. cbn [eval_expr]. rewrite bs_15_20, norm_idempotent. reflexivity. Qed.
+Lemma s2_field seed d : CombLFP P seed d -> norm 5 (read_signal d 46%nat) = bitSlice (norm 32 (read_signal d 29%nat)) 20 25.
+Proof. intro HL. rewrite (eq_w46 seed d HL). unfold orig_w46. cbn [eval_expr]. rewrite bs_20_25, norm_idempotent. reflexivity. Qed.
+
+Local Notation FRW := CV32E40PReq40StateRel.CV32E40PReq40StateRel.formal_register_word.
+Lemma fw_view (f : FormalSpec.State) r : RF.isa_view f r = word.unsigned (FRW f r).
+Proof. unfold RF.isa_view, CV32E40PReq40StateRel.CV32E40PReq40StateRel.formal_register_word.
+ destruct (Z.eq_dec r 0) as [E|E].
+ - subst r. cbn. reflexivity.
+ - destruct (Z.eqb_spec r 0); [contradiction|]. destruct (map.get (getRegs f) r); [reflexivity|]. rewrite word.unsigned_of_Z_0. reflexivity. Qed.
+
+(*@BRX@*)
+
+Module BE := CV32E40PBranchExecution.CV32E40PBranchExecution.
+Lemma fin_branch image s (f : FormalSpec.State) (i : Decode.InstructionI) rs1 rs2 imm :
+ env_ok s -> norm 1 (rd s 22) = 0 -> norm 2 (rd s 43) = 0 -> pcseq s ->
+ norm 32 (rd s 65) = word.unsigned (getPc f) -> word.unsigned (getNextPc f) = norm 32 (word.unsigned (getPc f) + 4) ->
+ BE.branch_rs1 i = rs1 -> BE.branch_rs2 i = rs2 -> BE.branch_immediate i = imm ->
+ norm 1 (read_signal (drv s) 84%nat) = boolz (CV32E40PBranchISACondition.CV32E40PBranchISACondition.isa_branch_guard i (FRW f rs1) (FRW f rs2)) ->
+ norm 32 (read_signal (drv s) 85%nat) = norm 32 (norm 32 (rd s 65) + norm 32 imm) ->
+ concl image s (BE.branch_post f i).
+Proof. intros HE HX HF Hp Hc1 Hc2 E1 E2 E3 H84 H85. subst rs1 rs2 imm.
+ assert (Hpost : getPc (BE.branch_post f i) = BE.branch_next_pc f i) by reflexivity.
+ assert (Hnx : getNextPc (BE.branch_post f i) = word.add (getPc (BE.branch_post f i)) (word.of_Z 4)) by reflexivity.
+ unfold BE.branch_next_pc, BE.reference_branch_taken, BE.reference_branch_target in Hpost.
+ destruct (CV32E40PBranchISACondition.CV32E40PBranchISACondition.isa_branch_guard i (FRW f (BE.branch_rs1 i)) (FRW f (BE.branch_rs2 i))) eqn:G.
+ - cbn in H84.
+   apply (fin_jump image s _ _ HE HX HF H84 H85); [|exact Hnx].
+   rewrite Hpost, ua, <- Hc1. nlia.
+ - cbn in H84.
+   apply (fin_seq image s _ HE HX HF Hp H84); [|exact Hnx].
+   rewrite Hpost, Hc2, <- Hc1. reflexivity.
+Qed.
+
+Definition cursor_inv (image : list Z) (s : Runtime) : Prop := env2 image s /\ slot_inv image s /\ pcseq s.
+
+Module Dom := CPUJumpFamilyProgramDomain.CPUJumpFamilyProgramDomain.
+
+Theorem commit_cursor image (HC : Dom.check_program image = true) s (f : FormalSpec.State) :
+ cursor_inv image s -> Inv.CoherentFields (rtl s) -> RF.RFZero (rd s 63) f ->
+ (exists index, Dom.AtProgram image index f) ->
+ norm 2 (rd s 43) = 0 ->
+ norm 32 (rd s 65) = word.unsigned (getPc f) ->
+ word.unsigned (getNextPc f) = norm 32 (word.unsigned (getPc f) + 4) ->
+ exists post, FormalSpec.run1 f = (Some tt, post) /\ concl image s post.
+Proof.
+ intros [HE2 [Hslot Hpcs]] HCoh HRF [index HAt] HF Hc1 Hc2.
+ destruct HE2 as [HE _].
+ pose proof (env_commit_xres s HE HF) as HX.
+ pose proof (actual_driven_is_LFP rise (rtl s)) as HLd.
+ assert (Hb : base (drv s)).
+ { unfold base. rewrite (driven_halt s HE), (driven_read (rtl s) 22%nat comb_unw_22 ltac:(discriminate)), (driven_read (rtl s) 43%nat comb_unw_43 ltac:(discriminate)). auto. }
+ pose proof (coh_drv s HCoh) as HCd.
+ pose proof HAt as [HI [HP [HM HN]]].
+ destruct (Dom.checked_entry image index HC HI) as [i0 [HD0 [HW _]]].
+ assert (Hw : norm 32 (read_signal (drv s) 29%nat) = nth index image 0).
+ { rewrite (driven_read (rtl s) 29%nat comb_unw_29 ltac:(discriminate)).
+   rewrite (Hslot ltac:(left; exact HF)). unfold rom. rewrite Hc1, HP.
+
+   assert (E4 : 4 * Z.of_nat index / 4 = Z.of_nat index) by (rewrite Z.mul_comm; apply Z.div_mul; lia). rewrite E4, Nat2Z.id.
+   exact (ExtendedSVPackedROM.norm_in_range 32 _ HW). }
+ destruct (Dom.checked_current_instruction image index f HC HAt) as [i [HD [HCur [HL' HT]]]].
+ assert (Hd : Decode.decode Decode.RV32I (norm 32 (read_signal (drv s) 29%nat)) = Decode.IInstruction i) by (rewrite Hw; exact HD).
+ destruct (Dom.legal_instruction_sound i HL') as [HData|[[rd0 [imm HE0]]|[[op [rs1 [rs2 [imm HE0]]]]|[rd0 [imm HE0]]]]].
+ - exists (CV32E40PDataOpExecution.CV32E40PDataOpExecution.dataop_post f i). split.
+   + apply CV32E40PDataOpExecution.CV32E40PDataOpExecution.run1_exact; [exact HData| |exact HCur].
+     exact (CV32E40PDataOpISAInvariant.CV32E40PDataOpISAInvariant.decoded_operands_legal _ i HData HD).
+   + pose proof (dataop_jreq0 _ _ i HLd Hb HCd Hd HData) as EJ.
+     apply (fin_seq image s _ HE HX HF Hpcs EJ); [|reflexivity]. cbn [getPc CV32E40PDataOpExecution.CV32E40PDataOpExecution.dataop_post]. rewrite Hc2, <- Hc1. reflexivity.
+ - subst i.
+   assert (Hal : CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.JumpTargetAligned f (Decode.Jal rd0 imm)).
+   { unfold CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.JumpTargetAligned. cbn [CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.reference_jump_target].
+     rewrite ua, HP. pose proof (Dom.checked_length image HC).
+     cbn [Dom.successors CPUBranchFamilyProgramDomain.CPUBranchFamilyProgramDomain.successors] in HT. destruct (Forall_inv HT) as [HB HA].
+     cbn [CPUDataControlProgramDomain.CPUDataControlProgramDomain.next_address] in HB, HA.
+     rewrite ExtendedSVBankAlignment.norm_mod. change (2 ^ Z.of_nat 32) with 4294967296. rewrite (Z.mod_small (4 * Z.of_nat index + imm) 4294967296) by lia. exact HA. }
+   exists (CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.jump_post f (Decode.Jal rd0 imm)). split.
+   + apply CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.current_jump_run1_exact; [reflexivity|exact HCur|exact Hal].
+   + destruct (dec_Jal _ _ HLd Hb HCd _ _ Hd) as [EJ H85].
+     destruct (Cls.inv_Jal _ _ _ Hd) as [[_ Himm] Hopc]. 
+     assert (Himm' : imm = Shp.isa_imm_J (norm 32 (read_signal (drv s) 29%nat))) by (unfold Shp.isa_imm_J; exact Himm).
+     rewrite bs_0_7 in Hopc.
+     pose proof (simm_JAL _ _ HLd HCd Hopc) as H50.
+     rewrite (driven_read (rtl s) 65%nat comb_unw_65 ltac:(discriminate)) in H85.
+     apply (fin_jump image s _ _ HE HX HF EJ H85); [|reflexivity].
+     cbn [getPc CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.jump_post CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.reference_jump_target].
+     rewrite ua, H50, <- Himm', <- Hc1. nlia.
+ - subst i.
+   assert (HRFd : RF.RFZero (read_signal (drv s) 63%nat) f) by (rewrite (driven_read (rtl s) 63%nat comb_unw_63 ltac:(discriminate)); exact HRF).
+   assert (HTB : Forall (fun a => 0 <= a < 4 * Z.of_nat (length image) /\ a mod 4 = 0) (CPUBranchFamilyProgramDomain.CPUBranchFamilyProgramDomain.successors index (CPUISABranchFamilyEffects.CPUISABranchFamilyEffects.instruction op rs1 rs2 imm))) by (destruct op; exact HT).
+   exists (BE.branch_post f (CPUISABranchFamilyEffects.CPUISABranchFamilyEffects.instruction op rs1 rs2 imm)). split.
+   + apply BE.run1_branch_exact; [exact (CPUBranchFamilyProgramDomain.CPUBranchFamilyProgramDomain.branch_in_family op rs1 rs2 imm) | exact (CPUBranchFamilyProgramDomain.CPUBranchFamilyProgramDomain.branch_operands_legal (nth index image 0) op rs1 rs2 imm HD) | exact (Dom.branch_taken_target_aligned image index f op rs1 rs2 imm HC HAt HTB) | exact HCur].
+   + (*@BRDISP@*)
+ - subst i.
+   assert (Hal : CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.JumpTargetAligned f (Decode.Jalr rd0 0 imm)).
+   { unfold CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.JumpTargetAligned. rewrite Dom.jalr_x0_target_unsigned.
+     cbn [Dom.successors] in HT. exact (proj2 (Forall_inv HT)). }
+   exists (CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.jump_post f (Decode.Jalr rd0 0 imm)). split.
+   + apply CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.current_jump_run1_exact; [reflexivity|exact HCur|exact Hal].
+   + destruct (dec_Jalr _ _ HLd Hb HCd _ _ _ Hd) as [EJ H85].
+     destruct (Cls.inv_Jalr _ _ _ _ Hd) as [[_ [Hrs1 Himm]] [Hopc _]].
+     assert (Himm' : imm = Shp.isa_imm_I (norm 32 (read_signal (drv s) 29%nat))) by (unfold Shp.isa_imm_I; exact Himm).
+     rewrite bs_0_7 in Hopc.
+     pose proof (simm_JALR _ _ HLd HCd Hopc) as H50.
+     assert (H66 : norm 32 (read_signal (drv s) 66%nat) = 0).
+     { assert (HRFd : RF.RFZero (read_signal (drv s) 63%nat) f) by (rewrite (driven_read (rtl s) 63%nat comb_unw_63 ltac:(discriminate)); exact HRF).
+       rewrite (RF.operand_isa_66 _ _ f HLd HRFd), (s1_field _ _ HLd), <- Hrs1. unfold RF.isa_view. reflexivity. }
+     rewrite H66, H50, <- Himm' in H85.
+     apply (fin_jump image s _ _ HE HX HF EJ H85); [|reflexivity].
+     cbn [getPc CV32E40PJumpFenceExecution.CV32E40PJumpFenceExecution.jump_post].
+     rewrite Dom.jalr_x0_target_unsigned. unfold Dom.jalr_target. symmetry. apply jalr_arith.
+Qed.
+
+Lemma cursor_silent image s : env_ok s -> pcseq s -> norm 2 (rd s 43) <> 0 ->
+ architectural_cursor (rtl (actual_cycle image s)) = architectural_cursor (rtl s).
+Proof. intros HE Hp HF. pose proof HE as [H0 [H6 [H17 [Hz Hnz]]]].
+ destruct Hp as [P1 [P2 [P3 P4]]].
+ pose proof (norm_bits 2 (rd s 43)) as [B0 B1]. cbn in B1.
+ destruct (one_bit_cases (rtl s) 22%nat) as [HX|HX].
+ - assert (Hrc : reset_cycles s = 0%nat).
+   { destruct (reset_cycles s) eqn:E; [reflexivity|]. destruct (Hnz ltac:(discriminate)) as [_ [X _]]. congruence. }
+   pose proof (P4 Hrc) as N3.
+   unfold architectural_cursor. rewrite (flush_x0fn image s HE HX HF).
+   assert (Hcases : norm 2 (rd s 43) = 1 \/ norm 2 (rd s 43) = 2) by lia.
+   destruct Hcases as [E|E]; rewrite E.
+   + cbn [Z.eqb Pos.eqb Z.sub Z.pos_sub Pos.pred_double]. rewrite (act_pc image s HE). reflexivity.
+   + cbn [Z.eqb Pos.eqb Z.sub Z.pos_sub Pos.pred_double]. rewrite (act_idpc image s HE). reflexivity.
+ - destruct (P3 HX) as [Q1 [Q2 Q3]].
+   unfold architectural_cursor. rewrite (flush_x1 image s HE HX).
+   cbn [Z.eqb Pos.eqb]. rewrite (ifpc_x1 image s HE HX), Q1.
+   destruct (Z.eqb (norm 2 (rd s 43)) 2); [reflexivity|]. destruct (Z.eqb (norm 2 (rd s 43)) 1); [symmetry; exact Q2|symmetry; exact Q3]. Qed.
+
+Theorem cursor_inv_reset image : cursor_inv image actual_reset.
+Proof. refine (conj (env2_reset image) (conj _ pcseq_reset)).
+ unfold slot_inv. intro H. exfalso. vm_compute in H. destruct H; discriminate. Qed.
+Theorem cursor_inv_step image s : cursor_inv image s -> cursor_inv image (actual_cycle image s).
+Proof. intros [HE2 [Hs Hp]]. refine (conj (env2_step image s HE2) (conj (slot_step image s HE2) _)).
+ exact (pcseq_step image s (proj1 HE2) Hp). Qed.
+
+(** The goal_cursor body: next cursor of the RTL cycle against the ISA state selected by the plan. *)
+Theorem cursor_next image (HC : Dom.check_program image = true) s (f : FormalSpec.State) :
+ cursor_inv image s -> Inv.CoherentFields (rtl s) -> RF.RFZero (rd s 63) f ->
+ (exists index, Dom.AtProgram image index f) ->
+ architectural_cursor (rtl s) = word.unsigned (getPc f) ->
+ word.unsigned (getNextPc f) = norm 32 (architectural_cursor (rtl s) + 4) ->
+ let g := if Z.eqb (norm 2 (rd s 43)) 0 then snd (FormalSpec.run1 f) else f in
+ architectural_cursor (rtl (actual_cycle image s)) = word.unsigned (getPc g) /\
+ word.unsigned (getNextPc g) = norm 32 (architectural_cursor (rtl (actual_cycle image s)) + 4).
+Proof. intros Ci HCoh HRF Hat Hc Hn g. subst g.
+ destruct (Z.eqb (norm 2 (rd s 43)) 0) eqn:HK.
+ - apply Z.eqb_eq in HK. unfold architectural_cursor in Hc, Hn. rewrite HK in Hc, Hn. cbn [Z.eqb Pos.eqb] in Hc, Hn. rewrite Hc in Hn.
+   destruct (commit_cursor image HC s f Ci HCoh HRF Hat HK Hc Hn) as [post [Hrun Hcl]].
+   rewrite Hrun. exact Hcl.
+ - apply Z.eqb_neq in HK. destruct Ci as [HE2 [Hs Hp]].
+   rewrite (cursor_silent image s (proj1 HE2) Hp HK). split; assumption.
+Qed.

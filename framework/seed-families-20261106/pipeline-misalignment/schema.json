@@ -1,0 +1,62 @@
+{
+  "module": "PipelineAllMisalignment",
+  "preamble": "preamble.v.in",
+  "expected_classes": [
+    "Jal",
+    "Jalr",
+    "Beq",
+    "Bne",
+    "Blt",
+    "Bge",
+    "Bltu",
+    "Bgeu"
+  ],
+  "export": "ob_mis_@CLASS@",
+  "roles": {
+    "Jal": {},
+    "Jalr": {},
+    "Beq": {},
+    "Bne": {},
+    "Blt": {},
+    "Bge": {},
+    "Bltu": {},
+    "Bgeu": {}
+  },
+  "families": [
+    {
+      "seed": "seed-Jal.v.in",
+      "representative": "Jal",
+      "classes": [
+        "Jal"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-b/A5RrComb.v",
+      "source_sha256": "a0e1685caf2f818164b9c208291e4732e69f628b2dd11c07295306e648d8a1ea"
+    },
+    {
+      "seed": "seed-Jalr.v.in",
+      "representative": "Jalr",
+      "classes": [
+        "Jalr"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-b/A5RrComb.v",
+      "source_sha256": "a0e1685caf2f818164b9c208291e4732e69f628b2dd11c07295306e648d8a1ea"
+    },
+    {
+      "seed": "seed-Beq.v.in",
+      "representative": "Beq",
+      "classes": [
+        "Beq",
+        "Bne",
+        "Blt",
+        "Bge",
+        "Bltu",
+        "Bgeu"
+      ],
+      "origin": "legacy_adapted",
+      "source": "framework/template-sources/angelo5-rerun/prover-b/A5RrComb.v",
+      "source_sha256": "a0e1685caf2f818164b9c208291e4732e69f628b2dd11c07295306e648d8a1ea"
+    }
+  ]
+}

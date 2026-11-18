@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "design": "picorv32-original-source-jalr-loop",
+  "backend": "original imported ExtendedSV source, arbitrary explicit unknown choices and original real phase scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; not a four-state equivalence theorem",
+  "verification_scope": "Original zero-RF seed and original response environment; true reset then ADDI x1,x0,1 followed by JALR x0,5(x0) forever at PC4. Actual RF source x0 and signed-I immediate5 feed the actual ALU, captured root262 holds5; FETCH priority with249=247=248=1 clears bit0 and installs aligned4. JALR inhibits prefetch; original request NBA ordering requires six physical cycles per JALR. Full RF relation, original byte-ROM ISA run1/domain closure, observer and same joint cut restored. One explicit infinite program family, not arbitrary JALR rd/rs/immediate/programs and not all29 universal instruction semantics. LOAD/STORE excluded by scope/environment, not absent from hardware.",
+  "pinned_target": "PicoSourceJALRDesignTarget.actual_target schedule",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.PicoSourceJALRDesignTarget", "Ex.External.PicoSourceChoiceRuntime"],
+    "open_modules": ["PicoSourceJALRDesignTarget"],
+    "binders": "(schedule : PicoSourceChoiceRuntime.ChoiceSchedule)",
+    "arguments": ["schedule"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/pico-rf-writer", "namespace": "PicoRF"},
+    {"directory": "experiments/framework/generated/pico-unknown-candidate-final", "namespace": "PicoUnknown"}
+  ],
+  "proof_roots": ["src/Ex/External/PicoSourceJALRDesignTarget.v"],
+  "preserve_roots": ["src/Ex/External/PicoSourceGEDesignTarget.v", "src/Ex/External/PicoSourceLTDesignTarget.v", "src/Ex/External/CPUCommitBoundaryTarget.v"],
+  "bindings": {
+    "target": "framework pins original source reset, real cycle, observer, ISA initial byte-ROM and full architectural relation; provider supplies a certificate only",
+    "initial_scope": "existing zero-seeded RF, not arbitrary power-on RF cleared by reset",
+    "source_version": "same original PicoUnknownInputAST, not the zero-choice candidate"
+  },
+  "proof_providers": {
+    "certificate": "PicoSourceJALRDesignTarget.checked_certificate",
+    "infinite": "PicoSourceJALRDesignTarget.accepted_original_jalr_infinite_refinement"
+  }
+}

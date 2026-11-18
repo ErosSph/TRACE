@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "design": "darkriscv38-repaired-program-domain",
+  "backend": "repaired imported ExtendedSV actual phase runtime",
+  "translation_equivalence": "RTL-to-AST importer remains unmechanized; separately pinned repaired source, not original DUT equivalence",
+  "verification_scope": "38-class dispatch with proved ClosedCFG program-domain certificate; real reset, six-cycle startup, stateful 128-byte RAM, zero-default finite ROM. Not arbitrary unrestricted programs. Existing static aligned memory and control-flow domain restrictions remain unchanged.",
+  "pinned_target": "DarkRISCV38DerivedDesignTarget.actual_ready_target image",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.DarkRISCV38DerivedDesignTarget", "Ex.External.DarkRISCV38DerivedProgramDomain"],
+    "open_modules": ["CPUDesignTarget"],
+    "binders": "(image : list BinNums.Z) (HC : DarkRISCV38DerivedProgramDomain.ClosedCFG image)",
+    "arguments": ["image", "HC"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/dark38-derived", "namespace": "Dark38"},
+    {"directory": "experiments/framework/generated/dark-array-final", "namespace": "DarkArray"},
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"}
+  ],
+  "proof_roots": ["src/Ex/External/DarkRISCV38DerivedDesignTarget.v"],
+  "preserve_roots": ["src/Ex/External/DarkRISCV38DerivedInfiniteITree.v", "src/Ex/External/DarkRISCV38DerivedTarget.v"],
+  "bindings": {
+    "cycle": "DarkRISCV38DerivedTarget.actual_cycle image",
+    "commits": "DarkRISCV38DerivedTarget.actual_observe",
+    "reset": "DarkRISCV38DerivedTarget.actual_reset",
+    "boot": "actual ready_boot image reached by six real cycles; checked startup equivalence, not definitionally original target_boot",
+    "architecture": "original ArchRelated image: PC nextPC RF ROM and 128-byte RAM"
+  },
+  "proof_providers": {
+    "certificate": "DarkRISCV38DerivedDesignTarget.checked_certificate",
+    "infinite": "DarkRISCV38DerivedDesignTarget.accepted_infinite_refinement"
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "design": "picorv32-original-source-register-shift-loop",
+  "backend": "original imported ExtendedSV source; arbitrary explicit unknown choices; real phase scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; not a four-state equivalence theorem",
+  "verification_scope": "True reset with unchanged zero RF seed; original four-word byte-ROM ADDI x1,x0,1; ADDI x2,x0,1; SLL/SRL/SRA x1,x1,x2 at PC8; JAL x0,-4 at PC12 recurrently. CountOneLoopState is proved from the two original ISA startup steps and preserved: ISA RF[x2]=1 at PC8/12, giving real current RF source low5=1. Actual shared original SHIFT five-cycle segment; ADDI/JAL three-cycle predecessors. Full architectural PC nextPC whole RF byte-ROM and RAM relation. Three fixed programs, not arbitrary images/counts or all29; existing response environment retained, LOAD/STORE excluded by user scope/environment, not absent from Pico hardware.",
+  "pinned_target": "PicoSourceRegisterShiftDesignTarget.actual_target kind schedule",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": [
+      "Ex.External.CPUCommitBoundaryTarget",
+      "Ex.External.PicoSourceRegisterShiftDesignTarget",
+      "Ex.External.CPUSequentialShiftMath",
+      "Ex.External.PicoSourceChoiceRuntime",
+      "Ex.External.PicoSourceRegisterShiftJALLoopITree",
+      "Ex.External.PicoSourceRegisterShiftJALLoopDomain",
+      "Ex.External.PicoSourceProgramFirstITreePrefix",
+      "Ex.External.PicoSourceRegisterShiftLoopBoundary"
+    ],
+    "open_modules": [
+      "PicoSourceRegisterShiftDesignTarget"
+    ],
+    "binders": "(kind : CPUSequentialShiftMath.ShiftKind) (schedule : PicoSourceChoiceRuntime.ChoiceSchedule)",
+    "arguments": [
+      "kind",
+      "schedule"
+    ],
+    "provider_applications": {
+      "CPUCommitBoundaryTarget.Build_Certificate": [
+        {
+          "symbol": "PicoSourceRegisterShiftDesignTarget.actual_target",
+          "arguments": [
+            {
+              "binder": "kind"
+            },
+            {
+              "binder": "schedule"
+            }
+          ]
+        },
+        {
+          "symbol": "PicoSourceRegisterShiftLoopBoundary.LoopCut",
+          "arguments": [
+            {
+              "binder": "kind"
+            },
+            {
+              "binder": "schedule"
+            }
+          ]
+        },
+        {
+          "symbol": "PicoSourceRegisterShiftLoopBoundary.actual_cut_architecture",
+          "arguments": [
+            {
+              "binder": "kind"
+            },
+            {
+              "binder": "schedule"
+            }
+          ]
+        },
+        {
+          "symbol": "PicoSourceProgramFirstITreePrefix.actual_reset_to_first_operand_silent",
+          "arguments": [
+            {
+              "symbol": "PicoSourceRegisterShiftJALLoopDomain.image",
+              "arguments": [
+                {
+                  "binder": "kind"
+                }
+              ]
+            },
+            {
+              "binder": "schedule"
+            }
+          ]
+        },
+        {
+          "symbol": "PicoSourceRegisterShiftLoopBoundary.actual_loop_initial",
+          "arguments": [
+            {
+              "binder": "kind"
+            },
+            {
+              "binder": "schedule"
+            }
+          ]
+        },
+        {
+          "symbol": "PicoSourceRegisterShiftJALLoopITree.actual_loop_segments",
+          "arguments": [
+            {
+              "binder": "kind"
+            },
+            {
+              "binder": "schedule"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {
+      "directory": "experiments/framework/generated/pico-rf-writer",
+      "namespace": "PicoRF"
+    },
+    {
+      "directory": "experiments/framework/generated/pico-unknown-candidate-final",
+      "namespace": "PicoUnknown"
+    }
+  ],
+  "proof_roots": [
+    "src/Ex/External/PicoSourceRegisterShiftDesignTarget.v"
+  ],
+  "preserve_roots": [
+    "src/Ex/External/PicoSourceLogicJALLoopITree.v",
+    "src/Ex/External/PicoSourceImmediateCompareJALLoopITree.v",
+    "src/Ex/External/CPUCommitBoundaryTarget.v"
+  ],
+  "bindings": {
+    "target": "framework fixes real source runtime, scheduler, reset, boot, ISA image and architectural relation; candidate supplies a proof symbol only",
+    "initial_scope": "zero-seeded physical RF, not arbitrary physical power-on RF reset-cleared",
+    "source_version": "same pinned PicoUnknownInputAST as checked original source loop; not zero-choice candidate"
+  },
+  "proof_providers": {
+    "certificate": "PicoSourceRegisterShiftDesignTarget.checked_certificate",
+    "infinite": "PicoSourceRegisterShiftDesignTarget.accepted_original_register_shift_infinite_refinement"
+  }
+}

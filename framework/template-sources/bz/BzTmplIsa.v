@@ -1,0 +1,133 @@
+(** Bzeeno goal_arch, ISA layer (tools/cpu_tmpl_bzisa.py; class lists generated from the class table).
+    For the MEM-stage token t (cut = the retired ISA state): the post state of the checked ISA step writes the register
+    `bitSlice (iword t) 7 12` with the value the EX/MEM data register carries (MemCl), or leaves the registers (branches).
+    proof_author: LLM-generated: Claude Code (claude-sonnet-5-5); external_llm_api_calls=0. *)
+From Coq Require Import ZArith List Bool Lia.
+Require Import Lang.ExtendedSV Lang.ExtendedSVWordInvariant Lang.ExtendedSVBankAlignment Lang.ExtendedSVBankOperand
+ Ex.External.CPUJumpFamilyProgramDomain Ex.External.CPUJumpFamilyPostShape Ex.External.CPUISARegView Ex.External.CPUClassTableInverse
+ Ex.External.CPUGeneratedJointITree Ex.External.CPUISAExecutionEffects Ex.External.CPUOriginalISAReference
+ Ex.External.CV32E40PReq41Instruction Ex.External.CV32E40PReq40StateRel Ex.External.CV32E40PDataOpExecution Ex.External.CV32E40PDataOpProgramScope
+ Ex.External.CV32E40PJumpFenceExecution Ex.External.CV32E40PBranchExecution Ex.External.CPUISABranchFamilyEffects
+ Ex.RvCore.FormalSpec riscv.Spec.Decode riscv.Utility.Utility
+ GeneratedRuntimeInput.ConfiguredAST TmplBzInv.BzTmplInv
+ coqutil.Word.Interface coqutil.Word.Properties coqutil.Word.Bitwidth coqutil.Map.Interface coqutil.Byte.
+Import ListNotations ExtendedSV ExtendedSVWordInvariant ExtendedSVBankOperand CPUGeneratedJointITree CPUJumpFamilyProgramDomain.CPUJumpFamilyProgramDomain CPUJumpFamilyPostShape.CPUJumpFamilyPostShape CV32E40PDataOpExecution CV32E40PDataOpProgramScope CV32E40PReq41Instruction.
+Local Open Scope Z_scope.
+Module BzTmplIsa.
+Section Isa.
+Context {word : Interface.word 32} {BW : Bitwidth 32} {Registers : map.map Decode.Register word} {Mem : map.map word byte}
+ {word_ok : word.ok word} {registers_ok : map.ok Registers} {mem_ok : map.ok Mem}.
+Local Notation uw := word.unsigned.
+
+(** destination register field of every data-op / jump class *)
+Lemma dest_field w i rd : Decode.decode Decode.RV32I w = Decode.IInstruction i ->
+ (DataOp21 i \/ (exists r imm, i = Decode.Jal r imm) \/ (exists r imm, i = Decode.Jalr r 0 imm)) ->
+ destination_register i = Some rd -> rd = bitSlice w 7 12.
+Proof.
+ intros H HF D. destruct HF as [HD|[[r [imm ->]]|[r [imm ->]]]].
+ - destruct i; cbn [DataOp21 dataop21b] in HD; try discriminate; cbn [destination_register] in D; injection D as <-;
+   first [ exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Add w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sub w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sll w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slt w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sltu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Xor w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srl w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sra w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Or w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_And w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Addi w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slti w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sltiu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Xori w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Ori w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Andi w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slli w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srli w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srai w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Lui w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Auipc w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Jal w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Jalr w _ _ _ H))) ].
+ - cbn [destination_register] in D; injection D as <-. first [ exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Add w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sub w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sll w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slt w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sltu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Xor w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srl w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sra w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Or w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_And w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Addi w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slti w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sltiu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Xori w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Ori w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Andi w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slli w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srli w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srai w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Lui w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Auipc w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Jal w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Jalr w _ _ _ H))) ].
+ - cbn [destination_register] in D; injection D as <-. first [ exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Add w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sub w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sll w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slt w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sltu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Xor w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srl w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sra w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Or w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_And w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Addi w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slti w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Sltiu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Xori w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Ori w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Andi w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Slli w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srli w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Srai w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Lui w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Auipc w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Jal w _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Jalr w _ _ _ H))) ].
+Qed.
+
+(** source register fields of the branch classes (rs1 = bits 15:20, rs2 = bits 20:25) *)
+Lemma branch_fields w op rs1 rs2 imm : Decode.decode Decode.RV32I w = Decode.IInstruction (CPUISABranchFamilyEffects.instruction op rs1 rs2 imm) ->
+ rs1 = bitSlice w 15 20 /\ rs2 = bitSlice w 20 25.
+Proof.
+ intro H. destruct op; cbn [CPUISABranchFamilyEffects.instruction] in H; split;
+ first [ exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Beq w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bne w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Blt w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bge w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bltu w _ _ _ H))) | exact (proj1 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bgeu w _ _ _ H))) | exact (proj1 (proj2 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Beq w _ _ _ H)))) | exact (proj1 (proj2 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bne w _ _ _ H)))) | exact (proj1 (proj2 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Blt w _ _ _ H)))) | exact (proj1 (proj2 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bge w _ _ _ H)))) | exact (proj1 (proj2 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bltu w _ _ _ H)))) | exact (proj1 (proj2 (proj1 (CPUClassTableInverse.CPUClassTableInverse.inv_Bgeu w _ _ _ H)))) ].
+Qed.
+
+Lemma dataop_dest i : DataOp21 i -> exists rd, destination_register i = Some rd.
+Proof. intro H. destruct i; cbn [DataOp21 dataop21b] in H; try discriminate; eexists; reflexivity. Qed.
+
+Lemma memcl_data S cut i : DataOp21 i -> BzTmplInv.MemCl S cut i ->
+ norm 1 (read_signal S 279%nat) = 1 /\ norm 32 (read_signal S 284%nat) = uw (result_word cut i).
+Proof. intros H M. destruct i; cbn [DataOp21 dataop21b] in H; try discriminate; exact M. Qed.
+
+Lemma memcl_jal S cut r imm : BzTmplInv.MemCl S cut (Decode.Jal r imm) ->
+ norm 1 (read_signal S 279%nat) = 1 /\ norm 32 (read_signal S 284%nat) = uw (word.add (getPc cut) (word.of_Z 4 : word)).
+Proof. intro M. exact M. Qed.
+Lemma memcl_jalr S cut r rs imm : BzTmplInv.MemCl S cut (Decode.Jalr r rs imm) ->
+ norm 1 (read_signal S 279%nat) = 1 /\ norm 32 (read_signal S 284%nat) = uw (word.add (getPc cut) (word.of_Z 4 : word)).
+Proof. intro M. exact M. Qed.
+Lemma memcl_branch S cut op rs1 rs2 imm : BzTmplInv.MemCl S cut (CPUISABranchFamilyEffects.instruction op rs1 rs2 imm) -> norm 1 (read_signal S 279%nat) = 0.
+Proof. intro M. destruct op; exact M. Qed.
+
+Lemma rfrel_ext bank (v1 v2 : Z -> Z) : (forall i, v1 i = v2 i) -> RFRel bank v1 -> RFRel bank v2.
+Proof. intros E [H1 H2]. split; [intros i Hi; rewrite <- E; apply H1; exact Hi|rewrite <- E; exact H2]. Qed.
+
+Lemma norm32_small x : 0 <= x < 2^32 -> norm 32 x = x.
+Proof. intro H. rewrite ExtendedSVBankAlignment.norm_mod. apply Z.mod_small. cbn. lia. Qed.
+
+Lemma fin_write S cut adv bank' v :
+ norm 1 (read_signal S 279%nat) = 1 -> norm 32 (read_signal S 284%nat) = uw v -> norm 1 (read_signal S 277%nat) = 0 ->
+ getRegs adv = (if Z.eq_dec (norm 5 (read_signal S 283%nat)) 0 then getRegs cut else map.put (getRegs cut) (norm 5 (read_signal S 283%nat)) v) ->
+ (norm 1 (read_signal S 279%nat) = 1 -> norm 5 (read_signal S 283%nat) <> 0 -> norm 1 (read_signal S 277%nat) = 0 ->
+   RFRel bank' (fun i => if Z.eqb i (norm 5 (read_signal S 283%nat)) then norm 32 (read_signal S 284%nat) else CPUISARegView.isa_view cut i)) ->
+ ((norm 1 (read_signal S 279%nat) = 0 \/ norm 5 (read_signal S 283%nat) = 0) -> RFRel bank' (CPUISARegView.isa_view cut)) ->
+ RFRel bank' (CPUISARegView.isa_view adv).
+Proof.
+ intros H279 H284 H277 Hregs HR1 HR0.
+ pose proof Hregs as HregsF.
+ destruct (Z.eq_dec (norm 5 (read_signal S 283%nat)) 0) as [Hz|Hnz].
+ - assert (Hkeep : getRegs adv = getRegs cut) by exact Hregs.
+   eapply rfrel_ext; [|apply HR0; right; exact Hz].
+   intro k. symmetry. exact (CPUISARegView.view_after_keep cut adv Hkeep k).
+ - pose proof (HR1 H279 Hnz H277) as R1.
+   refine (CPUISARegView.rfrel_after_write _ cut adv (norm 5 (read_signal S 283%nat)) v (norm 5 (read_signal S 283%nat)) (norm 32 (read_signal S 284%nat)) R1 eq_refl _ _).
+   + rewrite H284. destruct (Z.eqb 0 (norm 5 (read_signal S 283%nat))) eqn:E0; [apply Z.eqb_eq in E0; congruence|reflexivity].
+   + destruct (Z.eq_dec (norm 5 (read_signal S 283%nat)) 0) as [E|_]; [contradiction|exact HregsF].
+Qed.
+
+Lemma fin_keep S cut adv bank' :
+ norm 1 (read_signal S 279%nat) = 0 -> getRegs adv = getRegs cut ->
+ ((norm 1 (read_signal S 279%nat) = 0 \/ norm 5 (read_signal S 283%nat) = 0) -> RFRel bank' (CPUISARegView.isa_view cut)) ->
+ RFRel bank' (CPUISARegView.isa_view adv).
+Proof.
+ intros H279 Hkeep HR0. eapply rfrel_ext; [|apply HR0; left; exact H279].
+ intro k. symmetry. exact (CPUISARegView.view_after_keep cut adv Hkeep k).
+Qed.
+
+(** The post state of the MEM token against the RF facts of the cycle. *)
+Theorem rfrel_mem words (HC : check_program words = true) S t cut adv bank' :
+ BzTmplInv.StageMEM words S t cut -> checked_pc_effect t cut = Some adv ->
+ (norm 1 (read_signal S 279%nat) = 1 -> norm 5 (read_signal S 283%nat) <> 0 -> norm 1 (read_signal S 277%nat) = 0 ->
+   RFRel bank' (fun i => if Z.eqb i (norm 5 (read_signal S 283%nat)) then norm 32 (read_signal S 284%nat) else CPUISARegView.isa_view cut i)) ->
+ ((norm 1 (read_signal S 279%nat) = 0 \/ norm 5 (read_signal S 283%nat) = 0) -> RFRel bank' (CPUISARegView.isa_view cut)) ->
+ RFRel bank' (CPUISARegView.isa_view adv).
+Proof.
+ intros HM Heff HR1 HR0.
+ destruct HM as [H286 [H287 [H283 [H278 [H277 [[HAt Ht] [i [HDec HMem]]]]]]]].
+ destruct (checked_pc_effect_sound t cut adv Heff) as [Hrun _].
+ destruct (checked_post_shape words (Z.to_nat (t / 4)) cut adv HC HAt Hrun) as [i' [HDec' Hfam]].
+ destruct (checked_entry words (Z.to_nat (t / 4)) HC (proj1 HAt)) as [i0 [HD0 [HB0 [HL0 _]]]].
+ assert (Hiw : BzTmplInv.iword words t = nth (Z.to_nat (t / 4)) words 0) by (unfold BzTmplInv.iword; exact (norm32_small _ HB0)).
+ rewrite Hiw in HDec, H283. rewrite HD0 in HDec. injection HDec as Hi0. subst i0.
+ rewrite HD0 in HDec'. injection HDec' as Hi'. subst i'.
+ unfold BzTmplInv.rg in H283, H277.
+ destruct Hfam as [[HD Hafter]|[[r [imm [Hj Hafter]]]|[[r [imm [Hj Hafter]]]|[op [rs1 [rs2 [imm [Hj Hafter]]]]]]]].
+ - destruct (dataop_dest i HD) as [rd Hrd].
+   pose proof (dest_field _ i rd HD0 (or_introl HD) Hrd) as Hrdf.
+   destruct (memcl_data S cut i HD HMem) as [H279 H284].
+   refine (fin_write S cut adv bank' (result_word cut i) H279 H284 H277 _ HR1 HR0).
+   rewrite Hafter. unfold dataop_post. rewrite Hrd. rewrite H283, <- Hrdf. reflexivity.
+ - subst i. destruct (memcl_jal S cut r imm HMem) as [H279 H284].
+   assert (Hrdf : r = bitSlice (nth (Z.to_nat (t / 4)) words 0) 7 12) by exact (dest_field _ _ r HD0 (or_intror (or_introl (ex_intro _ r (ex_intro _ imm eq_refl)))) eq_refl).
+   refine (fin_write S cut adv bank' (word.add (getPc cut) (word.of_Z 4 : word)) H279 H284 H277 _ HR1 HR0).
+   rewrite Hafter. unfold CV32E40PJumpFenceExecution.jump_post. cbn [destination_register]. rewrite H283, <- Hrdf. reflexivity.
+ - subst i. destruct (memcl_jalr S cut r 0 imm HMem) as [H279 H284].
+   assert (Hrdf : r = bitSlice (nth (Z.to_nat (t / 4)) words 0) 7 12) by exact (dest_field _ _ r HD0 (or_intror (or_intror (ex_intro _ r (ex_intro _ imm eq_refl)))) eq_refl).
+   refine (fin_write S cut adv bank' (word.add (getPc cut) (word.of_Z 4 : word)) H279 H284 H277 _ HR1 HR0).
+   rewrite Hafter. unfold CV32E40PJumpFenceExecution.jump_post. cbn [destination_register]. rewrite H283, <- Hrdf. reflexivity.
+ - subst i. pose proof (memcl_branch S cut op rs1 rs2 imm HMem) as H279.
+   refine (fin_keep S cut adv bank' H279 _ HR0).
+   rewrite Hafter. reflexivity.
+Qed.
+End Isa.
+End BzTmplIsa.
+Goal True. idtac "TMPL_AUDIT_BEGIN". exact I. Qed.
+Print Assumptions BzTmplIsa.dest_field.
+Print Assumptions BzTmplIsa.branch_fields.
+Print Assumptions BzTmplIsa.rfrel_mem.

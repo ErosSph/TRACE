@@ -1,0 +1,94 @@
+(* Hand-written Dark fetch-pipeline core (provenance: llm_written; proof_author: LLM-generated: Claude Code (claude-sonnet-5-5);
+   external_llm_api_calls=0). Reuses one Codex low-level RTL fact about the same AST: DarkRISCV38DerivedLFP.actual_original_phase. *)
+@WIRES@
+Definition fetch_inv (image : list Z) (s : Runtime) : Prop :=
+ norm 32 (read_signal (rtl s) 5%nat) = norm 32 (rom image (norm 32 (read_signal (rtl s) 64%nat))).
+Definition comb4 (s : Runtime) : Prop := norm 32 (read_signal (rtl s) 4%nat) = norm 32 (read_signal (rtl s) 24%nat).
+Definition env2 (image : list Z) (s : Runtime) : Prop :=
+ env_ok s /\ norm 1 (read_signal (rtl s) 26%nat) = 0 /\ comb4 s /\ (reset_cycles s = 4%nat \/ fetch_inv image s).
+
+Lemma comb4_of x seed : CombLFP P seed x -> norm 32 (read_signal x 4%nat) = norm 32 (read_signal x 24%nat).
+Proof. intro HL. rewrite (eq_w4 seed x HL). cbn [orig_w4 eval_expr]. unfold orig_w4. cbn [eval_expr]. rewrite norm_idempotent. reflexivity. Qed.
+
+Lemma phase_comb ev pre : exists seed, CombLFP P seed (PhaseSemantics P ev pre).
+Proof. destruct (actual_original_phase ev pre) as [_ [H _]]. eexists. exact H. Qed.
+
+Lemma comb_after_cycle image s : exists seed, CombLFP P seed (rtl (actual_cycle image s)).
+Proof. unfold actual_cycle. destruct (reset_cycles s) as [|[|n]]; cbn [rtl].
+ - unfold clock_cycle, ram_response. cbn [rtl]. apply phase_comb.
+ - unfold reset_drop. apply phase_comb.
+ - unfold clock_cycle, ram_response. cbn [rtl]. apply phase_comb. Qed.
+
+Lemma comb4_reset : comb4 actual_reset. Proof. unfold comb4, actual_reset. cbn [rtl]. vm_compute. reflexivity. Qed.
+
+Lemma comb_unw_26 : comb_root_unwrittenb P 26%nat = true. Proof. vm_compute; reflexivity. Qed.
+Lemma writers_26 : filter (writes_rootb 26%nat) (processes P) = [process_2; process_4]. Proof. vm_compute; reflexivity. Qed.
+Lemma rise_sel26 pre : read_signal pre 1%nat = 0 ->
+ filter (process_matches_states pre (phase_driven_state P rise pre)) (filter (writes_rootb 26%nat) (processes P)) = [process_4].
+Proof. intro H0. rewrite writers_26. cbn [filter].
+ assert (Hm : process_matches_states pre (phase_driven_state P rise pre) process_2 = false) by reflexivity. rewrite Hm. cbn [filter].
+ rewrite (matches_rise process_4 pre _ 1%nat eq_refl eq_refl H0 (rise_clk pre)). reflexivity. Qed.
+Lemma rise_hlt2 pre : read_signal pre 1%nat = 0 ->
+ norm 1 (read_signal (PhaseSemantics P rise pre) 26%nat) = norm 1 (eval_expr (phase_driven_state P rise pre) (EVar 1 23%nat)).
+Proof. intro H0. refine (ExtendedSVSeqStepIf.seq_root_step_if P rise pre 26%nat process_4 _ 0%nat _ 1%nat comb_unw_26 _ eq_refl _ _ (rise_sel26 pre H0) eq_refl _ _).
+ all: try (vm_compute; reflexivity). all: cbn; try lia. Qed.
+Lemma cyc_hlt2 image s : env_ok s -> norm 1 (read_signal (rtl (actual_cycle image s)) 26%nat) = 0.
+Proof. intro HE. pose proof HE as [H0 _].
+ rewrite (act_reg image s 26%nat comb_unw_26 ltac:(discriminate)).
+ rewrite (frame3 image s 26%nat comb_unw_26 ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite rise_hlt2 by exact H0. cbn [eval_expr]. rewrite norm_idempotent. exact (driven_halt s HE). Qed.
+
+Lemma cc_idata image s : read_signal (rtl (clock_cycle image s)) 5%nat = norm 32 (rom image (norm 32 (read_signal (rtl s) 4%nat))).
+Proof. unfold clock_cycle. cbn [rtl]. unfold ram_response. rewrite phase_input by (apply inputs_unw; cbn; tauto).
+ cbn [changed_signal ram_event]. rewrite read_signal_write_other by discriminate.
+ rewrite phase_input by (apply inputs_unw; cbn; tauto). cbn [changed_signal fall]. rewrite read_signal_write_other by discriminate.
+ unfold response. rewrite phase_input by (apply inputs_unw; cbn; tauto). cbn [changed_signal new_value].
+ rewrite read_signal_write_same. reflexivity. Qed.
+
+Lemma act_idata image s : read_signal (rtl (actual_cycle image s)) 5%nat = norm 32 (rom image (norm 32 (read_signal (rtl s) 4%nat))).
+Proof. rewrite <- cc_idata. unfold actual_cycle. destruct (reset_cycles s) as [|[|n]]; cbn [rtl]; try reflexivity.
+ unfold reset_drop. rewrite phase_input by (apply inputs_unw; cbn; tauto). cbn [changed_signal new_value].
+ rewrite read_signal_write_other by discriminate. reflexivity. Qed.
+
+Lemma act_idpc image s : env_ok s -> norm 32 (read_signal (rtl (actual_cycle image s)) 64%nat) = norm 32 (read_signal (rtl s) 24%nat).
+Proof. intro HE. pose proof HE as [H0 _].
+ rewrite (act_reg image s 64%nat comb_unw_64 ltac:(discriminate)).
+ rewrite (frame3 image s 64%nat comb_unw_64 ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite rise_c64 by exact H0. cbn [eval_expr]. rewrite (driven_halt s HE).
+ rewrite (driven_read (rtl s) 24%nat comb_unw_24 ltac:(discriminate)). cbn. rewrite ?norm_idempotent. reflexivity. Qed.
+
+Lemma act_pc image s : env_ok s -> norm 32 (read_signal (rtl (actual_cycle image s)) 65%nat) = norm 32 (read_signal (rtl s) 64%nat).
+Proof. intro HE. pose proof HE as [H0 _].
+ rewrite (act_reg image s 65%nat comb_unw_65 ltac:(discriminate)).
+ rewrite (frame3 image s 65%nat comb_unw_65 ltac:(discriminate) ltac:(discriminate) ltac:(discriminate)).
+ rewrite rise_c65 by exact H0. cbn [eval_expr]. rewrite (driven_halt s HE).
+ rewrite (driven_read (rtl s) 64%nat comb_unw_64 ltac:(discriminate)). cbn. rewrite ?norm_idempotent. reflexivity. Qed.
+
+Theorem env2_reset image : env2 image actual_reset.
+Proof. unfold env2. split;[exact env_ok_reset|]. split;[vm_compute; reflexivity|]. split;[exact comb4_reset|]. left. reflexivity. Qed.
+
+Theorem env2_step image s : env2 image s -> env2 image (actual_cycle image s).
+Proof. intros [HE [H26 [C4 HF]]]. unfold env2. split;[exact (env_step image s HE)|]. split;[exact (cyc_hlt2 image s HE)|].
+ destruct (comb_after_cycle image s) as [seed HL].
+ split;[exact (comb4_of _ seed HL)|]. right. unfold fetch_inv.
+ rewrite act_idata, (act_idpc image s HE). rewrite <- C4.
+ rewrite norm_idempotent. reflexivity. Qed.
+
+Definition slot_inv (image : list Z) (s : Runtime) : Prop :=
+ (norm 2 (read_signal (rtl s) 43%nat) = 0 \/ norm 2 (read_signal (rtl s) 43%nat) = 1) ->
+ norm 32 (read_signal (rtl s) 29%nat) = norm 32 (rom image (norm 32 (read_signal (rtl s) 65%nat))).
+
+Theorem slot_step image s : env2 image s -> slot_inv image (actual_cycle image s).
+Proof. intros HE2 HF. destruct HE2 as [HE [H26 [C4 HF0]]]. pose proof HE as [H0 [H6 [H17 [Hz Hnz]]]].
+ destruct (one_bit_cases (rtl s) 22%nat) as [X0|X1].
+ - assert (Hrc : reset_cycles s = 0%nat).
+   { destruct (reset_cycles s) eqn:E; [reflexivity|]. destruct (Hnz ltac:(discriminate)) as [_ [X _]]. congruence. }
+   assert (Hfi : fetch_inv image s) by (destruct HF0 as [H|H]; [rewrite Hrc in H; discriminate|exact H]).
+   rewrite (act_pc image s HE), (next_word image s HE).
+   assert (HL := actual_driven_is_LFP rise (rtl s)).
+   rewrite (eq_w28 _ _ HL). unfold orig_w28. cbn [eval_expr].
+   rewrite (driven_read (rtl s) 22%nat comb_unw_22 ltac:(discriminate)), (driven_read (rtl s) 26%nat comb_unw_26 ltac:(discriminate)), X0, H26.
+   cbn [Z.eqb]. rewrite (eq_w25 _ _ HL). unfold orig_w25. cbn [eval_expr].
+   rewrite (driven_read (rtl s) 5%nat ltac:(apply comb_unw_in; cbn; tauto) ltac:(discriminate)).
+   rewrite ?norm_idempotent. exact Hfi.
+ - exfalso. rewrite (act_flush_xres image s H0 X1) in HF. destruct HF; discriminate. Qed.

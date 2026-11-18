@@ -1,0 +1,54 @@
+{
+ "design": "steel",
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "kind": "ctl_provider",
+ "provenance": {
+  "source": "tools/cpu_tmpl_lift.py reading the accepted Steel ctl module",
+  "rule": "generalized_rule G2"
+ },
+ "ast_require": "Steel.SteelAST",
+ "program": "SteelAST.steel_program",
+ "provider": {
+  "module": "TmplSteelCtl.SteelTmplCtl.SteelTmplCtl",
+  "namespace": "TmplSteelCtl",
+  "dir": "results/r-tmpl-steel-ctl-20261104-a3",
+  "file": "SteelTmplCtl.v",
+  "thm": "{C}_ctl",
+  "ctl": "ctl_{C}"
+ },
+ "vars": [
+  "w",
+  "a",
+  "b",
+  "imm",
+  "pc"
+ ],
+ "var_wire": {
+  "w": 217,
+  "a": 258,
+  "b": 259,
+  "imm": 205,
+  "pc": 253
+ },
+ "wires": {
+  "rd": 223,
+  "next_pc": 243,
+  "result": 277,
+  "fetch_pc": 23,
+  "fetch_word": 18,
+  "fetch_invalid": 17
+ },
+ "ast_dir": [
+  "experiments/framework/generated/steel",
+  "Steel"
+ ],
+ "mis": {
+  "module": "TmplSteelMis.SteelTmplMis.SteelTmplMis",
+  "namespace": "TmplSteelMis",
+  "dir": "results/r-tmpl-steel-mis-20261104-a1",
+  "file": "SteelTmplMis.v",
+  "thm": "{C}_mis",
+  "wire": 238,
+  "note": "accepted (coqc) mis module r-tmpl-steel-mis-20261104-a1 built by the lift stage with tools/cpu_tmpl_stctl_run.py --kind mis"
+ }
+}

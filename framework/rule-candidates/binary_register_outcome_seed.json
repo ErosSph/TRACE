@@ -1,0 +1,48 @@
+{
+  "name": "binary_register_outcome_seed",
+  "kind": "proof_strategy",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_class_table",
+    "description": "Binary register family Add/Sub/Xor/Or/And; requires a design-local ADD seed and optional encoding table. Other families are residual."
+  },
+  "content": {
+    "generator": "tools/cpu_generalized_outcome.py"
+  },
+  "instantiate": {
+    "type": "generator",
+    "cmd": [
+      "tools/cpu_generalized_outcome.py",
+      "framework/generalization-gpt/{design}-outcome.json",
+      "--out",
+      "{out}"
+    ]
+  },
+  "match": [
+    {
+      "generator": "cpu_generalized_outcome"
+    }
+  ],
+  "covers": [
+    "outcome"
+  ],
+  "learned_from": "nerv",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "results/generalization-gpt-20261106/nerv-outcome",
+    "results/generalization-gpt-20261106/pipeline-outcome"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-gpt-20261106/steel-outcome"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-outcome"
+  ],
+  "residual_llm_work": "One adapted ADD seed per design; new families and design helpers remain LLM work. Four instances per seed, not 29.",
+  "gate": {
+    "validated_output": "results/generalization-gpt-20261106/nerv-outcome"
+  }
+}

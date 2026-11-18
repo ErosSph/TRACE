@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-register-compare-infinite-loop",
+  "backend": "actual repaired-source AST, nine-round full LFP, original reset/rising/falling scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; repaired derived DUT, not original upstream",
+  "verification_scope": "SLT/SLTU x1,x1,x2 at PC0 and JAL x0,-4 at PC4, real reset and unbounded execution. Original zero RF seed leaves x2 zero in this loop; not a nonzero-RS2 test. Actual comparator producer proves arbitrary fresh ISA operands. Full original architecture relation, not all21/38 or arbitrary programs",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUDataOpJALLoopDomain.words (BzeenoLoadUseJalRegisterCompareProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalCertifiedSequentialLoop", "Ex.External.BzeenoLoadUseJalNineProgramTarget", "Ex.External.CPUDataOpJALLoopDomain", "Ex.External.BzeenoLoadUseJalRegisterCompareProgram", "Ex.External.BzeenoLoadUseJalRegisterCompareControl", "Ex.External.BzeenoLoadUseJalRegisterComparePhysicalReachable"],
+    "open_modules": ["CPUCommitBoundaryTarget"],
+    "binders": "(op : BzeenoLoadUseJalRegisterCompareControl.Op)",
+    "arguments": ["op"],
+    "provider_applications": {
+      "BzeenoLoadUseJalCertifiedSequentialLoop.checked_certificate": [
+        {"symbol": "BzeenoLoadUseJalRegisterCompareProgram.metadata", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalRegisterComparePhysicalReachable.sequential_checked", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalRegisterComparePhysicalReachable.actual_physical_history", "arguments": [{"binder": "op"}]}
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalRegisterComparePhysicalReachable.v", "src/Ex/External/BzeenoLoadUseJalCertifiedSequentialLoop.v"],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalComparisonInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalRegisterArithmeticInfiniteITree.v"],
+  "bindings": {
+    "architecture": "original ProgramArchRelated: PC nextPC whole RF ROM all128 RAM bytes",
+    "state": "same Joint and closed reset-origin PhysicalHistory; local admission is discharged",
+    "assembly": "structured application of checked common compiler, no handwritten final wrapper"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalCertifiedSequentialLoop.checked_certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

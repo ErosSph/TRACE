@@ -1,0 +1,48 @@
+{
+  "name": "role_array_frontend",
+  "kind": "normalization",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_fe_generate_instances",
+    "description": "Applicability hint; explicit schema and measured cross-design gates required."
+  },
+  "content": {
+    "frontend": [
+      "tools/cpu_role_array_import.py"
+    ]
+  },
+  "instantiate": {
+    "type": "frontend",
+    "cmd": [
+      "tools/cpu_role_array_import.py",
+      "framework/generalization-gpt/import-{design}.json",
+      "--out",
+      "{out}"
+    ]
+  },
+  "covers": [
+    "frontend"
+  ],
+  "learned_from": "angelo5fix",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "results/generalization-gpt-20261106/pipeline-import-kernel"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-gpt-20261106/steel-import-kernel"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-import-kernel"
+  ],
+  "gate": {
+    "validated_output": "results/generalization-gpt-20261106/pipeline-import-kernel"
+  },
+  "translation_equivalence": "not_mechanized_from_original_rtl",
+  "byte_identity_evidence": [
+    "results/generalization-gpt-20261106/import-steel-a3/report.json",
+    "results/generalization-gpt-20261106/import-angelo5fix-a3/report.json"
+  ]
+}

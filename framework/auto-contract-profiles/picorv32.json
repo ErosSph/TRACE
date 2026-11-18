@@ -1,0 +1,47 @@
+{
+  "plan_slice_roots": [183, 184, 185, 204],
+  "plan_slice_library": "src/Ex/Generated/PicoGeneratedTokenSlices.v",
+  "scalar_expression_library": "src/Ex/Generated/PicoGeneratedTokenExpressions.v",
+  "scalar_path_library": "src/Ex/Generated/PicoGeneratedTokenPaths.v",
+  "instruction_field_library": "src/Ex/Generated/PicoGeneratedInstructionFields.v",
+  "scalar_guard_library": "src/Ex/Generated/PicoGeneratedGuardBindings.v",
+  "rf_port_library": "src/Ex/Generated/PicoGeneratedRFPorts.v",
+  "bank_library": "src/Ex/Generated/PicoGeneratedBank.v",
+  "api": "boundary",
+  "evidence_origin": "existing_hand_proved_global_evidence",
+  "source_xml": "proof-optimization-log/results/req43-pico-rf-connection/generated/elaborated.xml",
+  "imports": ["Ex.External.PicoSourceMixedProgramITree"],
+  "open_modules": ["PicoSourceMixedProgramITree", "PicoSourceMixedProgramDomain", "PicoSourceProgramFirstITreePrefix", "PicoSourceProgramTarget", "PicoSourceChoiceRuntime", "PicoSourceProgramFetchRoute", "PicoSourceProgramWaitingPrefix"],
+  "coq_load_paths": [{"directory": "experiments/framework/generated/pico-rf-writer", "namespace": "PicoRF"}, {"directory": "experiments/framework/generated/pico-unknown-candidate-final", "namespace": "PicoUnknown"}],
+  "binders": "image (schedule : ChoiceSchedule) (HB : (Z.of_nat(length image)<=2^30)%Z) (HD : ProgramDomain image)",
+  "arguments": ["image", "schedule", "HB", "HD"],
+  "fields": {"state": "Runtime", "step": "image_step image", "commits": "image_observe image", "reset": "Reset schedule", "boot": "Running(current image schedule 4)", "isa_initial": "initial_isa image", "cut": "Inv image schedule"},
+  "evidence": {
+    "startup_checked": "exact (actual_reset_to_first_operand_silent image schedule).",
+    "initial_checked": "exact (actual_mixed_initial image schedule HD).",
+    "segment_checked": "exact (actual_mixed_segments image schedule HB HD)."
+  },
+  "joint_binding": {
+    "evidence_origin": "existing_local_component_proofs",
+    "proof_selection": "type_search",
+    "lemma_candidates": ["PicoGeneratedJoint.physical_architecture", "PicoSourceProgramFirstITreePrefix.actual_reset_to_first_operand_silent", "eq_refl", "PicoGeneratedJoint.physical_initial", "PicoGeneratedJoint.local_streaming_segments"],
+    "transfer_mode": "boundary_entry",
+    "imports": ["Ex.External.PicoGeneratedJoint", "Ex.External.PicoSourceMixedProgramDomain", "Ex.External.PicoSourceProgramTarget", "Ex.External.PicoSourceProgramFirstITreePrefix", "Ex.External.PicoSourceProgramFetchRoute", "Ex.External.PicoSourceChoiceRuntime", "Ex.External.PicoSourceProgramWaitingPrefix"],
+    "open_modules": ["PicoSourceMixedProgramDomain", "PicoSourceChoiceRuntime"],
+    "coq_sources": ["src/Ex/External/PicoGeneratedJoint.v"],
+    "binders": "image (schedule : ChoiceSchedule) (HB : (Z.of_nat(length image)<=2^30)%Z) (HD : ProgramDomain image)",
+    "arguments": ["image", "schedule", "HB", "HD"],
+    "target": {"symbol": "PicoSourceProgramTarget.image_target", "arguments": [{"binder": "image"}, {"binder": "schedule"}]},
+    "pending": {"symbol": "PicoGeneratedJoint.pending"},
+    "physical": {"symbol": "PicoGeneratedJoint.Physical", "arguments": [{"binder": "image"}, {"binder": "schedule"}]},
+    "entry": {"symbol": "PicoSourceChoiceRuntime.Running", "arguments": [{"symbol": "PicoSourceProgramWaitingPrefix.current", "arguments": [{"binder": "image"}, {"binder": "schedule"}, {"nat": 4}]}]},
+    "proofs": {
+      "architecture": {"symbol": "PicoGeneratedJoint.physical_architecture", "arguments": [{"binder": "image"}, {"binder": "schedule"}]},
+      "startup": {"symbol": "PicoSourceProgramFirstITreePrefix.actual_reset_to_first_operand_silent", "arguments": [{"binder": "image"}, {"binder": "schedule"}]},
+      "empty_queue": {"symbol": "eq_refl"},
+      "boot": {"symbol": "PicoGeneratedJoint.physical_initial", "arguments": [{"binder": "image"}, {"binder": "schedule"}, {"binder": "HD"}]},
+      "local_transfer": {"symbol": "PicoGeneratedJoint.local_streaming_segments", "arguments": [{"binder": "image"}, {"binder": "schedule"}, {"binder": "HB"}, {"binder": "HD"}]}
+    }
+  },
+  "ast": {"module": "PicoUnknown.PicoUnknownInputAST", "file": "experiments/framework/generated/pico-unknown-candidate-final/PicoUnknownInputAST.v", "program": "PicoUnknownInputAST.pico_unknown_program", "signals": 297, "processes": 67, "rf_root": 97, "rf_writer_indices": [8], "metadata": "experiments/framework/generated/pico-unknown-candidate-final/report.json", "source_xml_sha256": "560a3d5d3410d9f00f7f01c04ce799579e0793506db6a14e14a1f7f47f7e1f04"}
+}

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "design": "picorv32-binary-zero-choice-candidate",
+  "backend": "ExtendedSV full explicit-unknown candidate physical-phase semantics",
+  "translation_equivalence": "not_mechanized_from_original_rtl; fixed zero choices for 18 explicit unknown inputs. This is NOT original four-state RTL or universal unknown-choice independence",
+  "verification_scope": "fixed three related ADDI instructions followed by JAL self-loop; checked candidate reset-release prefix and infinite graph, actual retirement observer and FormalSpec.run1, RF/PC/nextPC/consumed-ROM/data-memory relation. NOT all38 or arbitrary programs. Additional whole-graph source-phase aggregation remains a separate obligation",
+  "pinned_target": "PicoCandidateDesignTarget.actual_target",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.PicoCandidateDesignTarget"],
+    "open_modules": ["CPUDesignTarget"],
+    "binders": "",
+    "arguments": []
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/pico-rf-writer", "namespace": "PicoRF"},
+    {"directory": "experiments/framework/generated/pico-unknown-candidate-final", "namespace": "PicoUnknown"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/PicoFixedProgramCandidateRefinement.v",
+    "src/Ex/External/PicoCandidateTargetAcceptance.v",
+    "src/Ex/External/PicoCandidateDesignTarget.v"
+  ],
+  "preserve_roots": [],
+  "bindings": {
+    "source_scope": "binary zero-choice candidate only; original picorv32 profile remains separate",
+    "target": "PicoCandidateDesignTarget.actual_target aliases the checked candidate fixed_target",
+    "environment": "fixed ROM and no external data transactions; ROM relation only for consumed instruction addresses"
+  },
+  "proof_providers": {
+    "certificate": "PicoCandidateDesignTarget.checked_candidate_certificate",
+    "contract": "PicoCandidateDesignTarget.checked_candidate_contract",
+    "infinite": "PicoCandidateTargetAcceptance.accepted_binary_candidate_infinite_refinement"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-fencei-static-infinite-loop",
+  "backend": "Actual repaired AST and original nine-round reset/rise/fall scheduler, shared coupled physical/frontend cycle",
+  "translation_equivalence": "External RTL-to-AST translation equivalence remains unmechanized; cumulative repaired derived DUT",
+  "verification_scope": "Original zero RF reset, immutable original byte-ROM FENCE.I (4111) at PC0 and JAL x0,-4 at PC4 indefinitely. Original ISA Fence_i Return tt, real RTL empty opcode15 arm/default controls, actual no-redirect, x0 destination and same Joint/architecture/progress. Whole RF ROM and original128-byte RAM relation. Not ordinary FENCE, mutable-code instruction-cache synchronization, arbitrary programs or all38; no DUT/ISA/seed/environment changes.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target CPUFenceIJALLoopDomain.words",
+  "certificate_harness": {
+    "certificate_interface": "cycle",
+    "imports": [
+      "Ex.External.CPUDesignTarget",
+      "Ex.External.CPUFenceIJALLoopDomain",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.BzeenoLoadUseJalFenceILoopSupport"
+    ],
+    "open_modules": ["CPUDesignTarget"],
+    "binders": "",
+    "arguments": [],
+    "provider_applications": {
+      "CPUDesignTarget.Build_Certificate": [
+        {"symbol": "BzeenoLoadUseJalNineProgramTarget.nine_target", "arguments": [
+          {"symbol": "CPUFenceIJALLoopDomain.words", "arguments": []}
+        ]},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.EventCut", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.event_rank", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.event_cut_architecture", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.actual_startup", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.initial_event_cut", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.actual_event_safety", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalFenceILoopSupport.actual_event_progress", "arguments": []}
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/CPUFenceIJALLoopDomain.v",
+    "src/Ex/External/BzeenoLoadUseJalFenceIJoint.v",
+    "src/Ex/External/BzeenoLoadUseJalFenceILoopSupport.v"
+  ],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalBranchInfiniteITree.v"],
+  "bindings": {
+    "architecture": "Unchanged original ProgramArchRelated/nine_target",
+    "control": "Existing checked nonredirect15, actual empty selected-arm memory certificate and destination-zero suppression",
+    "assembly": "Shared CPUDesignTarget constructor; no FENCE.I handwritten final wrapper"
+  },
+  "proof_providers": {
+    "certificate": "CPUDesignTarget.Build_Certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

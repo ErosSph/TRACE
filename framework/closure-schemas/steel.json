@@ -1,0 +1,120 @@
+{
+ "schema_version": 1,
+ "design": "steel",
+ "shape": "state_inv",
+ "provenance": {
+  "source": "proof-optimization-log/20261104-template-steel.md 2,7 + tools/steel_inv_sim.py; closure: 20261104-stage-closure.md increment 5",
+  "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+ },
+ "module": "SteelTmplStep",
+ "namespace": "TmplSteelStep",
+ "reference": {
+  "result": "results/r-tmpl-steel-step-closure-20261104-a1",
+  "file": "SteelTmplStep.v",
+  "theorem": "refinement"
+ },
+ "doc": "(** Steel D step and final theorem: the generic pipeline obligation skeleton (CPUPipelineObligations, as DarkTmplStep) with\n    [Runtime = State], no post-fetch stages, the joint INV [Inv] = boot phase A | boot phase B | operating [SteelTmplOp.Op],\n    the commit condition = the target observer's own [committing] bit on the driven state, rank = [SteelTmplTarget.st_rank].\n    Final: from the real (padded) reset, the RTL ITree refines the ISA ITree for every program of the 29-class jump-family\n    domain [CPUJumpFamilyProgramDomain.check_program].\n    proof_author: LLM-generated: Claude Code (claude-opus-5-5); external_llm_api_calls=0. *)",
+ "stages": {
+  "count": 1,
+  "names": [
+   "EX(fetch address combinational, registered read)"
+  ],
+  "token": {
+   "type": "Z",
+   "reg": 253,
+   "width": 32,
+   "meaning": "PC on the driven state"
+  }
+ },
+ "runtime": "State",
+ "ast": "Steel.SteelAST",
+ "imports": [
+  "TmplSteelTarget.SteelTmplTarget",
+  "TmplSteelCyc.SteelTmplCyc",
+  "TmplSteelInv.SteelTmplInv",
+  "TmplSteelOp.SteelTmplOp",
+  "TmplSteelBoot.SteelTmplBoot"
+ ],
+ "aliases": {
+  "TG": "TmplSteelTarget.SteelTmplTarget.SteelTmplTarget",
+  "CY": "TmplSteelCyc.SteelTmplCyc.SteelTmplCyc",
+  "IV": "TmplSteelInv.SteelTmplInv.SteelTmplInv",
+  "OP": "TmplSteelOp.SteelTmplOp.SteelTmplOp",
+  "BT": "TmplSteelBoot.SteelTmplBoot.SteelTmplBoot"
+ },
+ "target": {
+  "initial": "IV.initial",
+  "reset": "IV.actual_reset",
+  "cycle": "TG.actual_cycle",
+  "observe": "TG.actual_observe"
+ },
+ "valid": {
+  "kind": "bool_expr",
+  "coq": "TG.committing (TG.driven s)",
+  "meaning": "the target observer's own commit bit on the driven state (state = OPERATING and no stall/trap)",
+  "driven_alias": [
+   "TG.driven s",
+   "CY.drv s"
+  ]
+ },
+ "token_expr": "TG.rd (TG.driven s) 253%nat",
+ "pending_view": {
+  "kind": "rebased_rf",
+  "bank": 214,
+  "rebase": 1,
+  "pad_lane": 31,
+  "note": "RF lanes = ISA registers x(j+1); no pending write; pad lane never read live"
+ },
+ "front": {
+  "kind": "cursor_equals_pc",
+  "cursor": "PC = ISA pc; read_data = rom(PC); prev_read_request = 1"
+ },
+ "boot": {
+  "phases": [
+   {
+    "name": "A (real reset)",
+    "state": "IV.actual_reset",
+    "rank": "BT.rank_reset",
+    "observe": "BT.observe_reset"
+   },
+   {
+    "name": "B (one cycle later)",
+    "state": "IV.stB",
+    "rank": "BT.rank_B",
+    "observe": "BT.observe_B"
+   }
+  ],
+  "op_entry": {
+   "state": "IV.stO",
+   "lemma": "BT.op_O",
+   "rank": "BT.rank_op"
+  }
+ },
+ "operating": {
+  "inv": "OP.Op",
+  "step": "OP.op_step",
+  "step_shape": "exists y index', run1 f = (Some tt, y) /\\ committing = true /\\ token = pc f /\\ Op (cycle s) y index'"
+ },
+ "observer": {
+  "commit_condition": "TG.committing (TG.driven s)",
+  "via": "SteelTmplTarget.actual_observe (definitional)"
+ },
+ "rank": {
+  "expr": "TG.st_rank",
+  "meaning": "reset_reg + (state != OPERATING): boot 2, then 1, then 0"
+ },
+ "lo": {
+  "target": "SteelTmplTarget",
+  "inv": "SteelTmplInv (padded reset)",
+  "op": "SteelTmplOp (tools/cpu_tmpl_stop.py)",
+  "boot": "SteelTmplBoot",
+  "cyc": "SteelTmplCyc"
+ },
+ "domain": "CPUJumpFamilyProgramDomain.check_program",
+ "extra_loadpaths": [
+  [
+   "experiments/framework/generated/steel",
+   "Steel"
+  ]
+ ]
+}

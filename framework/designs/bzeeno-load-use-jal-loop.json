@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-load-use-jal-repaired-loop",
+  "backend": "actual imported repaired source; nine-round LFP and real rising/falling reset scheduler",
+  "translation_equivalence": "external source-to-AST translation remains unmechanized. Separate load-use and negative-JAL repaired DUT; not the unmodified upstream CPU or older eight-round runtime",
+  "verification_scope": "fixed ADDI x1,x1,1 and JAL x0,-4 infinite loop from genuine reset; original ISA, complete architectural PC/nextPC/RF/ROM/128-byte RAM relation and actual pipeline forwarding. Not all38 or arbitrary programs. Acceptance requires the checked physical reachable-induction provider",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target BzeenoLoadUseJalLoopDomain.loop_words",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalLoopDesignTarget", "Ex.External.BzeenoLoadUseJalNineProgramTarget", "Ex.External.BzeenoLoadUseJalLoopDomain"],
+    "open_modules": ["BzeenoLoadUseJalLoopDesignTarget"],
+    "binders": "",
+    "arguments": []
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalLoopDesignTarget.v"],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalLoopInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalLoopPhysicalReachable.v"],
+  "bindings": {
+    "target": "same nine_target loop_words as independently pinned before physical proof completion",
+    "source_scope": "cumulative load-use plus negative-JAL repaired derived source",
+    "architecture": "original ProgramArchRelated, not an event-PC-only relation"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalLoopDesignTarget.checked_certificate",
+    "infinite": "BzeenoLoadUseJalLoopDesignTarget.accepted_infinite_refinement"
+  }
+}

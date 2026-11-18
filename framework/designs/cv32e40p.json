@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "design": "cv32e40p",
+  "backend": "ExtendedSV",
+  "frontend": "tools/cv32e40p_extended_frontend.py",
+  "translation_equivalence": "not_mechanized_from_original_rtl",
+  "verification_scope": "32-bit supported38, proved program-domain certificate, fixed OBI single-word environment",
+  "pinned_target": "CV32E40PDesignTarget.actual_target image cert",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.CV32E40PDesignTarget", "Ex.External.CV32E40PProgramDomainCertificate"],
+    "open_modules": ["CPUDesignTarget", "CV32E40PProgramDomainCertificate"],
+    "binders": "image (cert : ProgramDomainCertificate image)",
+    "arguments": ["image", "cert"]
+  },
+  "proof_roots": [
+    "src/Ex/External/CV32E40PDesignTarget.v",
+    "src/Ex/External/CV32E40PDesignContract.v",
+    "src/Ex/External/CV32E40PFull38HistoryFinalCertifiedPrograms.v"
+  ],
+  "preserve_roots": [
+    "src/Ex/External/CrossCPUAdapterDiscovery.v",
+    "src/Ex/Generated/CV32E40PDiscoveryAdapter_LLM.v",
+    "src/Ex/Generated/CV32E40PReq41LLM.v",
+    "src/Ex/External/CV32E40PReq41RealADDI.v"
+  ],
+  "bindings": {
+    "state": "Full38Observation",
+    "cycle": "advance_full38_monitor image",
+    "commits": "full38_observed_commits image",
+    "reset": "full38_reset",
+    "boot": "full38_cycles image 4 full38_reset",
+    "isa_initial": "initial_isa image",
+    "joint": "HistoryFinalGlobal image cert",
+    "rank": "fun o _ => write_ack_aware_wait_rank image o"
+  },
+  "proof_providers": {
+    "startup": "full38_rtl_silent_cycles + actual_full38_first_five_cycles_are_silent",
+    "initial": "history_final_global_reset",
+    "cycle": "actual_history_final_ordered_cycle_safety",
+    "progress": "history_final_global_wait_decreases"
+  },
+  "llm_replay_driver": "tools/llm_req41_symbolic38.py",
+  "llm_driver_scope": "historical symbolic-family theorem selection; not automatic global invariant discovery"
+}

@@ -1,0 +1,125 @@
+{
+ "schema_version": 1,
+ "design": "srv32",
+ "shape": "state_inv",
+ "provenance": {
+  "source": "proof-optimization-log/20261104-template-srv32.md (Milestone 5) + tools/srv32_inv_sim.py; closure: 20261104-stage-closure.md increment 8",
+  "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)"
+ },
+ "module": "Srv32TmplStep",
+ "namespace": "TmplSrv32Step",
+ "doc": "(** srv32 D step and final theorem: the generic pipeline obligation skeleton (CPUPipelineObligations) with\n    [Runtime = RTL state + ghost cycle counter], no post-fetch stages, the joint INV [Inv] = boot B0 | B1 | B2 | operating\n    [Srv32TmplRun.Op] (pulse states S0..S3), the commit condition = the target observer's own [committing] bit (n >= 3 and\n    ex_flush = 0), token = ex_pc, rank = [Srv32TmplTarget.st_rank] (boot 6-n, pulse countdown 2,1,0).  The junk slots S1/S2 are\n    silent operating cycles ([Srv32TmplRun.op_silent]).  Final: from the real reset, the RTL ITree refines the ISA ITree for every\n    program of the 29-class jump-family domain [CPUJumpFamilyProgramDomain.check_program].\n    proof_author: LLM-generated: Claude Code (claude-opus-5-5); external_llm_api_calls=0. *)",
+ "stages": {
+  "count": 1,
+  "names": [
+   "EX (token = ex_pc; WB write pending in the register relation)"
+  ],
+  "token": {
+   "type": "Z",
+   "reg": 241,
+   "width": 32,
+   "meaning": "ex_pc on the cycle-boundary state"
+  },
+  "pulse_states": [
+   "S0 valid EX, WB pending",
+   "S1 EX junk 1",
+   "S2 EX junk 2",
+   "S3 valid EX, WB junk"
+  ]
+ },
+ "runtime": "TG.Runtime",
+ "ast": "Srv32.Srv32AST",
+ "imports": [
+  "TmplSrv32Target.Srv32TmplTarget",
+  "TmplSrv32Run.Srv32TmplRun",
+  "TmplSrv32Boot.Srv32TmplBoot"
+ ],
+ "aliases": {
+  "TG": "TmplSrv32Target.Srv32TmplTarget.Srv32TmplTarget",
+  "RN": "TmplSrv32Run.Srv32TmplRun.Srv32TmplRun",
+  "BT": "TmplSrv32Boot.Srv32TmplBoot.Srv32TmplBoot"
+ },
+ "target": {
+  "initial": "BT.initial",
+  "reset": "TG.actual_reset",
+  "cycle": "TG.actual_cycle",
+  "observe": "TG.actual_observe"
+ },
+ "valid": {
+  "kind": "bool_expr",
+  "coq": "TG.committing s",
+  "meaning": "n >= 3 (ghost counter) and ex_flush (272) = 0 on the boundary state"
+ },
+ "token_expr": "read_signal (TG.rtl s) 241%nat",
+ "pending_view": {
+  "kind": "wb_forwarding",
+  "bank": 244,
+  "rebase": 1,
+  "pad_lane": 31,
+  "note": "ISA reg r = lane r-1 overwritten by the pending WB write (wb_alu2reg & !wb_flush, wb_dst_sel = r); lane 31 = dead cell of x0 writes"
+ },
+ "front": {
+  "kind": "per_state_pc",
+  "cursor": "S0/S3: ex_pc = pc, if_pc = pc+4, fetch_pc = pc+8, imem_rdata = rom(if_pc), EX regs = decode(rom(pc)); S1: fetch_pc = pc; S2: if_pc = pc, fetch_pc = pc+4, imem_rdata = rom(pc)"
+ },
+ "boot": {
+  "phases": [
+   {
+    "name": "B0 (real reset)",
+    "state": "TG.actual_reset",
+    "rank": "TG.rank_reset",
+    "observe": "TG.observe_reset"
+   },
+   {
+    "name": "B1",
+    "state": "TG.stB1",
+    "rank": "TG.rank_B1",
+    "observe": "TG.observe_B1"
+   },
+   {
+    "name": "B2",
+    "state": "TG.stB2",
+    "rank": "TG.rank_B2",
+    "observe": "TG.observe_B2"
+   }
+  ],
+  "op_entry": {
+   "state": "TG.stO",
+   "lemma": "BT.op_O",
+   "rank": "RN.rank_op"
+  },
+  "method": "non-interference (Lang.ExtendedSVNonInterference): concrete run with ROM = 0, taint sets t1..t11; tainted registers by fetch/capture lemmas"
+ },
+ "operating": {
+  "inv": "RN.Op",
+  "step": "RN.op_commit",
+  "commit": "RN.op_commit",
+  "silent": "RN.op_silent",
+  "step_shape": "commit: exists y index', run1 f = (Some tt, y) /\\ token = pc f /\\ Op (cycle s) y index'; silent: Op (cycle s) f index /\\ rank decreases"
+ },
+ "observer": {
+  "commit_condition": "TG.committing s",
+  "via": "Srv32TmplTarget.actual_observe (definitional)",
+  "ghost_counter": "ncyc capped at 3"
+ },
+ "rank": {
+  "expr": "TG.st_rank",
+  "meaning": "boot: 6 - n; operating: min 2 (S1 = 2, S2 = 1, S0/S3 = 0)"
+ },
+ "lo": {
+  "target": "Srv32TmplTarget",
+  "imm": "Srv32TmplImm (tools/cpu_tmpl_srv32_imm.py)",
+  "front": "Srv32TmplFront (tools/cpu_tmpl_srv32_front.py)",
+  "back": "Srv32TmplBack (tools/cpu_tmpl_srv32_back.py)",
+  "run": "Srv32TmplRun",
+  "boot": "Srv32TmplBoot",
+  "ni": "Lang.ExtendedSVNonInterference"
+ },
+ "domain": "CPUJumpFamilyProgramDomain.check_program",
+ "extra_loadpaths": [
+  [
+   "experiments/framework/generated/srv32",
+   "Srv32"
+  ]
+ ]
+}

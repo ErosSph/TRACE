@@ -1,0 +1,16 @@
+_opam/
+*.vo
+*.vos
+*.vok
+*.vio
+*.glob
+*.aux
+.*.aux
+*.v.d
+.lia.cache
+Makefile.coq
+Makefile.coq.conf
+.Makefile.coq.d
+__pycache__/
+rtl/src/
+out/

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-jalr-static-infinite-loop",
+  "backend": "Actual repaired RTL AST, original reset/rise/fall and nine-round full LFP; shared physical/frontend coupled cycle",
+  "translation_equivalence": "External RTL-to-AST equivalence remains unmechanized; cumulative repaired derived DUT",
+  "verification_scope": "Original zero RF reset and single-word byte-ROM 32871 (JALR x0,x1,0 at PC0) self-redirect forever. ISA domain proves current x1=0, PC0/nextPC4 and ROM/RAM, from original initial state and run1 preservation. Actual forwarded rs1, signed immediate, selector1, source-base mux and clearLSB are proved, not assumed. Original whole RF/ROM and all128 RAM byte relation. Not arbitrary programs, nonzero-source global regression or all38; local redirect cone retains symbolic source/immediate.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target CPUJALRLoopDomain.words",
+  "certificate_harness": {
+    "certificate_interface": "cycle",
+    "imports": [
+      "Ex.External.CPUDesignTarget",
+      "Ex.External.CPUJALRLoopDomain",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.BzeenoLoadUseJalJalrLoopSupport"
+    ],
+    "open_modules": ["CPUDesignTarget"],
+    "binders": "",
+    "arguments": [],
+    "provider_applications": {
+      "CPUDesignTarget.Build_Certificate": [
+        {"symbol": "BzeenoLoadUseJalNineProgramTarget.nine_target", "arguments": [
+          {"symbol": "CPUJALRLoopDomain.words", "arguments": []}
+        ]},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.EventCut", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.event_rank", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.event_cut_architecture", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.actual_startup", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.initial_event_cut", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.actual_event_safety", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalJalrLoopSupport.actual_event_progress", "arguments": []}
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/CPUJALRLoopDomain.v",
+    "src/Ex/External/BzeenoLoadUseJalJalrJoint.v",
+    "src/Ex/External/BzeenoLoadUseJalJalrLoopSupport.v"
+  ],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalBranchInfiniteITree.v"],
+  "bindings": {
+    "architecture": "Unchanged ProgramArchRelated and original pinned nine_target",
+    "control": "Same real ResultJoint -> fresh rs1 -> actual JALR redirect; no SequentialCodeCert103",
+    "assembly": "Common cycle certificate constructor, no handwritten JALR final wrapper"
+  },
+  "proof_providers": {
+    "certificate": "CPUDesignTarget.Build_Certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

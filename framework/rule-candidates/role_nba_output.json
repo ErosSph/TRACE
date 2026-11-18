@@ -1,0 +1,41 @@
+{
+  "name": "role_nba_output",
+  "kind": "proof_strategy",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_stage_seqtree",
+    "description": "Sequential output rule with explicit edge selection, facts and residue; applicability and expression equality are checked by Coq."
+  },
+  "content": {
+    "generator": "tools/cpu_role_nba.py"
+  },
+  "instantiate": {
+    "type": "generator",
+    "cmd": [
+      "tools/cpu_role_nba.py",
+      "framework/generalization-gpt/{design}-nba.json",
+      "--out",
+      "{out}"
+    ]
+  },
+  "covers": [
+    "stage"
+  ],
+  "learned_from": "nerv",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "results/generalization-gpt-20261106/nerv-nba"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-gpt-20261106/steel-nba"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-nba"
+  ],
+  "gate": {
+    "validated_output": "results/generalization-gpt-20261106/nerv-nba"
+  }
+}

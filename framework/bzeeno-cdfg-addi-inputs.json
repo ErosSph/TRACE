@@ -1,0 +1,15 @@
+{
+  "ast": "results/pending-configured-input-20261024-a4-bzeeno/ConfiguredAST.v",
+  "ast_module": "GeneratedRuntimeInput.ConfiguredAST",
+  "graph": "results/pyslang-cdfg-20261026-a3/cdfg.json",
+  "history": "results/r-captured-history-boot-20261026-a3-bzeeno9-TP",
+  "controls": "results/r-control-token-20261026-a2-bzeeno9-TP",
+  "control_history": "results/r-control-history-20261026-a6-bzeeno9-TP",
+  "cone": "results/pyslang-cdfg-consumer-20261026-a4",
+  "operands": "results/r-operand-captures-20261026-a3",
+  "immediate_cones": "results/r-addi-immediate-cone-20261027-a1",
+  "immediate_history": "results/r-addi-immediate-history-20261027-a1",
+  "addi_evidence": "results/r-addi-evidence-20261027-a11",
+  "valid_results": "results/r-valid-result-20261027-a2",
+  "result_phase": "results/r-addi-result-phase-20261027-a2"
+}

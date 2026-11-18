@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "design": "picorv32-original-source-lt-loop",
+  "backend": "original imported ExtendedSV source, arbitrary explicit unknown choices and original real phase scheduler",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; not a four-state equivalence theorem",
+  "verification_scope": "Original zero-RF seed and original response environment; true reset then ADDI x1,x0,1; ADDI x2,x0,1; BLT/BLTU x1,x2,0; JAL x0,-4. RegisterLoopState proves both ISA sources equal1 from original startup and preserves them. ExtendedBranchCut restores the original comparator priority controls; actual captured normal-branch operands derive the untaken outcome. Actual three-cycle branch and JAL commit segments restore the same full architectural cut and match original run1. Two explicit infinite program families, not arbitrary offsets/registers/programs or all29. LOAD/STORE excluded by scope/environment, not absent from hardware.",
+  "pinned_target": "PicoSourceLTDesignTarget.actual_target op schedule",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.PicoSourceLTDesignTarget", "Ex.External.PicoSourceChoiceRuntime", "Ex.External.PicoSourceLTJALLoopITree"],
+    "open_modules": ["PicoSourceLTDesignTarget"],
+    "binders": "(op : PicoSourceLTJALLoopITree.LTKind) (schedule : PicoSourceChoiceRuntime.ChoiceSchedule)",
+    "arguments": ["op", "schedule"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/pico-rf-writer", "namespace": "PicoRF"},
+    {"directory": "experiments/framework/generated/pico-unknown-candidate-final", "namespace": "PicoUnknown"}
+  ],
+  "proof_roots": ["src/Ex/External/PicoSourceLTDesignTarget.v"],
+  "preserve_roots": ["src/Ex/External/PicoSourceGEDesignTarget.v", "src/Ex/External/PicoSourceLogicJALLoopITree.v", "src/Ex/External/PicoSourceRegisterShiftJALLoopITree.v", "src/Ex/External/CPUCommitBoundaryTarget.v"],
+  "bindings": {
+    "target": "framework pins original source reset, real cycle, observer, ISA initial byte-ROM and full architecture relation; provider supplies a certificate only",
+    "initial_scope": "existing zero-seeded RF, not arbitrary power-on RF cleared by reset",
+    "source_version": "same original PicoUnknownInputAST, not the zero-choice candidate"
+  },
+  "proof_providers": {
+    "certificate": "PicoSourceLTDesignTarget.checked_certificate",
+    "infinite": "PicoSourceLTDesignTarget.accepted_original_lt_infinite_refinement"
+  }
+}

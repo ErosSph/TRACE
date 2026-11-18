@@ -1,0 +1,233 @@
+{
+ "schema_version": 1,
+ "design": "bzeeno",
+ "shape": "staged",
+ "provenance": {
+  "source": "extracted from tools/cpu_tmpl_bzdstep.py + cpu_tmpl_bzstepfinal.py (accepted r-tmpl-bz-step-20261103-a4)",
+  "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)"
+ },
+ "module": "BzTmplStep",
+ "namespace": "TmplBzStep",
+ "reference": {
+  "result": "results/r-tmpl-bz-step-20261103-a4",
+  "file": "BzTmplStep.v",
+  "theorem": "template_checked_program_infinite_itree"
+ },
+ "stages": {
+  "count": 5,
+  "names": [
+   "IF",
+   "ID",
+   "EX",
+   "MEM",
+   "WB"
+  ],
+  "token": {
+   "type": "Z",
+   "reg": 119,
+   "width": 32,
+   "meaning": "executed pc"
+  }
+ },
+ "valid": {
+  "kind": "stored_bit",
+  "reg": 308,
+  "gate_reg": 286,
+  "meaning": "retire valid bit; flushD==0 gives the advance shape"
+ },
+ "pending_view": {
+  "kind": "forwarding_in_inv",
+  "module": "arch",
+  "note": "retired RF view = CPUISARegView.isa_view; pending write visible only through arch_rel"
+ },
+ "front": {
+  "kind": "stage_relation",
+  "module": "front",
+  "cursor_reg": 119
+ },
+ "boot": {
+  "phases": [
+   "reset_idle",
+   "pipeline_empty_pc0"
+  ],
+  "valid_ids": [
+   141,
+   250,
+   286
+  ],
+  "chain_a": [
+   244,
+   233,
+   232
+  ],
+  "chain_b": [
+   283,
+   278,
+   277
+  ],
+  "pair": [
+   232,
+   277
+  ],
+  "tail": 140,
+  "pc": 119
+ },
+ "observer": {
+  "valid_reg": 308,
+  "xfer": 309,
+  "seed_regs": [
+   157,
+   156
+  ],
+  "commit_condition": "valid_308 /\\ xfer_309 at the rise state, gated by 286"
+ },
+ "rank": {
+  "module": "rank",
+  "expr": "tmpl_rank_ev",
+  "decrease_lemma": "tmpl_rank_decreases"
+ },
+ "lo": {
+  "inv": "BzTmplInv",
+  "env": "BzTmplEnv",
+  "nstate": "BzTmplNState",
+  "shape": "BzTmplShape",
+  "phase": "BzTmplPhase",
+  "valid": "BzTmplValid",
+  "xfer": "BzTmplXfer",
+  "ifid": "BzTmplIfId",
+  "rank": "BzTmplRank",
+  "reset": "BzTmplReset",
+  "defs": "BzTmplDefs",
+  "trans": "BzTmplTrans",
+  "front": "BzTmplFront",
+  "arch": "BzTmplArch"
+ },
+ "ids": {
+  "valid": 308,
+  "xfer": 309,
+  "gate": 286,
+  "seed_a": 157,
+  "seed_b": 156,
+  "token": 119
+ },
+ "prog": "BzeenoLoadUseJalASTConfigured3122be4a95.bzeeno_load_use_jal_program",
+ "extra_require": [
+  "Ex.External.CPUQueueDeferredProgress",
+  "Lang.ExtendedSVScalarHistory",
+  "Lang.ExtendedSVCaptureBirth",
+  "Ex.External.CPUOriginalISAReference",
+  "TmplBzDefs.@{lo.defs}",
+  "TmplBzTrans.@{lo.trans}",
+  "TmplBzFront.@{lo.front}",
+  "TmplBzArch.@{lo.arch}"
+ ],
+ "skeleton": {
+  "design": "Bzeeno (template route, tools/cpu_tmpl_bzdstep.py)",
+  "module": "@{module}",
+  "mode": "plan",
+  "requires": [
+   "Lang.ExtendedSV",
+   "Ex.External.CPUProgramROM",
+   "Ex.External.CPUJumpFamilyProgramDomain",
+   "Ex.External.CPUISARegView",
+   "GeneratedRuntimeInput.ConfiguredAST",
+   "GeneratedWriteValidityBoot.WriteValidityBoot",
+   "GeneratedClockCycleJoint.CycleJoint",
+   "GeneratedSeedBoot.FrozenEnvironment",
+   "GeneratedCapturedHistoryBoot.CapturedHistoryBoot",
+   "TmplBzEnv.@{lo.env}",
+   "TmplBzShape.@{lo.shape}",
+   "TmplBzRank.@{lo.rank}",
+   "TmplBzIfId.@{lo.ifid}",
+   "TmplBzReset.@{lo.reset}",
+   "Ex.External.CPUJumpFamilyProgramExecution",
+   "Lang.ExtendedSVPackedROM",
+   "Lang.ExtendedSVWordInvariant",
+   "riscv.Spec.Decode",
+   "Ex.External.CPUISARegView",
+   "TmplBzNState.@{lo.nstate}",
+   "TmplBzPhase.@{lo.phase}",
+   "TmplBzValid.@{lo.valid}",
+   "TmplBzXfer.@{lo.xfer}",
+   "TmplBzInv.@{lo.inv}",
+   "GeneratedJumpITree.JumpITree",
+   "coqutil.Word.Interface",
+   "coqutil.Word.Bitwidth",
+   "coqutil.Map.Interface",
+   "coqutil.Byte",
+   "riscv.Utility.Utility"
+  ],
+  "imports": [
+   "ExtendedSV"
+  ],
+  "module_prelude": [],
+  "prelude": [
+   "Require Coq.Logic.FunctionalExtensionality.",
+   "Local Open Scope Z_scope."
+  ],
+  "params": "(words:list Z)(HC:CPUJumpFamilyProgramDomain.check_program words=true)",
+  "args": "words HC",
+  "runtime": "list Event",
+  "token": "Z",
+  "context": "Context {word:Interface.word 32}{BW:Bitwidth 32}{Registers:map.map Z word}{Mem:map.map word byte}\n {word_ok:word.ok word}{registers_ok:map.ok Registers}{mem_ok:map.ok Mem}.",
+  "fields": {
+   "step": "JumpITree.actual_cycle",
+   "commits": "JumpITree.actual_observer words",
+   "effect": "checked_pc_effect",
+   "pc": "fun pc=>pc",
+   "effect_sound": "checked_pc_effect_sound",
+   "stages": "@{lo.inv}.stages words",
+   "arch": "@{lo.inv}.arch_rel words",
+   "front": "@{lo.inv}.front_rel words",
+   "stage": "@{lo.inv}.stage_rel words"
+  },
+  "plan_shape": "fun events=>if Z.eqb (@{lo.shape}.flushD words events) 0 then Advance (Some (@{lo.inv}.rg (@{lo.env}.rs words events) @{ids.token} 32)) else Advance None",
+  "plan_next": "fun (events:list Event) (_:FormalSpec.State) (f:FormalSpec.State)=>if Z.eqb (@{lo.shape}.flushD words events) 0 then snd (FormalSpec.run1 f) else f",
+  "rank": "(@@{lo.rank}.tmpl_rank_ev FormalSpec.State words)",
+  "boot": "[]",
+  "initial": "JumpITree.initial words",
+  "reset": "[]",
+  "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)"
+ },
+ "layers": [
+  {
+   "name": "inv",
+   "module": "BzTmplInv",
+   "argv": [
+    "tools/cpu_tmpl_bzinv.py",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-bz-inv-20261103-a2"
+  },
+  {
+   "name": "valid",
+   "module": "BzTmplValid",
+   "argv": [
+    "tools/cpu_tmpl_bzvalid.py",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-bz-valid-20261103-a1"
+  },
+  {
+   "name": "rank",
+   "module": "BzTmplRank",
+   "argv": [
+    "tools/cpu_tmpl_bzrank.py",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-bz-rank-20261103-a1"
+  },
+  {
+   "name": "reset",
+   "module": "BzTmplReset",
+   "argv": [
+    "tools/cpu_tmpl_bzreset.py",
+    "--out",
+    "{out}"
+   ],
+   "ref": "results/r-tmpl-bz-reset-20261103-a1"
+  }
+ ]
+}

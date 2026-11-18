@@ -1,0 +1,17 @@
+# TRACE fix: JALR target clears bit 0 (RISC-V spec); upstream keeps it
+--- a/rtl/darkriscv.v
++++ b/rtl/darkriscv.v
+@@ -583,7 +583,7 @@
+ 
+     wire [31:0] PCSIMM = PC+SIMM;
+     wire        JREQ = JAL||JALR||(BCC && BMUX);
+-    wire [31:0] JVAL = JALR ? DADDR : PCSIMM; // SIMM + (JALR ? U1REG : PC);
++    wire [31:0] JVAL = JALR ? {DADDR[31:1],1'b0} : PCSIMM; // SIMM + (JALR ? U1REG : PC);
+ 
+ `ifdef __DBNZ__
+     wire DBNZT = DBNZ && S1REG!=0; // branch when not zero!
+@@ -963,3 +963,4 @@
+ `endif
+ 
+ endmodule
++

@@ -1,0 +1,25 @@
+# TRACE fix: JALR target clears bit 0 and the misaligned-target trap uses that target (upstream traps on odd JALR targets)
+--- a/rtl/rv32i_alu.v
++++ b/rtl/rv32i_alu.v
+@@ -189,6 +189,7 @@
+             if(opcode_jal || opcode_jalr) begin
+                 if(opcode_jalr) a_pc = i_rs1;
+                 o_next_pc = sum; //jump to new PC
++                if(opcode_jalr) o_next_pc = {sum[31:1],1'b0}; //FIX: JALR clears bit 0 of the target (RISC-V unprivileged spec)
+                 o_change_pc = i_ce; //change PC when ce of this stage is high (o_change_pc is valid)
+                 o_flush = i_ce;
+                 rd_d = i_pc + 4; //register the next pc value to destination register
+--- a/rtl/rv32i_csr.v
++++ b/rtl/rv32i_csr.v
+@@ -157,7 +157,10 @@
+         for a conditional branch that is not taken. */
+         if((opcode_branch && i_y[0]) || opcode_jal || opcode_jalr) begin // branch or jump to new instruction
+             new_pc = i_pc[1:0] + i_csr_index[1:0];
+-            if(opcode_jalr) new_pc = i_rs1[1:0] +  i_csr_index[1:0];
++            if(opcode_jalr) begin //FIX: misalignment is tested on the target with bit 0 cleared
++                new_pc = i_rs1[1:0] +  i_csr_index[1:0];
++                new_pc[0] = 1'b0;
++            end
+             is_inst_addr_misaligned = (new_pc == 2'b00)? 1'b0:1'b1; //i_pc (instruction address) must always be four bytes aligned
+         end
+         

@@ -1,0 +1,1370 @@
+{
+ "pipeline_roles": {
+  "ast": {
+   "module": "Steel.SteelAST",
+   "file": "experiments/framework/generated/steel/SteelAST.v",
+   "program": "SteelAST.steel_program",
+   "signal_table": "experiments/framework/generated/steel/report.json"
+  },
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "steel_top.clock"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "steel_top.reset"
+   }
+  },
+  "rf_write": {
+   "bank": {
+    "id": 214,
+    "width": 1024,
+    "path": "steel_top.core.integer_file"
+   },
+   "process": "process_8"
+  },
+  "provenance": {
+   "source": "discovered",
+   "rule": "minimal pipeline_roles view of template_roles for the shared edge/stage generators"
+  }
+ },
+ "template_roles": {
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "steel_top.clock"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "steel_top.reset"
+   },
+   "clock_net": {
+    "id": 20,
+    "width": 1,
+    "path": "steel_top.core.clock"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential-process events resolve through copy wires to primary input 0; the other top input drives the reset-registered flop",
+    "processes": [
+     "process_0",
+     "process_1",
+     "process_2",
+     "process_3",
+     "process_4",
+     "process_5",
+     "process_6",
+     "process_7",
+     "process_8",
+     "process_9",
+     "process_10",
+     "process_11",
+     "process_12",
+     "process_13",
+     "process_14",
+     "process_15",
+     "process_16",
+     "process_17",
+     "process_18",
+     "process_19",
+     "process_20",
+     "process_21"
+    ]
+   }
+  },
+  "reset_flops": {
+   "flops": [
+    {
+     "id": 14,
+     "width": 1,
+     "path": "steel_top.env_reset_reg"
+    },
+    {
+     "id": 257,
+     "width": 1,
+     "path": "steel_top.core.reset_reg"
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential register assigned directly from the reset input (copy chain)"
+   }
+  },
+  "reset_internal": {
+   "id": 256,
+   "width": 1,
+   "path": "steel_top.core.reset_internal",
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb wire = reset input OR the reset flop"
+   }
+  },
+  "register_file": {
+   "bank": {
+    "id": 214,
+    "width": 1024,
+    "path": "steel_top.core.integer_file"
+   },
+   "lanes": 31,
+   "lane_width": 32,
+   "rebase": 1,
+   "padded_lanes": 32,
+   "process": "process_8",
+   "read_ports": [
+    {
+     "id": 258,
+     "width": 32,
+     "path": "steel_top.core.rs1_data",
+     "field": "rs1",
+     "index_expr": "(EBinary 5 BSub (EVar 5 224%nat) (EConst 5 1))",
+     "word": 217,
+     "rebase": 1
+    },
+    {
+     "id": 259,
+     "width": 32,
+     "path": "steel_top.core.rs2_data",
+     "field": "rs2",
+     "index_expr": "(EBinary 5 BSub (EVar 5 225%nat) (EConst 5 1))",
+     "word": 217,
+     "rebase": 1
+    }
+   ],
+   "write_index": {
+    "id": 223,
+    "width": 5,
+    "path": "steel_top.core.instruction_rd_address"
+   },
+   "write_data": {
+    "id": 277,
+    "width": 32,
+    "path": "steel_top.core.writeback_multiplexer_output"
+   },
+   "write_enable": null,
+   "write_enable_expr": "(EBinary 1 BAnd (EVar 1 170%nat) (EVar 1 215%nat))",
+   "instruction_word": {
+    "id": 217,
+    "width": 32,
+    "path": "steel_top.core.instruction"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "cpu_isa_trace: bank anchor, read ports bound to rs1/rs2 of word 217, write index bound to rd; bank index = field - 1 (Verilator rebase of [31:1])",
+    "obligation": "the padding lane (index 31 = field 0) is never read in a live arm; reads of field 0 are the constant arm of the port wire"
+   }
+  },
+  "instruction_word": {
+   "word": {
+    "id": 217,
+    "width": 32,
+    "path": "steel_top.core.instruction"
+   },
+   "opcode": {
+    "id": 221,
+    "width": 7,
+    "path": "steel_top.core.instruction_opcode"
+   },
+   "funct3": {
+    "id": 219,
+    "width": 3,
+    "path": "steel_top.core.instruction_funct3"
+   },
+   "funct7": {
+    "id": 220,
+    "width": 7,
+    "path": "steel_top.core.instruction_funct7"
+   },
+   "rd": {
+    "id": 223,
+    "width": 5,
+    "path": "steel_top.core.instruction_rd_address"
+   },
+   "rs1": {
+    "id": 224,
+    "width": 5,
+    "path": "steel_top.core.instruction_rs1_address"
+   },
+   "rs2": {
+    "id": 225,
+    "width": 5,
+    "path": "steel_top.core.instruction_rs2_address"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb wires that are constant part-selects of the instruction-word holder"
+   }
+  },
+  "pc": {
+   "register": {
+    "id": 253,
+    "width": 32,
+    "path": "steel_top.core.program_counter"
+   },
+   "plus4": {
+    "id": 254,
+    "width": 32,
+    "path": "steel_top.core.program_counter_plus_4"
+   },
+   "next": {
+    "id": 243,
+    "width": 32,
+    "path": "steel_top.core.next_program_counter"
+   },
+   "process": "process_7",
+   "update_guard": "(EBinary 1 BAnd (EBinary 1 BAnd (EVar 1 170%nat) (EUnary 1 UNot (EVar 1 234%nat))) (EUnary 1 UNot (EVar 1 265%nat)))",
+   "reset_value": 0,
+   "provenance": {
+    "source": "discovered",
+    "rule": "the register read by the unique comb wire (reg + 4); its sequential update is `if reset then 0 else if en then next`"
+   }
+  },
+  "fsm": {
+   "state": {
+    "id": 200,
+    "width": 4,
+    "path": "steel_top.core.current_state"
+   },
+   "flush": {
+    "id": 203,
+    "width": 1,
+    "path": "steel_top.core.flush"
+   },
+   "operating_value": 2,
+   "reset_value": 1,
+   "next_state": {
+    "id": 244,
+    "width": 4,
+    "path": "steel_top.core.next_state"
+   },
+   "process": "process_9",
+   "provenance": {
+    "source": "discovered",
+    "rule": "flush = (const != state); state is updated from a next-state wire"
+   }
+  },
+  "fetch_mux": {
+   "expr": "(ECond 32 (EVar 1 203%nat) (EConst 32 19) (ECond 32 (EBinary 1 BOr (EBinary 1 BOr (EUnary 1 UNot (EVar 1 170%nat)) (EVar 1 230%nat)) (EVar 1 263%nat)) (EVar 32 245%nat) (EVar 32 24%nat)))",
+   "nop": 19,
+   "hold_register": {
+    "id": 245,
+    "width": 32,
+    "path": "steel_top.core.prev_instruction"
+   },
+   "memory_output": {
+    "id": 24,
+    "width": 32,
+    "path": "steel_top.core.read_data"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "instruction = flush ? NOP : (hold ? prev_register : memory output)"
+   }
+  },
+  "memory": {
+   "array": {
+    "id": 15,
+    "width": 4096,
+    "path": "steel_top.ram"
+   },
+   "read_data": {
+    "id": 11,
+    "width": 32,
+    "path": "steel_top.read_data"
+   },
+   "words": 128,
+   "write_process": "process_2",
+   "read_process": "process_1",
+   "address": {
+    "id": 2,
+    "width": 32,
+    "path": "steel_top.rw_address"
+   },
+   "word_index": {
+    "id": 18,
+    "width": 7,
+    "path": "steel_top.word_index"
+   },
+   "invalid_address": {
+    "id": 17,
+    "width": 1,
+    "path": "steel_top.invalid_address"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "bank written by byte lanes (process with part-select writes) and read through a registered part-select"
+   },
+   "environment": {
+    "source": "llm",
+    "rule": "wrapper experiments/framework/steel/steel_top.v: unified synchronous memory, image = initial value of the array, address >= 512 reads 0, read_response = read_request delayed one cycle"
+   }
+  },
+  "commit": {
+   "clock_enable": {
+    "id": 170,
+    "width": 1,
+    "path": "steel_top.core.clock_enable"
+   },
+   "load_pending": {
+    "id": 234,
+    "width": 1,
+    "path": "steel_top.core.load_pending"
+   },
+   "store_pending": {
+    "id": 265,
+    "width": 1,
+    "path": "steel_top.core.store_pending"
+   },
+   "take_trap": {
+    "id": 268,
+    "width": 1,
+    "path": "steel_top.core.take_trap"
+   },
+   "flush": {
+    "id": 203,
+    "width": 1,
+    "path": "steel_top.core.flush"
+   },
+   "condition": "flush = 0 /\\ clock_enable = 1 /\\ load_pending = 0 /\\ store_pending = 0 /\\ take_trap = 0",
+   "pc": {
+    "id": 253,
+    "width": 32,
+    "path": "steel_top.core.program_counter"
+   },
+   "provenance": {
+    "source": "llm",
+    "rule": "ambiguous (the AST has no retirement signal). Decided from the RTL: PC and the register file are updated at the same edge under exactly the guards of processes 7/8 (en = clock_enable & !flush-free part, & !load/store pending; write enable = request & !flush & !load_pending) and the instruction is the one at the PC register; matches the validated observer SteelRun.commit_pc (120000 cycles, 0 mismatches against Verilator)"
+   }
+  },
+  "environment": {
+   "reset_edges": 3,
+   "reset_release": "after a falling edge",
+   "tied": {
+    "halt": 0,
+    "irq_external": 0,
+    "irq_timer": 0,
+    "irq_software": 0,
+    "irq_fast": 0,
+    "real_time_clock": 0
+   },
+   "boot_address": 0,
+   "program_words_max": 101,
+   "provenance": {
+    "source": "llm",
+    "rule": "phase-A documented environment (20261104-steel-import.md); SteelRun"
+   }
+  },
+  "classes": {
+   "count": 29,
+   "source": "tools/cpu_isa_classes.py",
+   "provenance": {
+    "source": "discovered",
+    "rule": "design-independent ISA class table; Steel decodes all 29 by opcode/funct3/funct7 wires derived combinationally from the instruction word (no decoder flag registers)"
+   }
+  },
+  "kind": "pipelined_derived_clock",
+  "primary_clock": {
+   "id": 0,
+   "width": 1,
+   "path": "steel_top.clock"
+  },
+  "primary_reset": {
+   "id": 1,
+   "width": 1,
+   "path": "steel_top.reset"
+  },
+  "sequential_processes": [
+   {
+    "process": "process_0",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 14,
+      "width": 1,
+      "path": "steel_top.env_reset_reg"
+     }
+    ]
+   },
+   {
+    "process": "process_1",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 11,
+      "width": 32,
+      "path": "steel_top.read_data"
+     }
+    ]
+   },
+   {
+    "process": "process_2",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 15,
+      "width": 4096,
+      "path": "steel_top.ram"
+     }
+    ]
+   },
+   {
+    "process": "process_3",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 12,
+      "width": 1,
+      "path": "steel_top.read_response"
+     },
+     {
+      "id": 13,
+      "width": 1,
+      "path": "steel_top.write_response"
+     }
+    ]
+   },
+   {
+    "process": "process_4",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 257,
+      "width": 1,
+      "path": "steel_top.core.reset_reg"
+     }
+    ]
+   },
+   {
+    "process": "process_5",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 246,
+      "width": 32,
+      "path": "steel_top.core.prev_instruction_address"
+     },
+     {
+      "id": 247,
+      "width": 1,
+      "path": "steel_top.core.prev_load_request"
+     },
+     {
+      "id": 248,
+      "width": 1,
+      "path": "steel_top.core.prev_read_request"
+     },
+     {
+      "id": 249,
+      "width": 32,
+      "path": "steel_top.core.prev_rw_address"
+     },
+     {
+      "id": 250,
+      "width": 32,
+      "path": "steel_top.core.prev_write_data"
+     },
+     {
+      "id": 251,
+      "width": 1,
+      "path": "steel_top.core.prev_write_request"
+     },
+     {
+      "id": 252,
+      "width": 4,
+      "path": "steel_top.core.prev_write_strobe"
+     }
+    ]
+   },
+   {
+    "process": "process_6",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 245,
+      "width": 32,
+      "path": "steel_top.core.prev_instruction"
+     }
+    ]
+   },
+   {
+    "process": "process_7",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 253,
+      "width": 32,
+      "path": "steel_top.core.program_counter"
+     }
+    ]
+   },
+   {
+    "process": "process_8",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 214,
+      "width": 1024,
+      "path": "steel_top.core.integer_file"
+     }
+    ]
+   },
+   {
+    "process": "process_9",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 200,
+      "width": 4,
+      "path": "steel_top.core.current_state"
+     }
+    ]
+   },
+   {
+    "process": "process_10",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 193,
+      "width": 1,
+      "path": "steel_top.core.csr_mstatus_mie"
+     },
+     {
+      "id": 194,
+      "width": 1,
+      "path": "steel_top.core.csr_mstatus_mpie"
+     }
+    ]
+   },
+   {
+    "process": "process_11",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 181,
+      "width": 16,
+      "path": "steel_top.core.csr_mie_mfie"
+     },
+     {
+      "id": 182,
+      "width": 1,
+      "path": "steel_top.core.csr_mie_meie"
+     },
+     {
+      "id": 183,
+      "width": 1,
+      "path": "steel_top.core.csr_mie_msie"
+     },
+     {
+      "id": 184,
+      "width": 1,
+      "path": "steel_top.core.csr_mie_mtie"
+     }
+    ]
+   },
+   {
+    "process": "process_12",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 186,
+      "width": 16,
+      "path": "steel_top.core.csr_mip_mfip"
+     },
+     {
+      "id": 187,
+      "width": 1,
+      "path": "steel_top.core.csr_mip_meip"
+     },
+     {
+      "id": 188,
+      "width": 1,
+      "path": "steel_top.core.csr_mip_mtip"
+     },
+     {
+      "id": 189,
+      "width": 1,
+      "path": "steel_top.core.csr_mip_msip"
+     }
+    ]
+   },
+   {
+    "process": "process_13",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 179,
+      "width": 32,
+      "path": "steel_top.core.csr_mepc"
+     }
+    ]
+   },
+   {
+    "process": "process_14",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 191,
+      "width": 32,
+      "path": "steel_top.core.csr_mscratch"
+     }
+    ]
+   },
+   {
+    "process": "process_15",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 178,
+      "width": 64,
+      "path": "steel_top.core.csr_mcycle"
+     }
+    ]
+   },
+   {
+    "process": "process_16",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 190,
+      "width": 64,
+      "path": "steel_top.core.csr_minstret"
+     }
+    ]
+   },
+   {
+    "process": "process_17",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 198,
+      "width": 64,
+      "path": "steel_top.core.csr_utime"
+     }
+    ]
+   },
+   {
+    "process": "process_18",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 175,
+      "width": 32,
+      "path": "steel_top.core.csr_mcause"
+     }
+    ]
+   },
+   {
+    "process": "process_19",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 176,
+      "width": 5,
+      "path": "steel_top.core.csr_mcause_code"
+     },
+     {
+      "id": 177,
+      "width": 1,
+      "path": "steel_top.core.csr_mcause_interrupt_flag"
+     }
+    ]
+   },
+   {
+    "process": "process_20",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 196,
+      "width": 32,
+      "path": "steel_top.core.csr_mtval"
+     }
+    ]
+   },
+   {
+    "process": "process_21",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 20,
+       "width": 1,
+       "path": "steel_top.core.clock"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "steel_top.clock"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 195,
+      "width": 32,
+      "path": "steel_top.core.csr_mtvec"
+     }
+    ]
+   }
+  ],
+  "fires_on_rise": [
+   "process_0",
+   "process_1",
+   "process_2",
+   "process_3",
+   "process_4",
+   "process_5",
+   "process_6",
+   "process_7",
+   "process_8",
+   "process_9",
+   "process_10",
+   "process_11",
+   "process_12",
+   "process_13",
+   "process_14",
+   "process_15",
+   "process_16",
+   "process_17",
+   "process_18",
+   "process_19",
+   "process_20",
+   "process_21"
+  ],
+  "fires_on_fall": [],
+  "rf_write_edge": "rise",
+  "edge_provenance": {
+   "source": "discovered",
+   "rule": "sequential process event specs (Posedge clk, Negedge resetn); clock/reset nets traced through copy/not comb wires to the primary inputs (tools/cpu_tmpl_edge.py nets); fire lists computed by simulating the polarities"
+  }
+ },
+ "route": {
+  "date": "20261104",
+  "rst_idle": 0,
+  "note": "Steel: active-high reset (0 in operation) so rst_idle=0; 3-stage-like single issue, RF bank rebased by one (lane j = x(j+1)).",
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "module": "SteelTmplLfp",
+    "namespace": "TmplSteelLfp",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-lfp-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_lfpnl.py"
+   },
+   {
+    "name": "target",
+    "layer": "target",
+    "module": "SteelTmplTarget",
+    "namespace": "TmplSteelTarget",
+    "cmd": [
+     "tools/cpu_tmpl_sttarget.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--pad-seed",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-target-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_sttarget.py",
+    "supersedes": "results/r-tmpl-steel-target-20261104-a1",
+    "note": "seed_x padded to 334 cells (fixes Pre unsatisfiable at the real reset); the route-steel-20261104-reg1 dir was built with the unpadded a1 text (ref kept for comparison)"
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "module": "SteelTmplEdge",
+    "namespace": "TmplSteelEdge",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--fast-filter",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-edge-20261104-a3",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py --fast-filter"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "module": "SteelTmplStage",
+    "namespace": "TmplSteelStage",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-stage-20261104-a3",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py"
+   },
+   {
+    "name": "frame",
+    "layer": "frame",
+    "module": "SteelTmplFrame",
+    "namespace": "TmplSteelFrame",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--frame",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-frame-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py --frame"
+   },
+   {
+    "name": "cyc",
+    "layer": "cycle",
+    "module": "SteelTmplCyc",
+    "namespace": "TmplSteelCyc",
+    "cmd": [
+     "tools/cpu_tmpl_stcyc.py",
+     "--stage",
+     "{dir:stage}",
+     "--frame",
+     "{dir:frame}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-cyc-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_stcyc.py"
+   },
+   {
+    "name": "val",
+    "layer": "value",
+    "module": "SteelTmplVal",
+    "namespace": "TmplSteelVal",
+    "cmd": [
+     "tools/cpu_tmpl_stval.py",
+     "--stage",
+     "{dir:stage}",
+     "--cyc",
+     "{dir:cyc}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-val-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_stval.py"
+   },
+   {
+    "name": "fetch",
+    "layer": "fetch",
+    "module": "SteelTmplFetch",
+    "namespace": "TmplSteelFetch",
+    "cmd": [
+     "tools/cpu_tmpl_stfetch.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "llm_written",
+    "generator": "tools/cpu_tmpl_stfetch.py + framework/template-sources/SteelFetchCore.v.in",
+    "note": "fetch link read_data = rom word (pack_word, fetch_link)"
+   },
+   {
+    "name": "rf",
+    "layer": "rf",
+    "module": "SteelTmplRF",
+    "namespace": "TmplSteelRF",
+    "cmd": [
+     "tools/cpu_tmpl_strf.py",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-rf-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_strf.py (src/Lang/ExtendedSVBankRebaseRst.v)"
+   },
+   {
+    "name": "ram",
+    "layer": "ram",
+    "module": "SteelTmplRam",
+    "namespace": "TmplSteelRam",
+    "cmd": [
+     "tools/cpu_tmpl_strf.py",
+     "--ram",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-ram-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_strf.py --ram"
+   },
+   {
+    "name": "ctl",
+    "layer": "ctl",
+    "module": "SteelTmplCtl",
+    "namespace": "TmplSteelCtl",
+    "cmd": [
+     "tools/cpu_tmpl_stctl_run.py",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-steel-ctl-20261104-a3",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_stctl.py (Fast4 engine, eqchain2_out)"
+   },
+   {
+    "name": "mis",
+    "layer": "domain",
+    "module": "SteelTmplMis",
+    "namespace": "TmplSteelMis",
+    "cmd": [
+     "tools/cpu_tmpl_stctl_run.py",
+     "--kind",
+     "mis",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_stctl.py --kind mis",
+    "note": "misaligned_instruction_address (238) as a function of the jump-family data, without the premise 238 = 0"
+   },
+   {
+    "name": "imm",
+    "layer": "imm",
+    "module": "SteelTmplImm",
+    "namespace": "TmplSteelImm",
+    "cmd": [
+     "tools/cpu_tmpl_stctl_run.py",
+     "--kind",
+     "imm",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_stctl.py --kind imm",
+    "note": "immediates 205 = isa_imm_X w for 15 classes; kernel-hang fix: rewrite with eq_refl lemmas instead of cbn on the EReplicate wire 211"
+   },
+   {
+    "name": "fw",
+    "layer": "fetch",
+    "module": "SteelTmplFw",
+    "namespace": "TmplSteelFw",
+    "cmd": [
+     "tools/cpu_tmpl_stfw.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_stfw.py",
+    "note": "fetch wires: w_R (checked assignment binding) for 217,24,221,219,220,224,225 and fetch_wire: 217 = read_data when operating (203=0,170=1,230=0,263=0)"
+   }
+  ],
+  "fetch": {
+   "ram": 15,
+   "read_data": 11,
+   "hold_cond": 16,
+   "invalid": 17,
+   "word_index": 18,
+   "words": 128,
+   "ast": "Steel.SteelAST"
+  },
+  "fetchwire": {
+   "word": 217,
+   "copy": 24,
+   "mem": 11,
+   "roots": [
+    217,
+    24,
+    221,
+    219,
+    220,
+    224,
+    225
+   ],
+   "conds": [
+    [
+     203,
+     1,
+     0
+    ],
+    [
+     170,
+     1,
+     1
+    ],
+    [
+     230,
+     1,
+     0
+    ],
+    [
+     263,
+     1,
+     0
+    ]
+   ]
+  }
+ }
+}

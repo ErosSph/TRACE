@@ -1,0 +1,21 @@
+Theorem ob_out_@CLASS@ : OBL.Ob_out_@CLASS@.
+Proof.
+ intros @ARGS@ d w f Cx Hdec Hm Hj.
+ destruct Cx as ([seed HL] & H1 & H109 & H38 & H43 & H52 & H50 & H47 & H51 & H59 & H61 & H62 & H53 & H54 & H45). unfold T.rd in *.
+ destruct (CI.inv_@CLASS@ w @ARGS@ Hdec) as [[E0 [E1 E2]] [B0 [B1 B2]]].
+ assert (HF : FactsHold d C.F0_@CLASS@).
+ { unfold C.F0_@CLASS@, PRE.F_base. intros e z Hin. cbn [app In] in Hin.
+   repeat (destruct Hin as [Hin|Hin]; [injection Hin as <- <-; cbn [eval_expr];
+     first [assumption | match goal with |- norm ?k (read_signal d ?n) = _ =>
+       match goal with H : norm k (read_signal d n) = _ |- _ => rewrite H; assumption end end] |]).
+   destruct Hin. }
+ destruct (C.@CLASS@_ctl seed d HL HF) as (K44 & K105 & K106 & K107 & K112 & K33 & _).
+ unfold DF.Outcome, T.rd. cbn [LI.dwr LI.drd LI.dval LI.ipc].
+ refine (conj _ (conj _ (conj _ (conj _ (fun _ => conj _ _))))).
+ - rewrite K112. reflexivity.
+ - rewrite K33. reflexivity.
+ - rewrite K44. cbn [eval_expr]. rewrite H45. apply pc4.
+ - rewrite K105. reflexivity.
+ - rewrite K107. cbn [eval_expr]. rewrite H51, E0. apply rd5.
+ - rewrite K106. cbn [eval_expr]. rewrite H53, H54, <- E1, <- E2, <- !V.view_formal, norm_idempotent. apply BR.bridge_@CLASS@.
+Qed.

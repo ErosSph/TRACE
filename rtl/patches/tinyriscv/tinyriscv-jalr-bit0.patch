@@ -1,0 +1,12 @@
+# TRACE fix: JALR target clears bit 0 (upstream keeps it)
+--- a/rtl/core/ex.v
++++ b/rtl/core/ex.v
+@@ -781,7 +781,7 @@
+                 mem_waddr_o = `ZeroWord;
+                 mem_we = `WriteDisable;
+                 jump_flag = `JumpEnable;
+-                jump_addr = op1_jump_add_op2_jump_res;
++                jump_addr = (opcode == `INST_JALR) ? (op1_jump_add_op2_jump_res & 32'hfffffffe) : op1_jump_add_op2_jump_res;
+                 reg_wdata = op1_add_op2_res;
+             end
+             `INST_LUI, `INST_AUIPC: begin

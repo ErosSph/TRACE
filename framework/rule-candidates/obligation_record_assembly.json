@@ -1,0 +1,41 @@
+{
+  "name": "obligation_record_assembly",
+  "kind": "proof_strategy",
+  "proof_author": "LLM-generated: OpenAI Codex",
+  "pattern": {
+    "function": "p_class_table",
+    "description": "Applicability hint; explicit schema and measured cross-design gates required."
+  },
+  "content": {
+    "generator": "tools/cpu_generalized_assembly.py"
+  },
+  "instantiate": {
+    "type": "generator",
+    "cmd": [
+      "tools/cpu_generalized_assembly.py",
+      "framework/generalization-gpt/{design}-assembly.json",
+      "--out",
+      "{out}"
+    ]
+  },
+  "covers": [
+    "closure"
+  ],
+  "learned_from": "nerv",
+  "learned_at": "2026-11-06",
+  "learned_evidence": [
+    "results/generalization-gpt-20261106/nerv-assembly-a2"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-gpt-20261106/steel-assembly-a3"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-gpt-20261106/steel-assembly-a3"
+  ],
+  "gate": {
+    "validated_output": "results/generalization-gpt-20261106/nerv-assembly-a2"
+  }
+}

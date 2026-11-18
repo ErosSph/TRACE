@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-native-dependent-xori",
+  "backend": "ExtendedSV actual native physical-phase semantics",
+  "translation_equivalence": "not_mechanized_from_original_rtl; canonical 19 source modules pinned and independent SV forwarding/writeback/loop regressions checked",
+  "verification_scope": "checked infinite pinned ADDI x1,0,1 / dependent XORI x1,x1,3 / JAL x0,0 program; actual reset/rise/fall, every-cycle phase validity and complete RF/ROM/PC/nextPC/bounded byte-RAM relation. NOT all38 or arbitrary programs; original baseline target remains separate",
+  "pinned_target": "BzeenoNativeXoriInfiniteRefinement.fixed_target",
+  "certificate_harness": {
+    "imports": ["Ex.External.CPUDesignTarget", "Ex.External.BzeenoNativeXoriInfiniteRefinement", "Ex.External.BzeenoNativeXoriInfiniteDomain"],
+    "open_modules": ["CPUDesignTarget"], "binders": "", "arguments": []
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"}
+  ],
+  "proof_roots": [
+    "src/Ex/External/BzeenoNativeXoriInfiniteRefinement.v",
+    "src/Ex/External/BzeenoNativeXoriInfiniteDomain.v"
+  ],
+  "preserve_roots": [],
+  "bindings": {
+    "cycle": "BzeenoNativeXoriExecutionTarget.target_step (uses original native_cycle)",
+    "commits": "BzeenoNativeXoriExecutionTarget.target_commits",
+    "boot": "BzeenoNativeXoriExecutionTarget.actual_boot",
+    "forwarding": "actual ID committed RF x1=0 but forwarded source=1, EX XORI result=2"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoNativeXoriInfiniteRefinement.checked_certificate",
+    "infinite": "BzeenoNativeXoriInfiniteRefinement.actual_dependent_xori_infinite_refinement",
+    "architecture_all_cycles": "BzeenoNativeXoriInfiniteRefinement.actual_dependent_xori_every_cycle_architecture",
+    "source_valid_all_cycles": "BzeenoNativeXoriInfiniteDomain.every_actual_xori_cycle_has_valid_native_phases"
+  }
+}

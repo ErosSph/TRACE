@@ -1,0 +1,1416 @@
+{
+ "pipeline_roles": {
+  "ast": {
+   "module": "Srv32.Srv32AST",
+   "file": "experiments/framework/generated/srv32/Srv32AST.v",
+   "program": "Srv32AST.srv32_program",
+   "signal_table": "experiments/framework/generated/srv32/report.json"
+  },
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "srv32_env.clk"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "srv32_env.resetb"
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential-process event signals traced through copy wires to the primary inputs (Posedge -> clock, Negedge -> reset)"
+   }
+  },
+  "rf_write": {
+   "bank": {
+    "id": 244,
+    "width": 1024,
+    "path": "srv32_env.riscv.regs"
+   },
+   "process": "process_15",
+   "index_expr": "(EBinary 5 BSub (EVar 5 294%nat) (EConst 5 1))",
+   "data": [
+    {
+     "id": 290,
+     "width": 32,
+     "path": "srv32_env.riscv.wb_result"
+    },
+    {
+     "id": 293,
+     "width": 1,
+     "path": "srv32_env.riscv.wb_mem2reg"
+    },
+    {
+     "id": 304,
+     "width": 32,
+     "path": "srv32_env.riscv.wb_rdata"
+    }
+   ],
+   "rebase": 1,
+   "dead_cell": 31,
+   "provenance": {
+    "source": "discovered",
+    "rule": "ISA-guided trace (tools/cpu_isa_trace.py srv32): register file = array written by a sequential process at a dynamic index bound to field rd; read ports = comb wires bank[idx] bound to rs1/rs2; rebase 1 (regs[31:1]); cell 31 = padded dead cell"
+   }
+  },
+  "fetch_slot": {
+   "word": {
+    "id": 233,
+    "width": 32,
+    "path": "srv32_env.riscv.inst"
+   },
+   "capture_process": "process_4",
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential process with the most assignments reading slices of one combinational word; that word is the instruction word (also the rs1/rs2/rd fields of the RF ports one stage later)"
+   }
+  }
+ },
+ "coq_load_paths": [
+  {
+   "directory": "experiments/framework/generated/srv32",
+   "namespace": "Srv32"
+  }
+ ],
+ "template_roles": {
+  "kind": "pipelined_derived_clock",
+  "primary_clock": {
+   "id": 0,
+   "width": 1,
+   "path": "srv32_env.clk"
+  },
+  "primary_reset": {
+   "id": 1,
+   "width": 1,
+   "path": "srv32_env.resetb"
+  },
+  "sequential_processes": [
+   {
+    "process": "process_0",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 12,
+      "width": 32,
+      "path": "srv32_env.imem_rdata"
+     }
+    ]
+   },
+   {
+    "process": "process_1",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 21,
+      "width": 1,
+      "path": "srv32_env.riscv.exception"
+     }
+    ]
+   },
+   {
+    "process": "process_2",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 232,
+      "width": 1,
+      "path": "srv32_env.riscv.stall_r"
+     },
+     {
+      "id": 234,
+      "width": 1,
+      "path": "srv32_env.riscv.flush"
+     }
+    ]
+   },
+   {
+    "process": "process_3",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 240,
+      "width": 32,
+      "path": "srv32_env.riscv.if_pc"
+     }
+    ]
+   },
+   {
+    "process": "process_4",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 241,
+      "width": 32,
+      "path": "srv32_env.riscv.ex_pc"
+     },
+     {
+      "id": 250,
+      "width": 32,
+      "path": "srv32_env.riscv.ex_imm"
+     },
+     {
+      "id": 251,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_imm_sel"
+     },
+     {
+      "id": 252,
+      "width": 5,
+      "path": "srv32_env.riscv.ex_src1_sel"
+     },
+     {
+      "id": 253,
+      "width": 5,
+      "path": "srv32_env.riscv.ex_src2_sel"
+     },
+     {
+      "id": 254,
+      "width": 5,
+      "path": "srv32_env.riscv.ex_dst_sel"
+     },
+     {
+      "id": 255,
+      "width": 3,
+      "path": "srv32_env.riscv.ex_alu_op"
+     },
+     {
+      "id": 256,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_subtype"
+     },
+     {
+      "id": 257,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_memwr"
+     },
+     {
+      "id": 261,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_alu"
+     },
+     {
+      "id": 262,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_csr"
+     },
+     {
+      "id": 263,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_csr_wr"
+     },
+     {
+      "id": 264,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_lui"
+     },
+     {
+      "id": 265,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_auipc"
+     },
+     {
+      "id": 266,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_jal"
+     },
+     {
+      "id": 267,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_jalr"
+     },
+     {
+      "id": 268,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_branch"
+     },
+     {
+      "id": 269,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_system"
+     },
+     {
+      "id": 270,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_system_op"
+     },
+     {
+      "id": 279,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_illegal"
+     },
+     {
+      "id": 288,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_mul"
+     }
+    ]
+   },
+   {
+    "process": "process_5",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 258,
+      "width": 1,
+      "path": "srv32_env.riscv.ex_mem2reg"
+     }
+    ]
+   },
+   {
+    "process": "process_6",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 249,
+      "width": 32,
+      "path": "srv32_env.riscv.ex_insn"
+     }
+    ]
+   },
+   {
+    "process": "process_7",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 239,
+      "width": 32,
+      "path": "srv32_env.riscv.fetch_pc"
+     }
+    ]
+   },
+   {
+    "process": "process_8",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 289,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_alu2reg"
+     },
+     {
+      "id": 290,
+      "width": 32,
+      "path": "srv32_env.riscv.wb_result"
+     },
+     {
+      "id": 291,
+      "width": 3,
+      "path": "srv32_env.riscv.wb_alu_op"
+     },
+     {
+      "id": 293,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_mem2reg"
+     },
+     {
+      "id": 294,
+      "width": 5,
+      "path": "srv32_env.riscv.wb_dst_sel"
+     },
+     {
+      "id": 295,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_branch"
+     },
+     {
+      "id": 296,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_branch_nxt"
+     },
+     {
+      "id": 301,
+      "width": 2,
+      "path": "srv32_env.riscv.wb_raddr"
+     }
+    ]
+   },
+   {
+    "process": "process_9",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 292,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_memwr"
+     }
+    ]
+   },
+   {
+    "process": "process_10",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 300,
+      "width": 32,
+      "path": "srv32_env.riscv.wb_waddr"
+     },
+     {
+      "id": 302,
+      "width": 4,
+      "path": "srv32_env.riscv.wb_wstrb"
+     },
+     {
+      "id": 303,
+      "width": 32,
+      "path": "srv32_env.riscv.wb_wdata"
+     }
+    ]
+   },
+   {
+    "process": "process_11",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 297,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_trap_nop"
+     },
+     {
+      "id": 298,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_nop"
+     },
+     {
+      "id": 299,
+      "width": 1,
+      "path": "srv32_env.riscv.wb_nop_more"
+     }
+    ]
+   },
+   {
+    "process": "process_12",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 310,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mstatus"
+     },
+     {
+      "id": 311,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mstatush"
+     },
+     {
+      "id": 314,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mip"
+     },
+     {
+      "id": 316,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mepc"
+     },
+     {
+      "id": 317,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mcause"
+     },
+     {
+      "id": 318,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mtval"
+     }
+    ]
+   },
+   {
+    "process": "process_13",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 309,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mscratch"
+     },
+     {
+      "id": 312,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_misa"
+     },
+     {
+      "id": 313,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mie"
+     },
+     {
+      "id": 315,
+      "width": 32,
+      "path": "srv32_env.riscv.csr_mtvec"
+     }
+    ]
+   },
+   {
+    "process": "process_14",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 235,
+      "width": 2,
+      "path": "srv32_env.riscv.pipefill"
+     },
+     {
+      "id": 307,
+      "width": 64,
+      "path": "srv32_env.riscv.csr_cycle"
+     },
+     {
+      "id": 308,
+      "width": 64,
+      "path": "srv32_env.riscv.csr_instret"
+     }
+    ]
+   },
+   {
+    "process": "process_15",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 18,
+       "width": 1,
+       "path": "srv32_env.riscv.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "srv32_env.clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 19,
+       "width": 1,
+       "path": "srv32_env.riscv.resetb"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "srv32_env.resetb"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 244,
+      "width": 1024,
+      "path": "srv32_env.riscv.regs"
+     },
+     {
+      "id": 319,
+      "width": 32,
+      "path": "srv32_env.riscv.i"
+     }
+    ]
+   }
+  ],
+  "fires_on_rise": [
+   "process_0",
+   "process_1",
+   "process_2",
+   "process_3",
+   "process_4",
+   "process_5",
+   "process_6",
+   "process_7",
+   "process_8",
+   "process_9",
+   "process_10",
+   "process_11",
+   "process_12",
+   "process_13",
+   "process_14",
+   "process_15"
+  ],
+  "fires_on_fall": [],
+  "rf_write_edge": "rise",
+  "provenance": {
+   "source": "discovered",
+   "rule": "sequential process event specs (Posedge clk, Negedge resetn); clock/reset nets traced through copy/not comb wires to the primary inputs (tools/cpu_tmpl_edge.py nets); fire lists computed by simulating the polarities"
+  },
+  "rf_read_ports": {
+   "ports": [
+    {
+     "id": 245,
+     "width": 32,
+     "path": "srv32_env.riscv.reg_rdata1",
+     "index": "(EBinary 5 BSub (EVar 5 252%nat) (EConst 5 1))",
+     "field": "rs1",
+     "rebase": 1
+    },
+    {
+     "id": 246,
+     "width": 32,
+     "path": "srv32_env.riscv.reg_rdata2",
+     "index": "(EBinary 5 BSub (EVar 5 253%nat) (EConst 5 1))",
+     "field": "rs2",
+     "rebase": 1
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb wire = bank[(sel - 1) * 32 +: 32] under the x0 / forwarding mux"
+   }
+  },
+  "fetch_slot": {
+   "word": {
+    "id": 233,
+    "width": 32,
+    "path": "srv32_env.riscv.inst"
+   },
+   "capture_process": "process_4",
+   "captured": [
+    {
+     "id": 241,
+     "width": 32,
+     "path": "srv32_env.riscv.ex_pc"
+    },
+    {
+     "id": 250,
+     "width": 32,
+     "path": "srv32_env.riscv.ex_imm"
+    },
+    {
+     "id": 251,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_imm_sel"
+    },
+    {
+     "id": 252,
+     "width": 5,
+     "path": "srv32_env.riscv.ex_src1_sel"
+    },
+    {
+     "id": 253,
+     "width": 5,
+     "path": "srv32_env.riscv.ex_src2_sel"
+    },
+    {
+     "id": 254,
+     "width": 5,
+     "path": "srv32_env.riscv.ex_dst_sel"
+    },
+    {
+     "id": 255,
+     "width": 3,
+     "path": "srv32_env.riscv.ex_alu_op"
+    },
+    {
+     "id": 256,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_subtype"
+    },
+    {
+     "id": 257,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_memwr"
+    },
+    {
+     "id": 261,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_alu"
+    },
+    {
+     "id": 262,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_csr"
+    },
+    {
+     "id": 263,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_csr_wr"
+    },
+    {
+     "id": 264,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_lui"
+    },
+    {
+     "id": 265,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_auipc"
+    },
+    {
+     "id": 266,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_jal"
+    },
+    {
+     "id": 267,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_jalr"
+    },
+    {
+     "id": 268,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_branch"
+    },
+    {
+     "id": 269,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_system"
+    },
+    {
+     "id": 270,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_system_op"
+    },
+    {
+     "id": 279,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_illegal"
+    },
+    {
+     "id": 288,
+     "width": 1,
+     "path": "srv32_env.riscv.ex_mul"
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential process with the most assignments reading slices of one combinational word; that word is the instruction word (also the rs1/rs2/rd fields of the RF ports one stage later)"
+   }
+  },
+  "pc_chain": {
+   "copies": [
+    [
+     {
+      "id": 239,
+      "width": 32,
+      "path": "srv32_env.riscv.fetch_pc"
+     },
+     {
+      "id": 240,
+      "width": 32,
+      "path": "srv32_env.riscv.if_pc"
+     }
+    ],
+    [
+     {
+      "id": 240,
+      "width": 32,
+      "path": "srv32_env.riscv.if_pc"
+     },
+     {
+      "id": 241,
+      "width": 32,
+      "path": "srv32_env.riscv.ex_pc"
+     }
+    ]
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "register-to-register copies between pc-named 32-bit registers (fetch_pc -> if_pc -> ex_pc)"
+   }
+  },
+  "ex_flush": {
+   "wire": {
+    "id": 272,
+    "width": 1,
+    "path": "srv32_env.riscv.ex_flush"
+   },
+   "rhs": "(EBinary 1 BOr (EVar 1 295%nat) (EVar 1 296%nat))",
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb wire read by the fetch_pc / branch_taken logic: OR of two shift-register bits"
+   }
+  },
+  "commit": {
+   "stage": "EX",
+   "token_pc": {
+    "id": 241,
+    "width": 32,
+    "path": "srv32_env.riscv.ex_pc"
+   },
+   "valid_flush": {
+    "id": 272,
+    "width": 1,
+    "path": "srv32_env.riscv.ex_flush"
+   },
+   "bubble_cycles": 2,
+   "provenance": {
+    "source": "llm",
+    "rule": "observation point = the EX stage: a cycle commits the instruction in EX (token = ex_pc) iff ex_flush = 0 and it is not a reset bubble (the first cycles after boot, while the registered flush is 1).  The architectural RF effect lands one cycle later (WB), which the relation accounts for through the retired prefix.",
+    "evidence": "proof-optimization-log/20261104-srv32-import.md: no retirement signal under -DSYNTHESIS; the debug wb_pc is removed; ghost history ex_bubble/wb in tools/cpu_ast_sim.py Srv32Run"
+   }
+  },
+  "stages": {
+   "chain": [
+    "fetch (fetch_pc 239, ROM address)",
+    "IF/decode (if_pc 240, imem_rdata 12, inst 233)",
+    "EX (ex_pc 241, ex_insn 249, ex_* flags, operands via forwarding)",
+    "WB (wb_* 289..299, RF write)"
+   ],
+   "forwarding": {
+    "source": "WB",
+    "selector": "(!wb_flush && wb_alu2reg && wb_dst_sel == ex_srcN_sel) ? (wb_mem2reg ? wb_rdata : wb_result) : regs[]",
+    "wires": [
+     245,
+     246
+    ]
+   },
+   "redirect": "taken branch/JAL/JALR resolved in EX (next_pc 324 -> fetch_pc), 2 younger instructions squashed by ex_flush = wb_branch | wb_branch_nxt",
+   "provenance": {
+    "source": "llm",
+    "rule": "stage roles read from riscv.v and the trace; no pending-queue structure exists in the AST (no valid bits): validity = ex_flush / reset bubble"
+   }
+  },
+  "environment": {
+   "rom": "sync ROM in wrapper: imem_rdata <= rom[fetch_pc[8:2]] when imem_ready; reads 0 outside 128 words",
+   "data_memory": "absent (dmem_rvalid=dmem_wvalid=dmem_rresp=1, dmem_rdata=0); jump-family domain has no loads/stores",
+   "tied": [
+    "stall=0",
+    "interrupt=0",
+    "timer_irq=0",
+    "sw_irq=0",
+    "imem_rresp=1",
+    "imem_valid=1"
+   ],
+   "boot": "resetb 1->0, one clock under reset, release; power-up state all-zero and settled",
+   "provenance": {
+    "source": "llm",
+    "rule": "transcribed from the phase-A environment (srv32_env.v)"
+   }
+  },
+  "obligations": {
+   "read_guard": "out-of-range RF reads (sel==0) are guarded by ex_srcN_sel==0 -> 0; padded cell 31 never read for sel in 1..31",
+   "dead_write": "writes to the dead cell 31 (wb_dst_sel==0) are unobserved: cell 31 is only read through sel==0, which the guard bypasses",
+   "provenance": {
+    "source": "llm",
+    "rule": "phase-A obligations (R) and (W); discharged inside the proofs, not premises"
+   }
+  }
+ },
+ "route": {
+  "date": "20261104",
+  "rst_idle": 1,
+  "note": "srv32: active-low resetb at the core (rst_idle=1); observation point = EX stage; stage converter handles processes 0-9,11 only (rise_procs).",
+  "stages": [
+   {
+    "name": "lfp",
+    "layer": "lfp",
+    "module": "Srv32Lfp",
+    "namespace": "TmplSrv32Lfp",
+    "cmd": [
+     "tools/cpu_tmpl_lfpnl.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-lfp-20261104-a1",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_lfpnl.py",
+    "text_sub": [
+     [
+      "ExtendedSVPhaseLength.\nModule",
+      "ExtendedSVPhaseLength Srv32AST.\nModule"
+     ]
+    ]
+   },
+   {
+    "name": "edge",
+    "layer": "edge",
+    "module": "Srv32TmplEdge",
+    "namespace": "TmplSrv32Edge",
+    "cmd": [
+     "tools/cpu_tmpl_edge.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-edge-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_edge.py"
+   },
+   {
+    "name": "stage",
+    "layer": "stage",
+    "module": "Srv32TmplStage",
+    "namespace": "TmplSrv32Stage",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--rise-procs",
+     "0,1,2,3,4,5,6,7,8,9,11",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-stage-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py --rise-procs"
+   },
+   {
+    "name": "frame",
+    "layer": "frame",
+    "module": "Srv32TmplFrame",
+    "namespace": "TmplSrv32Frame",
+    "cmd": [
+     "tools/cpu_tmpl_stage.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--edge",
+     "{mod:edge}",
+     "--frame",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-frame-20261104-a1",
+    "provenance": "automatic",
+    "generator": "tools/cpu_tmpl_stage.py --frame"
+   },
+   {
+    "name": "base",
+    "layer": "cycle",
+    "module": "Srv32Base",
+    "namespace": "TmplSrv32Base",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_step.py",
+     "base",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-base-20261104-a2",
+    "provenance": "generalized_rule",
+    "generator": "tools/cpu_tmpl_srv32_step.py base"
+   },
+   {
+    "name": "rf",
+    "layer": "rf",
+    "module": "Srv32Rf",
+    "namespace": "TmplSrv32Rf",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_rf.py",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-rf-20261104-a1",
+    "provenance": "llm_adapted",
+    "generator": "tools/cpu_tmpl_srv32_rf.py"
+   },
+   {
+    "name": "ex",
+    "layer": "ctl",
+    "module": "Srv32Ex",
+    "namespace": "TmplSrv32Ex",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_ex.py",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-ex-20261104-a4",
+    "provenance": "llm_adapted",
+    "generator": "tools/cpu_tmpl_srv32_ex.py"
+   },
+   {
+    "name": "cap",
+    "layer": "ctl",
+    "module": "Srv32Cap",
+    "namespace": "TmplSrv32Cap",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_cap.py",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-cap-20261104-a1",
+    "provenance": "llm_written",
+    "generator": "tools/cpu_tmpl_srv32_cap.py"
+   },
+   {
+    "name": "wire",
+    "layer": "wire",
+    "module": "Srv32Wire",
+    "namespace": "TmplSrv32Wire",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_wire.py",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-wire-20261104-a2",
+    "provenance": "llm_adapted",
+    "generator": "tools/cpu_tmpl_srv32_wire.py"
+   },
+   {
+    "name": "nx",
+    "layer": "next",
+    "module": "Srv32Nx",
+    "namespace": "TmplSrv32Nx",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_nx.py",
+     "{out}"
+    ],
+    "ref": "results/r-tmpl-srv32-nx-20261104-a1",
+    "provenance": "llm_written",
+    "generator": "tools/cpu_tmpl_srv32_nx.py"
+   },
+   {
+    "name": "op",
+    "layer": "rf",
+    "module": "Srv32Op",
+    "namespace": "TmplSrv32Op",
+    "cmd": [
+     "tools/cpu_tmpl_srv32_op.py",
+     "--design",
+     "{design}",
+     "--module",
+     "{module}",
+     "--out",
+     "{out}"
+    ],
+    "provenance": "llm_written",
+    "generator": "tools/cpu_tmpl_srv32_op.py",
+    "note": "forwarded read-port operands 245/246 in register-relation shape: operand_D under RFRelR bank view and FWD = 0"
+   }
+  ],
+  "operands": {
+   "bank": 244,
+   "ports": [
+    {
+     "dst": 245,
+     "rs": 252
+    },
+    {
+     "dst": 246,
+     "rs": 253
+    }
+   ]
+  }
+ }
+}

@@ -1,0 +1,26 @@
+Definition F_@CLASS@ : list Fact := [(168%nat,11%nat,@ROLE_OPCODE@); (167%nat,14%nat,@ROLE_ALU@); (169%nat,4%nat,0); (358%nat,1%nat,0); (359%nat,1%nat,0); (171%nat,1%nat,1)].
+Theorem ob_ex_@CLASS@ : OBL.Ob_ex_@CLASS@.
+Proof.
+ intros @ARGS@ s g w Cx Hdec.
+ destruct Cx as (HPre & HZ & HC & H171 & H159 & HDF & HDC & H106 & H107 & Hpc & Hipc & Hj).
+ destruct HPre as (_ & _ & _ & _ & seed & HL).
+ destruct HZ as (_ & _ & _ & _ & _ & H358 & H359 & _).
+ destruct HDC as (H168 & H167 & H169 & H165).
+ destruct (CI.inv_@CLASS@ w @ARGS@ Hdec) as [[E0 [E1 E2]] [B0 [B1 [B2 B3]]]]. subst @ARGS@.
+ unfold TG.rd in *. cbn [DF.dimm] in H165. unfold isa_imm_I, isa_imm_J, isa_imm_B, isa_imm_U in H165.
+ assert (HF : FHold s F_@CLASS@).
+ { unfold F_@CLASS@. apply fhold_cons; [exact H168|]. apply fhold_cons; [exact H167|]. apply fhold_cons; [exact H169|].
+   apply fhold_cons; [exact H358|]. apply fhold_cons; [exact H359|]. apply fhold_cons; [exact H171|]. apply fhold_nil. }
+ pose proof (AL.@CLASS@_alu seed s HL (fchk_sound seed s F_@CLASS@ AL.facts_@CLASS@ HL HF ltac:(vm_compute; reflexivity))) as HA.
+ pose proof (fchk_sound seed s F_@CLASS@ OX.facts_@CLASS@ HL HF ltac:(vm_compute; reflexivity)) as HO.
+ unfold DF.ExComb. cbn [DF.taken LI.dwr LI.dval DF.ybit LI.ipc LI.jalr_ok] in *. rewrite !bz_boolz. unfold TG.rd.
+ refine (conj _ (conj _ (conj _ (conj _ (conj _ (conj _ _)))))).
+ - rewrite (out_res seed s F_@CLASS@ AL.alu_@CLASS@ OX.e229_@CLASS@ (EConst 1 0) 229%nat 1%nat HL HF HA ltac:(vm_compute; reflexivity) (OX.@CLASS@_r229 seed s HL HO)). reflexivity.
+ - rewrite (out_res seed s F_@CLASS@ AL.alu_@CLASS@ OX.e242_@CLASS@ (EConst 1 0) 242%nat 1%nat HL HF HA ltac:(vm_compute; reflexivity) (OX.@CLASS@_r242 seed s HL HO)). reflexivity.
+ - intro Hx. discriminate Hx.
+ - rewrite (out_res seed s F_@CLASS@ AL.alu_@CLASS@ OX.e272_@CLASS@ (EConst 1 (-1)) 272%nat 1%nat HL HF HA ltac:(vm_compute; reflexivity) (OX.@CLASS@_r272 seed s HL HO)). reflexivity.
+ - intros _. rewrite (out_res seed s F_@CLASS@ AL.alu_@CLASS@ OX.e271_@CLASS@ (SH @SHIFT_OP@ 106%nat 165%nat) 271%nat 32%nat HL HF HA ltac:(vm_compute; reflexivity) (OX.@CLASS@_r271 seed s HL HO)).
+   rewrite ev_@SHIFT_LOWER@, H106, H165, norm_idempotent, <- !V.view_formal. apply BR.bridge_@CLASS@; [apply sh_rng; exact B3 | apply imm_sh; exact B3].
+ - rewrite (out_res seed s F_@CLASS@ AL.alu_@CLASS@ OX.e273_@CLASS@ (EConst 1 (-1)) 273%nat 1%nat HL HF HA ltac:(vm_compute; reflexivity) (OX.@CLASS@_r273 seed s HL HO)). reflexivity.
+ - exact I.
+Qed.

@@ -1,0 +1,67 @@
+{
+  "design": "DarkRISCV (repaired Dark38 derived AST)",
+  "module": "DarkSkeleton",
+  "mode": "plan",
+  "requires": [
+    "Lang.ExtendedSV",
+    "Ex.External.CPUProgramDomain",
+    "Ex.External.DarkRISCV38DerivedProgramDomain",
+    "Ex.External.DarkRISCV38DerivedRuntimeReady",
+    "Ex.External.DarkRISCV38DerivedWaitRank",
+    "Ex.External.DarkRISCV38DerivedStartupITree",
+    "Ex.External.DarkRISCV38DerivedTarget",
+    "Ex.External.DarkRISCV38DerivedInfiniteITree",
+    "Ex.External.DarkTemplatePipeline",
+    "Dark38.DarkRISCV38DerivedAST",
+    "coqutil.Word.Interface",
+    "riscv.Utility.Utility"
+  ],
+  "imports": [
+    "ExtendedSV",
+    "CPUProgramDomain",
+    "DarkRISCV38DerivedProgramDomain",
+    "DarkRISCV38DerivedRuntimeReady",
+    "DarkRISCV38DerivedWaitRank",
+    "DarkRISCV38DerivedStartupITree",
+    "DarkRISCV38DerivedTarget.DarkRISCV38DerivedTarget"
+  ],
+  "prelude": [
+    "Local Open Scope Z_scope.",
+    "Local Opaque PhaseSemantics phase_driven_state actual_cycle actual_observe."
+  ],
+  "params": "(image:list Z)(HC:ClosedCFG image)",
+  "args": "image HC",
+  "runtime": "Runtime",
+  "token": "Z",
+  "fields": {
+    "step": "actual_cycle image",
+    "commits": "actual_observe",
+    "effect": "checked_pc_effect",
+    "pc": "fun pc=>pc",
+    "effect_sound": "checked_pc_effect_sound",
+    "stages": "fun _=>[]",
+    "arch": "DarkTemplatePipeline.dark_arch image HC",
+    "front": "DarkTemplatePipeline.dark_front image",
+    "stage": "fun _ _ _ _=>True"
+  },
+  "plan_shape": "DarkTemplatePipeline.plan_shape",
+  "plan_next": "DarkTemplatePipeline.plan_next",
+  "rank": "fun s _=>wait_rank s",
+  "boot": "ready_boot image",
+  "initial": "initial image",
+  "reset": "actual_reset",
+  "fill": {
+    "goals": {
+      "shape": "ob_shape _ _ _(DarkTemplatePipeline.dark_obligations image HC)",
+      "transport": "ob_transport _ _ _(DarkTemplatePipeline.dark_obligations image HC)",
+      "admission": "ob_admission _ _ _(DarkTemplatePipeline.dark_obligations image HC)",
+      "observer": "ob_observer _ _ _(DarkTemplatePipeline.dark_obligations image HC)",
+      "front": "ob_front _ _ _(DarkTemplatePipeline.dark_obligations image HC)",
+      "arch": "ob_arch _ _ _(DarkTemplatePipeline.dark_obligations image HC)",
+      "rank": "DarkTemplatePipeline.dark_progress image HC",
+      "boot": "DarkTemplatePipeline.dark_boot image HC",
+      "startup": "actual_startup_itree image"
+    },
+    "reference": "DarkRISCV38DerivedInfiniteITree.all38_infinite_refinement image HC"
+  }
+}

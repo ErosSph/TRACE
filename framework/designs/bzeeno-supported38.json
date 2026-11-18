@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-supported38-catalogue",
+  "backend": "same actual cumulative repaired native AST and existing nine-round reset/rise/fall scheduler; closed opcode selector chooses existing immutable program",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; this uses the cumulative repaired derived DUT, not a new equivalence claim for the original pre-repair source",
+  "verification_scope": "Closed 38-label catalogue: 21 data/ALU + 6 branches + JAL/JALR + 5 LOAD + 3 STORE + FENCE.I. Each selector fixes its existing constrained infinite program and the same nine_target/full ProgramArchRelated relation; this is not arbitrary instruction mixing/registers/immediates/addresses/data or mutable-code synchronization. Original zero-RF/zero-RAM reset, original byte ROM and 128-byte RAM environment unchanged. LOAD x1,0(x0) uses actual LB/LH/LW/LBU/LHU formatter/address/value/forwarding/retirement and the genuine final LoadKindLoopInfiniteITree certificate; STORE x0,0(x0) uses real width-specific writes and ISA zero-memory idempotence, not no-load/no-store assumptions. ADDI/JAL share one existing image. Cycle providers are bridged with the same target and original cycle joint, while boundary providers are reused directly.",
+  "pinned_target": "BzeenoLoadUseJalSupported38Selection.actual_target op",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.BzeenoLoadUseJalSupported38Selection", "Ex.External.BzeenoLoadUseJalSupported38Catalogue", "Ex.External.BzeenoLoadUseJalSupported38Labels"],
+    "open_modules": ["BzeenoLoadUseJalSupported38Selection"],
+    "binders": "(op : BzeenoLoadUseJalSupported38Selection.Op)",
+    "arguments": ["op"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalSupported38Selection.v", "src/Ex/External/BzeenoLoadUseJalSupported38Labels.v", "src/Ex/External/BzeenoLoadUseJalSupported38Providers.v", "src/Ex/External/BzeenoLoadUseJalSupported38Catalogue.v"],
+  "preserve_roots": ["src/Ex/External/CPUCycleBoundaryBridge.v", "src/Ex/External/BzeenoLoadUseJalImmediateLogicInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalComparisonInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalRegisterArithmeticInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalRegisterLogicInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalBranchInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalLoadKindLoopInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalStoreLoopInfiniteITree.v", "src/Ex/External/BzeenoLoadUseJalJalrLoopSupport.v", "src/Ex/External/BzeenoLoadUseJalFenceILoopSupport.v", "src/Ex/External/BzeenoLoadUseJalNineProgramTarget.v", "src/Ex/External/CPUCommitBoundaryTarget.v"],
+  "bindings": {
+    "target": "nine_target(program op); same real transition/reset/observer/ISA initial byte ROM/full architecture relation for every case",
+    "physical_environment": "existing repaired nine-round DUT, original zero RF and zero 128-byte RAM; no new DUT/environment edits",
+    "load_dependency": "requires genuine BzeenoLoadUseJalLoadKindLoopInfiniteITree.checked_certificate, never a pending-proof premise",
+    "bridge": "CPUCycleBoundaryBridge.to_boundary_certificate preserves the exact target and cycle joint",
+    "catalogue_scope": "38 distinct opcode selectors, not arbitrary mixed programs or 38 distinct images"
+  },
+  "proof_providers": {
+    "certificate": "BzeenoLoadUseJalSupported38Catalogue.checked_certificate",
+    "infinite": "BzeenoLoadUseJalSupported38Catalogue.accepted_supported38_infinite_refinement",
+    "label_occurrence": "BzeenoLoadUseJalSupported38Labels.every_label_occurs_in_selected_program"
+  }
+}

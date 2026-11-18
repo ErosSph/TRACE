@@ -1,0 +1,201 @@
+{
+ "date": "20261104",
+ "rst_idle": 1,
+ "env": {},
+ "stages": [
+  {
+   "name": "edge",
+   "layer": "edge",
+   "module": "BzeenoTmplEdge",
+   "namespace": "TmplBzeenoEdge",
+   "cmd": [
+    "tools/cpu_tmpl_edge.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "rules": [
+    "edge_derived_clock"
+   ],
+   "note": "rule-derived (edge_derived_clock)"
+  },
+  {
+   "name": "reset",
+   "layer": "reset",
+   "module": "BzeenoTmplReset",
+   "namespace": "TmplBzeenoReset",
+   "cmd": [
+    "tools/cpu_tmpl_edge.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--reset-events",
+    "{mod:edge}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_edge.py",
+   "rules": [
+    "reset_events_layer"
+   ],
+   "note": "rule-derived (reset_events_layer)"
+  },
+  {
+   "name": "stage",
+   "layer": "stage",
+   "module": "BzeenoTmplStage",
+   "namespace": "TmplBzeenoStage",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "stage_seqtree"
+   ],
+   "note": "rule-derived (stage_seqtree)"
+  },
+  {
+   "name": "frame",
+   "layer": "frame",
+   "module": "BzeenoTmplFrame",
+   "namespace": "TmplBzeenoFrame",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--frame",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "frame_fall_hold"
+   ],
+   "note": "rule-derived (frame_fall_hold)"
+  },
+  {
+   "name": "rf",
+   "layer": "rf",
+   "module": "BzeenoTmplRf",
+   "namespace": "TmplBzeenoRf",
+   "cmd": [
+    "tools/cpu_tmpl_rf.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "generalized_rule",
+   "generator": "tools/cpu_tmpl_rf.py",
+   "rules": [
+    "rf_plain_bank"
+   ],
+   "note": "rule-derived (rf_plain_bank)"
+  },
+  {
+   "name": "ram",
+   "layer": "ram",
+   "module": "BzeenoTmplRam",
+   "namespace": "TmplBzeenoRam",
+   "cmd": [
+    "tools/cpu_tmpl_stage.py",
+    "--design",
+    "{design}",
+    "--module",
+    "{module}",
+    "--edge",
+    "{mod:edge}",
+    "--stage",
+    "{mod:stage}",
+    "--ram",
+    "--out",
+    "{out}"
+   ],
+   "provenance": "automatic",
+   "generator": "tools/cpu_tmpl_stage.py",
+   "rules": [
+    "ram_hold_role"
+   ],
+   "note": "rule-derived (ram_hold_role)"
+  }
+ ],
+ "rule_applied": true,
+ "residual_stages": [],
+ "rule_stages": [
+  "edge",
+  "reset",
+  "stage",
+  "frame",
+  "rf",
+  "ram"
+ ],
+ "residual_obligations": [
+  {
+   "layer": "target",
+   "reason": "boot/reset target (concrete reset sequence and observer of the design): design-specific",
+   "hint": []
+  },
+  {
+   "layer": "cycle",
+   "reason": "cycle composition / register values on the driven state",
+   "hint": []
+  },
+  {
+   "layer": "fetch",
+   "reason": "fetch link (instruction memory read = ROM word)",
+   "hint": []
+  },
+  {
+   "layer": "ctl",
+   "reason": "per-class control and datapath facts",
+   "hint": [
+    "engine_fast4:ExtendedSVFast4",
+    "engine_symexec_chain:ExtendedSVSymExec+ExtendedSVFactChain",
+    "engine_symalias_nba:ExtendedSVSymAliasNba"
+   ]
+  },
+  {
+   "layer": "domain",
+   "reason": "domain premises (misaligned / trap = 0 from check_program)",
+   "hint": []
+  },
+  {
+   "layer": "lift",
+   "reason": "lift builder needs framework/lift-roles/<D>.json (provider module, wire roles)",
+   "hint": [
+    "lift_isa",
+    "lift_wire_provider"
+   ]
+  },
+  {
+   "layer": "closure",
+   "reason": "closure generator needs a clause schema (framework/closure-schemas/<D>.json) and the lower layers",
+   "hint": [
+    "closure_staged"
+   ]
+  }
+ ]
+}

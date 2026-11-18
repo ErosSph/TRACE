@@ -1,0 +1,85 @@
+{
+ "design": "nerv",
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "kind": "expr_provider",
+ "lift_ready": false,
+ "provenance": {
+  "source": "proof-optimization-log/20261104-template-nerv.md checkpoints 1-3",
+  "rule": "roles prepared by lift stage; builder for expr_provider not yet written"
+ },
+ "ast_dir": [
+  "experiments/framework/generated/nerv-lit",
+  "NervLit"
+ ],
+ "providers": {
+  "controls": {
+   "dir": "results/r-tmpl-nerv-ctl-20261104-a2",
+   "module": "TmplNervCtl.NervTmplCtl.NervTmplCtl",
+   "thm": "{C}_ctl",
+   "facts": "F0_{C}",
+   "classes": 29,
+   "extra": [
+    "Bub01_ctl",
+    "Bub10_ctl"
+   ],
+   "shape": "CombLFP P seed d -> FactsHold d F0_C -> /\\ of `norm W (read r) = norm W (eval_expr d E)` for the controller roots; E closed Expr over the wires rs1_value 53, rs2_value 54, pc 45, insn 43, imm 59/61, rd 51"
+  },
+  "wires": {
+   "dir": "results/r-tmpl-nerv-wire-20261104-a2",
+   "module": "TmplNervWire.NervTmplWire.NervTmplWire",
+   "thm": "wire_<N>"
+  },
+  "rise": {
+   "dir": "results/r-tmpl-nerv-rise-20261104-a3",
+   "module": "TmplNervRise.NervTmplRise.NervTmplRise"
+  },
+  "target": {
+   "dir": "results/r-tmpl-nerv-target-20261104-a1",
+   "module": "TmplNervTarget.NervTmplTarget.NervTmplTarget"
+  }
+ },
+ "wires": {
+  "next_pc": 44,
+  "next_wr": 105,
+  "next_rd_value": 106,
+  "wr_rd": 107,
+  "trap_or_misalign_guards": [
+   108,
+   111,
+   112,
+   113,
+   114
+  ],
+  "rs1_value": 53,
+  "rs2_value": 54,
+  "pc": 45,
+  "insn": 43,
+  "rd_field": 51
+ },
+ "lift_obligations": [
+  {
+   "id": "N1",
+   "what": "{C}_ctl_isa: `cbn [eval_expr]` the roots, replace wires 53/54/45 by uw (reg s rs1|rs2) / uw (getPc s); 106 = uw (result_word s i) by bridge_C; 107 = rd; 44 = ipc",
+   "needs": "operand wire = ISA reg relation from the NERV register-file layer (not done), imm wires from the immediate facts"
+  },
+  {
+   "id": "N2",
+   "what": "the misaligned guards inside 44/112/113 are `URedOr (3 & target)`: with isa_pc_ok (target mod 4 = 0) the guard is 0 and 44 becomes the plain target (bit1_m4 / bit1_land)",
+   "needs": "norm 32 conditions on `(rs1+imm) & 0xFFFFFFFE` for JALR: bit1_land"
+  },
+  {
+   "id": "N3",
+   "what": "branches: 44 = ECond (cmp 53 54) (pc+imm) (pc+4): same shape as Steel/srv32: Ec : cond = isa_branch_guard (bridge_B*), destruct guard",
+   "needs": "none beyond N1"
+  },
+  {
+   "id": "N4",
+   "what": "Bub01/Bub10 (bubble classes): no ISA effect, no lift (silent cycles); closure consumes them directly",
+   "needs": "-"
+  }
+ ],
+ "reuse": [
+  "TmplLiftIsa",
+  "Steel ctl_lift builder: the proof skeleton of Eipc/Ec/LiftRd transfers once `cbn [eval_expr]` has turned the roots into Z formulas"
+ ]
+}

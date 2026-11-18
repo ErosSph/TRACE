@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "design": "picorv32-original-source-supported29-catalogue",
+  "backend": "original imported ExtendedSV source with arbitrary explicit ChoiceSchedule; exact previously checked fixed program selected by a closed 29-constructor Op",
+  "translation_equivalence": "external RTL-to-AST translation remains unmechanized; not four-state RTL equivalence",
+  "verification_scope": "Closed 29-opcode catalogue: 21 data/ALU labels, JAL, six conditional branch labels, and JALR. Each Op selects one exact constrained existing original-source infinite program and a checked boundary certificate. Quantification is over those 29 selectors and all original unknown-choice schedules, NOT arbitrary registers/immediates/programs. ADDI and JAL intentionally share the existing recurrent ADDI/JAL program, so 29 labels does not mean 29 distinct program images. A separate checked theorem verifies every label occurs in its selected image. Original zero-RF seed and original response environment retained. No LOAD/STORE scope, RTL/ISA edits, replacement CPU transition, or new correctness premise.",
+  "pinned_target": "PicoSourceSupported29Catalogue.actual_target op schedule",
+  "certificate_harness": {
+    "certificate_interface": "boundary",
+    "imports": ["Ex.External.CPUCommitBoundaryTarget", "Ex.External.PicoSourceSupported29Catalogue", "Ex.External.PicoSourceSupported29Labels", "Ex.External.PicoSourceChoiceRuntime"],
+    "open_modules": ["PicoSourceSupported29Catalogue"],
+    "binders": "(op : PicoSourceSupported29Catalogue.Op) (schedule : PicoSourceChoiceRuntime.ChoiceSchedule)",
+    "arguments": ["op", "schedule"]
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/pico-rf-writer", "namespace": "PicoRF"},
+    {"directory": "experiments/framework/generated/pico-unknown-candidate-final", "namespace": "PicoUnknown"}
+  ],
+  "proof_roots": ["src/Ex/External/PicoSourceSupported29Providers.v", "src/Ex/External/PicoSourceSupported29Catalogue.v", "src/Ex/External/PicoSourceSupported29Labels.v"],
+  "preserve_roots": ["src/Ex/External/PicoSourceADDIJALLoopITree.v", "src/Ex/External/PicoSourceLogicDesignTarget.v", "src/Ex/External/PicoSourceUpperDesignTarget.v", "src/Ex/External/PicoSourceImmediateCompareDesignTarget.v", "src/Ex/External/PicoSourceShiftDesignTarget.v", "src/Ex/External/PicoSourceRegisterArithmeticDesignTarget.v", "src/Ex/External/PicoSourceRegisterLogicDesignTarget.v", "src/Ex/External/PicoSourceRegisterCompareDesignTarget.v", "src/Ex/External/PicoSourceRegisterShiftDesignTarget.v", "src/Ex/External/PicoSourceBEQDesignTarget.v", "src/Ex/External/PicoSourceBNEDesignTarget.v", "src/Ex/External/PicoSourceLTDesignTarget.v", "src/Ex/External/PicoSourceGEDesignTarget.v", "src/Ex/External/PicoSourceJALRDesignTarget.v", "src/Ex/External/CPUCommitBoundaryTarget.v"],
+  "bindings": {
+    "target": "closed Op deterministically selects an existing image; original Runtime/cycle/observer/reset/ISA initial state/full ImageRelated are pinned uniformly",
+    "initial_scope": "existing original zero-RF seed and response environment; all ChoiceSchedule values",
+    "source_version": "unchanged original PicoUnknownInputAST, not the zero-choice candidate",
+    "catalogue_scope": "29 distinct opcode selectors, not 29 distinct program images or arbitrary operand/program correctness"
+  },
+  "proof_providers": {
+    "certificate": "PicoSourceSupported29Catalogue.checked_certificate",
+    "infinite": "PicoSourceSupported29Catalogue.accepted_supported29_infinite_refinement",
+    "label_occurrence": "PicoSourceSupported29Labels.every_label_occurs_in_selected_program"
+  }
+}

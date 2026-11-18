@@ -1,0 +1,38 @@
+{
+ "name": "expr_resolve",
+ "kind": "generic_lemma",
+ "proof_author": "LLM-generated: Claude Code (claude-opus-5-5)",
+ "pattern": {
+  "function": "p_comb_resolution",
+  "description": "resolve wire/next-state expressions through single-assignment comb bindings (esub_sound, esub_sound2)"
+ },
+ "content": {
+  "libraries": [
+   "src/Lang/ExtendedSVExprResolve.v"
+  ]
+ },
+ "instantiate": {
+  "type": "library",
+  "used_by_generators": [
+   "tools/cpu_tmpl_a5cyc.py"
+  ]
+ },
+ "match": [
+  {
+   "library": "ExtendedSVExprResolve"
+  }
+ ],
+ "covers": [
+  "cyc"
+ ],
+ "learned_from": "angelo5fix",
+ "learned_at": "2026-11-04T19:00",
+ "learned_evidence": [
+  "src/Lang/ExtendedSVExprResolve.v (angelo5fix closure, proof-optimization-log/20261104-template-angelo5fix.md Continuation 11)"
+ ],
+ "reused_by": [],
+ "gate": {
+  "library_module": "Lang.ExtendedSVExprResolve"
+ },
+ "origin": "angelo5fix closure (Continuation 11)"
+}

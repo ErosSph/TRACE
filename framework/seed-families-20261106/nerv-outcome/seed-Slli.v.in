@@ -1,0 +1,18 @@
+Theorem ob_out_@CLASS@ : OBL.Ob_out_@CLASS@.
+Proof.
+ intros @ARGS@ d w f Cx Hdec Hm Hj.
+ destruct Cx as ([seed HL] & H1 & H109 & H38 & H43 & H52 & H50 & H47 & H51 & H59 & H61 & H62 & H53 & H54 & H45). unfold T.rd in *.
+ destruct (CI.inv_@CLASS@ w @ARGS@ Hdec) as [[E0 [E1 E2]] [B0 [B1 [B2 B3]]]]. subst @ARGS@.
+ assert (F7 : bitSlice w 25 32 = @FUNCT_SEVEN@) by (rewrite (f7_shift w _ B2 B3); reflexivity).
+ assert (HF : FactsHold d C.F0_@CLASS@) by (unfold C.F0_@CLASS@, PRE.F_base; fact_tac).
+ destruct (C.@CLASS@_ctl seed d HL HF) as (K44 & K105 & K106 & K107 & K112 & K33 & _).
+ unfold DF.Outcome, T.rd. cbn [LI.dwr LI.drd LI.dval].
+ refine (conj _ (conj _ (conj _ (conj _ _)))).
+ - rewrite K112. reflexivity.
+ - rewrite K33. reflexivity.
+ - rewrite K44. cbn [eval_expr]. rewrite H45. apply pc4.
+ - rewrite K105. reflexivity.
+ - intros _. split.
+   + rewrite K107. cbn [eval_expr]. rewrite H51. apply rd5.
+   + rewrite K106. cbn [eval_expr expr_width]. rw_wires. change (norm 5 20) with 20. rewrite <- !V.view_formal, norm_idempotent. apply BR.bridge_@CLASS@; [apply shamt_rng; assumption | apply shamt_eq; assumption].
+Qed.

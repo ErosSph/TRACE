@@ -1,0 +1,50 @@
+{
+  "name": "cycle_phase_observation",
+  "kind": "proof_strategy",
+  "proof_author": "LLM-generated: OpenAI Astra medium; reviewed by OpenAI Codex",
+  "pattern": {
+    "function": "p_stage_seqtree",
+    "description": "Compose checked rise values and fall frames via readiness; custom NBA roots, invariant synthesis and downstream full-cycle replacement remain residual."
+  },
+  "content": {
+    "libraries": [
+      "framework/generalization-20261107/cycle/GeneralizedCycle.v"
+    ],
+    "generator": "tools/cpu_cycle_compose.py"
+  },
+  "instantiate": {
+    "type": "generator",
+    "cmd": [
+      "tools/cpu_cycle_compose.py",
+      "{schema}",
+      "--out",
+      "{out}"
+    ]
+  },
+  "match": [
+    {
+      "generator": "cpu_cycle_compose"
+    }
+  ],
+  "covers": [
+    "cycle"
+  ],
+  "learned_from": "angelo5fix",
+  "learned_at": "2026-11-07",
+  "learned_evidence": [
+    "results/generalization-20261107-cycle-pipeline"
+  ],
+  "reused_by": [
+    {
+      "design": "steel",
+      "evidence": "results/generalization-20261107-cycle-steel"
+    }
+  ],
+  "held_out_evidence": [
+    "results/generalization-20261107-cycle-steel"
+  ],
+  "residual_llm_work": "Compose checked rise values and fall frames via readiness; custom NBA roots, invariant synthesis and downstream full-cycle replacement remain residual.",
+  "gate": {
+    "validated_output": "results/generalization-20261107-cycle-pipeline"
+  }
+}

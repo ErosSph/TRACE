@@ -1,0 +1,1302 @@
+{
+ "bounded_catalog_library_stem": "BzeenoAutoCatalog",
+ "instruction_field_library": "src/Ex/Generated/BzeenoGeneratedInstructionFields.v",
+ "instruction_word_alias_library": "src/Ex/Generated/BzeenoGeneratedInstructionWordAliases.v",
+ "plan_slice_roots": [
+  286,
+  287,
+  308,
+  309
+ ],
+ "plan_slice_library": "src/Ex/Generated/BzeenoGeneratedStageSlices.v",
+ "scalar_expression_library": "src/Ex/Generated/BzeenoGeneratedStageExpressions.v",
+ "scalar_path_library": "src/Ex/Generated/BzeenoGeneratedStagePaths.v",
+ "scalar_guard_library": "src/Ex/Generated/BzeenoGeneratedGuardBindings.v",
+ "rf_port_library": "src/Ex/Generated/BzeenoGeneratedRFPorts.v",
+ "bank_library": "src/Ex/Generated/BzeenoGeneratedBank.v",
+ "api": "cycle",
+ "coq_load_paths": [
+  {
+   "directory": "experiments/framework/generated/bzeeno-native-full",
+   "namespace": "BzeenoNative"
+  },
+  {
+   "directory": "experiments/framework/generated/bzeeno-load-use",
+   "namespace": "BzeenoLoadUse"
+  },
+  {
+   "directory": "experiments/framework/generated/bzeeno-load-use-jal",
+   "namespace": "BzeenoLoadUseJal"
+  }
+ ],
+ "evidence_origin": "existing_hand_proved_global_evidence",
+ "imports": [
+  "Ex.External.BzeenoLoadUseJalMixedProgramITree"
+ ],
+ "open_modules": [
+  "BzeenoLoadUseJalMixedProgramITree",
+  "BzeenoLoadUseJalMixedGlobalJoint",
+  "BzeenoLoadUseJalMixedGlobalSafety",
+  "BzeenoLoadUseJalMixedProgramDomain",
+  "BzeenoLoadUseJalNineProgramTarget",
+  "BzeenoNativeProgramTarget",
+  "BzeenoNativeExecutionTarget"
+ ],
+ "binders": "words (cert : ProgramDomain words)",
+ "arguments": [
+  "words",
+  "cert"
+ ],
+ "fields": {
+  "state": "TargetState",
+  "cycle": "nine_step words",
+  "commits": "nine_commits",
+  "reset": "Starting",
+  "boot": "Running(nine_boot words)",
+  "isa_initial": "program_initial words",
+  "joint": "Global words cert",
+  "wait_rank": "global_rank"
+ },
+ "evidence": {
+  "startup_checked": "exact (actual_startup words).",
+  "initial_checked": "exact (actual_global_initial words cert).",
+  "cycle_checked": "exact (actual_ordered_cycle_safety words cert).",
+  "progress_checked": "exact (actual_ordered_wait_decreases words cert)."
+ },
+ "joint_binding": {
+  "evidence_origin": "existing_local_component_proofs",
+  "proof_selection": "type_search",
+  "lemma_candidates": [
+   "BzeenoGeneratedJoint.actual_architecture",
+   "BzeenoLoadUseJalMixedProgramITree.actual_startup",
+   "BzeenoLoadUseJalNineBootQueue.actual_boot_pending_empty",
+   "BzeenoGeneratedJoint.actual_boot_physical",
+   "BzeenoGeneratedJoint.actual_local_transfers",
+   "BzeenoGeneratedSearch.actual_bounded_progress"
+  ],
+  "imports": [
+   "Ex.External.BzeenoGeneratedJoint",
+   "Ex.External.BzeenoGeneratedSearch",
+   "Ex.External.BzeenoLoadUseJalMixedProgramDomain",
+   "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+   "Ex.External.BzeenoLoadUseJalMixedProgramITree",
+   "Ex.External.BzeenoLoadUseJalNineBootQueue"
+  ],
+  "coq_sources": [
+   "src/Ex/External/BzeenoGeneratedJoint.v",
+   "src/Ex/External/BzeenoGeneratedSearch.v"
+  ],
+  "open_modules": [
+   "BzeenoLoadUseJalMixedProgramDomain"
+  ],
+  "binders": "words (cert : ProgramDomain words)",
+  "arguments": [
+   "words",
+   "cert"
+  ],
+  "target": {
+   "symbol": "BzeenoLoadUseJalNineProgramTarget.nine_target",
+   "arguments": [
+    {
+     "binder": "words"
+    }
+   ]
+  },
+  "pending": {
+   "symbol": "BzeenoGeneratedJoint.pending_runtime"
+  },
+  "physical": {
+   "symbol": "BzeenoGeneratedJoint.Physical",
+   "arguments": [
+    {
+     "binder": "words"
+    },
+    {
+     "binder": "cert"
+    }
+   ]
+  },
+  "search_fuel": 3,
+  "proofs": {
+   "architecture": {
+    "symbol": "BzeenoGeneratedJoint.actual_architecture",
+    "arguments": [
+     {
+      "binder": "words"
+     },
+     {
+      "binder": "cert"
+     }
+    ]
+   },
+   "startup": {
+    "symbol": "BzeenoLoadUseJalMixedProgramITree.actual_startup",
+    "arguments": [
+     {
+      "binder": "words"
+     }
+    ]
+   },
+   "empty_queue": {
+    "symbol": "BzeenoLoadUseJalNineBootQueue.actual_boot_pending_empty",
+    "arguments": [
+     {
+      "binder": "words"
+     }
+    ]
+   },
+   "boot": {
+    "symbol": "BzeenoGeneratedJoint.actual_boot_physical",
+    "arguments": [
+     {
+      "binder": "words"
+     },
+     {
+      "binder": "cert"
+     }
+    ]
+   },
+   "local_transfer": {
+    "symbol": "BzeenoGeneratedJoint.actual_local_transfers",
+    "arguments": [
+     {
+      "binder": "words"
+     },
+     {
+      "binder": "cert"
+     }
+    ]
+   },
+   "bounded_progress": {
+    "symbol": "BzeenoGeneratedSearch.actual_bounded_progress",
+    "arguments": [
+     {
+      "binder": "words"
+     },
+     {
+      "binder": "cert"
+     }
+    ]
+   }
+  }
+ },
+ "ast": {
+  "module": "BzeenoLoadUseJal.BzeenoLoadUseJalAST",
+  "file": "experiments/framework/generated/bzeeno-load-use-jal/BzeenoLoadUseJalAST.v",
+  "program": "BzeenoLoadUseJalNineProgram.nine_program",
+  "program_imports": [
+   "Ex.External.BzeenoLoadUseJalNineProgram"
+  ],
+  "syntax_program": "BzeenoLoadUseJalAST.bzeeno_load_use_jal_program",
+  "signals": 331,
+  "processes": 270,
+  "rf_root": 319,
+  "rf_writer_indices": [
+   5
+  ],
+  "xml": "experiments/framework/generated/bzeeno-load-use-jal/elaborated.xml",
+  "metadata": "experiments/framework/generated/bzeeno-load-use-jal/report.json"
+ },
+ "pipeline_roles": {
+  "ast": {
+   "module": "GeneratedRuntimeInput.ConfiguredAST",
+   "file": "results/pending-configured-input-20261024-a4-bzeeno/ConfiguredAST.v",
+   "program": "BzeenoLoadUseJalASTConfigured3122be4a95.bzeeno_load_use_jal_program",
+   "signal_table": "experiments/framework/generated/bzeeno-load-use-jal/report.json",
+   "signal_table_note": "old AST report; processes and signals identical (ConfigBinding.processes_unchanged, signal_count_unchanged)"
+  },
+  "fetch_slot": {
+   "word": {
+    "id": 140,
+    "width": 32,
+    "path": "cpu.core1.if_id_pipeline_reg.o_id_instr"
+   },
+   "valid": {
+    "id": 141,
+    "width": 1,
+    "path": "cpu.core1.if_id_pipeline_reg.o_id_valid"
+   },
+   "pc": {
+    "id": 139,
+    "width": 32,
+    "path": "cpu.core1.if_id_pipeline_reg.o_id_pc"
+   },
+   "provenance": {
+    "source": "discovered",
+    "tool": "cpu_pending_synthesis",
+    "plan": "results/pending-synthesis-candidates-20261024-a4/bzeeno/plan.json"
+   }
+  },
+  "stages": [
+   {
+    "index": null,
+    "tag_carrier": {
+     "id": 140,
+     "width": 32,
+     "path": "cpu.core1.if_id_pipeline_reg.o_id_instr"
+    },
+    "valid": {
+     "id": 141,
+     "width": 1,
+     "path": "cpu.core1.if_id_pipeline_reg.o_id_valid"
+    },
+    "process": "process_1",
+    "clock": {
+     "id": 131,
+     "width": 1,
+     "path": "cpu.core1.if_id_pipeline_reg.i_clk"
+    },
+    "reset": {
+     "id": 132,
+     "width": 1,
+     "path": "cpu.core1.if_id_pipeline_reg.i_resetn"
+    }
+   },
+   {
+    "index": 0,
+    "tag_carrier": {
+     "id": 244,
+     "width": 5,
+     "path": "cpu.core1.id_exe_pipeline_reg.o_exe_rd"
+    },
+    "valid": {
+     "id": 250,
+     "width": 1,
+     "path": "cpu.core1.id_exe_pipeline_reg.o_exe_valid"
+    },
+    "process": "process_2",
+    "clock": {
+     "id": 211,
+     "width": 1,
+     "path": "cpu.core1.id_exe_pipeline_reg.i_clk"
+    },
+    "reset": {
+     "id": 212,
+     "width": 1,
+     "path": "cpu.core1.id_exe_pipeline_reg.i_resetn"
+    }
+   },
+   {
+    "index": 1,
+    "tag_carrier": {
+     "id": 283,
+     "width": 5,
+     "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_rd"
+    },
+    "valid": {
+     "id": 286,
+     "width": 1,
+     "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_valid"
+    },
+    "process": "process_3",
+    "clock": {
+     "id": 264,
+     "width": 1,
+     "path": "cpu.core1.exe_mem_pipeline_reg.i_clk"
+    },
+    "reset": {
+     "id": 265,
+     "width": 1,
+     "path": "cpu.core1.exe_mem_pipeline_reg.i_resetn"
+    }
+   },
+   {
+    "index": 2,
+    "tag_carrier": {
+     "id": 305,
+     "width": 5,
+     "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_rd"
+    },
+    "valid": {
+     "id": 308,
+     "width": 1,
+     "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_valid"
+    },
+    "process": "process_4",
+    "clock": {
+     "id": 294,
+     "width": 1,
+     "path": "cpu.core1.mem_wb_pipeline_reg.i_clk"
+    },
+    "reset": {
+     "id": 295,
+     "width": 1,
+     "path": "cpu.core1.mem_wb_pipeline_reg.i_resetn"
+    }
+   }
+  ],
+  "stages_provenance": {
+   "source": "discovered",
+   "tool": "cpu_phase_pending_commit",
+   "plan": "results/r-phase-pending-commit-20261027-a12/plan.json"
+  },
+  "pc": {
+   "register": {
+    "id": 119,
+    "width": 32,
+    "path": "cpu.core1.pc_pipeline_reg.o_pc"
+   },
+   "process": "process_0",
+   "reset": {
+    "id": 116,
+    "width": 1,
+    "path": "cpu.core1.pc_pipeline_reg.i_resetn"
+   },
+   "enable": {
+    "id": 117,
+    "width": 1,
+    "path": "cpu.core1.pc_pipeline_reg.i_we"
+   },
+   "next": {
+    "id": 118,
+    "width": 32,
+    "path": "cpu.core1.pc_pipeline_reg.i_pc"
+   },
+   "select": {
+    "id": 129,
+    "width": 2,
+    "path": "cpu.core1.next_pc_mux.select"
+   },
+   "mux_process": "process_197",
+   "provenance": {
+    "source": "discovered",
+    "tool": "cpu_cdfg_pc_step",
+    "plan": "results/r-cdfg-pc-step-20261027-a9/plan.json"
+   }
+  },
+  "rf_write": {
+   "bank": {
+    "id": 319,
+    "width": 1024,
+    "path": "cpu.core1.register_file.reg_file"
+   },
+   "process": "process_5",
+   "index": {
+    "id": 314,
+    "width": 5,
+    "path": "cpu.core1.register_file.rd"
+   },
+   "data": {
+    "id": 316,
+    "width": 32,
+    "path": "cpu.core1.register_file.write_data"
+   },
+   "guards": [
+    "(EVar 1 311)",
+    "(EBinary 1 BAnd (EVar 1 315) (EBinary 1 BNeq (EConst 5 0) (EVar 5 314)))"
+   ],
+   "provenance": {
+    "source": "discovered",
+    "tool": "cpu_writeback_selector_history",
+    "plan": "results/r-writeback-auto-20261027-a2/plan.json"
+   }
+  },
+  "forwarding": {
+   "selectors": [
+    {
+     "root": {
+      "id": 160,
+      "width": 2,
+      "path": "cpu.core1.controller.o_fwda"
+     },
+     "process": "process_204",
+     "inputs": [
+      146,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155
+     ]
+    },
+    {
+     "root": {
+      "id": 161,
+      "width": 2,
+      "path": "cpu.core1.controller.o_fwdb"
+     },
+     "process": "process_204",
+     "inputs": [
+      147,
+      150,
+      151,
+      152,
+      153,
+      154,
+      155
+     ]
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "tool": "cpu_two_stage_selector",
+    "plan": "results/r-ready-selector-20261027-a5/plan.json"
+   }
+  },
+  "controller": {
+   "pcsrc": {
+    "id": 159,
+    "width": 2,
+    "path": "cpu.core1.controller.pcsrc"
+   },
+   "flush": {
+    "id": 157,
+    "width": 1,
+    "path": "cpu.core1.controller.o_flush"
+   },
+   "enable": {
+    "id": 156,
+    "width": 1,
+    "path": "cpu.core1.controller.o_not_stall"
+   },
+   "controller_resetn": {
+    "id": 142,
+    "width": 1,
+    "path": "cpu.core1.controller.i_resetn"
+   },
+   "opcode": {
+    "id": 143,
+    "width": 7,
+    "path": "cpu.core1.controller.opcode"
+   },
+   "funct3": {
+    "id": 144,
+    "width": 3,
+    "path": "cpu.core1.controller.funct3"
+   },
+   "funct7": {
+    "id": 145,
+    "width": 7,
+    "path": "cpu.core1.controller.funct7"
+   },
+   "rs1": {
+    "id": 146,
+    "width": 5,
+    "path": "cpu.core1.controller.rs1"
+   },
+   "rs2": {
+    "id": 147,
+    "width": 5,
+    "path": "cpu.core1.controller.rs2"
+   },
+   "compare_eq": {
+    "id": 149,
+    "width": 1,
+    "path": "cpu.core1.controller.i_compare_eq"
+   },
+   "compare_lt": {
+    "id": 148,
+    "width": 1,
+    "path": "cpu.core1.controller.i_compare_lt"
+   },
+   "operand_a": {
+    "id": 204,
+    "width": 32,
+    "path": "cpu.core1.fwda_mux.selected_out"
+   },
+   "operand_b": {
+    "id": 210,
+    "width": 32,
+    "path": "cpu.core1.fwdb_mux.selected_out"
+   },
+   "operand_a_alias": {
+    "id": 47,
+    "width": 32,
+    "path": "cpu.core1.id_regdata1"
+   },
+   "operand_b_alias": {
+    "id": 48,
+    "width": 32,
+    "path": "cpu.core1.id_regdata2"
+   },
+   "branch_target": {
+    "id": 127,
+    "width": 32,
+    "path": "cpu.core1.next_pc_mux.inputB"
+   },
+   "controller_process": "process_204",
+   "ex_write": {
+    "id": 152,
+    "width": 1,
+    "path": "cpu.core1.controller.i_exe_wreg"
+   },
+   "ex_load": {
+    "id": 153,
+    "width": 1,
+    "path": "cpu.core1.controller.i_exe_mem2reg"
+   },
+   "ex_rd": {
+    "id": 155,
+    "width": 5,
+    "path": "cpu.core1.controller.i_exe_rd"
+   },
+   "mem_write": {
+    "id": 150,
+    "width": 1,
+    "path": "cpu.core1.controller.i_mem_wreg"
+   },
+   "mem_load": {
+    "id": 151,
+    "width": 1,
+    "path": "cpu.core1.controller.i_mem_mem2reg"
+   },
+   "mem_rd": {
+    "id": 154,
+    "width": 5,
+    "path": "cpu.core1.controller.i_mem_rd"
+   },
+   "forward_a": {
+    "id": 160,
+    "width": 2,
+    "path": "cpu.core1.controller.o_fwda"
+   },
+   "forward_b": {
+    "id": 161,
+    "width": 2,
+    "path": "cpu.core1.controller.o_fwdb"
+   },
+   "write": {
+    "id": 162,
+    "width": 1,
+    "path": "cpu.core1.controller.o_wreg"
+   },
+   "store": {
+    "id": 163,
+    "width": 1,
+    "path": "cpu.core1.controller.o_wmem"
+   },
+   "load": {
+    "id": 164,
+    "width": 1,
+    "path": "cpu.core1.controller.mem2reg"
+   },
+   "alu_immediate": {
+    "id": 165,
+    "width": 1,
+    "path": "cpu.core1.controller.aluimm"
+   },
+   "jal": {
+    "id": 166,
+    "width": 1,
+    "path": "cpu.core1.controller.jal"
+   },
+   "compare_immediate": {
+    "id": 175,
+    "width": 1,
+    "path": "cpu.core1.controller.compare_imm"
+   },
+   "use_rs1": {
+    "id": 176,
+    "width": 1,
+    "path": "cpu.core1.controller.use_rs1"
+   },
+   "use_rs2": {
+    "id": 177,
+    "width": 1,
+    "path": "cpu.core1.controller.use_rs2"
+   },
+   "compare_unsigned": {
+    "id": 180,
+    "width": 1,
+    "path": "cpu.core1.compare_unit.unsigned_op"
+   },
+   "immediate_opcode": {
+    "id": 184,
+    "width": 7,
+    "path": "cpu.core1.immediate_decoder.i_opcode"
+   },
+   "immediate_signext": {
+    "id": 185,
+    "width": 1,
+    "path": "cpu.core1.immediate_decoder.i_signext"
+   },
+   "jalr": {
+    "id": 55,
+    "width": 1,
+    "path": "cpu.core1.jalr"
+   },
+   "immediate": {
+    "id": 30,
+    "width": 32,
+    "path": "cpu.core1.imm_val"
+   },
+   "operand_a_select": {
+    "id": 203,
+    "width": 2,
+    "path": "cpu.core1.fwda_mux.select"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "literals in tools/cpu_branch_controls.py, cpu_branch_frontend.py, cpu_branch_target.py, cpu_jal_frontend_controls.py"
+   }
+  },
+  "stage_fields": {
+   "ex_result": {
+    "id": 259,
+    "width": 32,
+    "path": "cpu.core1.exe_data_mux.selected_out"
+   },
+   "mem_result": {
+    "id": 284,
+    "width": 32,
+    "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_data"
+   },
+   "mem_valid": {
+    "id": 286,
+    "width": 1,
+    "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_valid"
+   },
+   "wb_result": {
+    "id": 306,
+    "width": 32,
+    "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_data"
+   },
+   "wb_valid": {
+    "id": 308,
+    "width": 1,
+    "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_valid"
+   },
+   "wb_write_enable": {
+    "id": 315,
+    "width": 1,
+    "path": "cpu.core1.register_file.reg_write"
+   },
+   "wb_rd": {
+    "id": 314,
+    "width": 5,
+    "path": "cpu.core1.register_file.rd"
+   },
+   "mem_write": {
+    "id": 279,
+    "width": 1,
+    "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_wreg"
+   },
+   "wb_write_stored": {
+    "id": 304,
+    "width": 1,
+    "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_wreg"
+   },
+   "ex_write_stored": {
+    "id": 236,
+    "width": 1,
+    "path": "cpu.core1.id_exe_pipeline_reg.o_exe_wreg"
+   },
+   "ex_load_stored": {
+    "id": 232,
+    "width": 1,
+    "path": "cpu.core1.id_exe_pipeline_reg.o_exe_mem2reg"
+   },
+   "ex_store_stored": {
+    "id": 233,
+    "width": 1,
+    "path": "cpu.core1.id_exe_pipeline_reg.o_exe_wmem"
+   },
+   "mem_load_stored": {
+    "id": 277,
+    "width": 1,
+    "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_mem2reg"
+   },
+   "mem_store_stored": {
+    "id": 278,
+    "width": 1,
+    "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_wmem"
+   },
+   "wb_load_stored": {
+    "id": 303,
+    "width": 1,
+    "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_mem2reg"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "literals in tools/cpu_optional_valid_result.py, cpu_branch_sources.py, cpu_branch_falling.py, cpu_dataop_producer_controls.py"
+   }
+  },
+  "observer": {
+   "commit_valid": {
+    "id": 308,
+    "width": 1,
+    "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_valid"
+   },
+   "commit_pc": {
+    "id": 309,
+    "width": 32,
+    "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_pc"
+   },
+   "provenance": {
+    "commit_valid": {
+     "source": "discovered",
+     "tool": "cpu_phase_pending_commit",
+     "plan": "results/r-phase-pending-commit-20261027-a12/plan.json",
+     "derivation": "valid bit of the last stage"
+    },
+    "commit_pc": {
+     "source": "manual",
+     "evidence": "literal in tools/cpu_control_family_itree.py"
+    }
+   }
+  },
+  "derived": {
+   "forward_selects": [
+    {
+     "id": 160,
+     "width": 2,
+     "path": "cpu.core1.controller.o_fwda"
+    },
+    {
+     "id": 161,
+     "width": 2,
+     "path": "cpu.core1.controller.o_fwdb"
+    }
+   ],
+   "wb_rd": {
+    "id": 314,
+    "width": 5,
+    "path": "cpu.core1.register_file.rd"
+   },
+   "wb_write_enable": {
+    "id": 315,
+    "width": 1,
+    "path": "cpu.core1.register_file.reg_write"
+   },
+   "rf_write_resetn": {
+    "id": 311,
+    "width": 1,
+    "path": "cpu.core1.register_file.resetn"
+   },
+   "provenance": {
+    "source": "discovered",
+    "tool": "cpu_writeback_selector_history + cpu_two_stage_selector",
+    "plan": "results/r-writeback-auto-20261027-a2/plan.json",
+    "derivation": "selector roots; RF write index and guard variables"
+   }
+  },
+  "ram": {
+   "bank": {
+    "id": 327,
+    "width": 1024,
+    "path": "cpu.dmem.ram"
+   },
+   "write_process": "process_6",
+   "write_enable": {
+    "id": 321,
+    "width": 1,
+    "path": "cpu.dmem.we"
+   },
+   "address": {
+    "id": 325,
+    "width": 32,
+    "path": "cpu.dmem.i_addr"
+   },
+   "read_data": {
+    "id": 326,
+    "width": 32,
+    "path": "cpu.dmem.o_data"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "literals in tools/cpu_control_family_frontier.py; old-route StoreRAMExecution, LoadRAMWord"
+   }
+  },
+  "events": {
+   "clock": {
+    "id": 0,
+    "width": 1,
+    "path": "cpu.i_clk"
+   },
+   "reset": {
+    "id": 1,
+    "width": 1,
+    "path": "cpu.i_resetn"
+   },
+   "rising_process": "process_2",
+   "admission_process": "process_1",
+   "provenance": {
+    "source": "manual",
+    "evidence": "process_1/process_2 literals in 18 tools; clock/reset routes discovered in results/r-phase-pending-commit-20261027-a12/plan.json"
+   }
+  }
+ },
+ "template_roles": {
+  "kind": "pipelined_derived_clock",
+  "primary_clock": {
+   "id": 0,
+   "width": 1,
+   "path": "cpu.i_clk"
+  },
+  "primary_reset": {
+   "id": 1,
+   "width": 1,
+   "path": "cpu.i_resetn"
+  },
+  "sequential_processes": [
+   {
+    "process": "process_0",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 115,
+       "width": 1,
+       "path": "cpu.core1.pc_pipeline_reg.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 116,
+       "width": 1,
+       "path": "cpu.core1.pc_pipeline_reg.i_resetn"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "cpu.i_resetn"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 119,
+      "width": 32,
+      "path": "cpu.core1.pc_pipeline_reg.o_pc"
+     }
+    ]
+   },
+   {
+    "process": "process_1",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 131,
+       "width": 1,
+       "path": "cpu.core1.if_id_pipeline_reg.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 132,
+       "width": 1,
+       "path": "cpu.core1.if_id_pipeline_reg.i_resetn"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "cpu.i_resetn"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 138,
+      "width": 32,
+      "path": "cpu.core1.if_id_pipeline_reg.o_id_p4"
+     },
+     {
+      "id": 139,
+      "width": 32,
+      "path": "cpu.core1.if_id_pipeline_reg.o_id_pc"
+     },
+     {
+      "id": 140,
+      "width": 32,
+      "path": "cpu.core1.if_id_pipeline_reg.o_id_instr"
+     },
+     {
+      "id": 141,
+      "width": 1,
+      "path": "cpu.core1.if_id_pipeline_reg.o_id_valid"
+     }
+    ]
+   },
+   {
+    "process": "process_2",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 211,
+       "width": 1,
+       "path": "cpu.core1.id_exe_pipeline_reg.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 212,
+       "width": 1,
+       "path": "cpu.core1.id_exe_pipeline_reg.i_resetn"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "cpu.i_resetn"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 232,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_mem2reg"
+     },
+     {
+      "id": 233,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_wmem"
+     },
+     {
+      "id": 234,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_aluimm"
+     },
+     {
+      "id": 235,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_slt_instr"
+     },
+     {
+      "id": 236,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_wreg"
+     },
+     {
+      "id": 237,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_auipc"
+     },
+     {
+      "id": 238,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_lsb"
+     },
+     {
+      "id": 239,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_lsh"
+     },
+     {
+      "id": 240,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_loadsignext"
+     },
+     {
+      "id": 241,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_jal"
+     },
+     {
+      "id": 242,
+      "width": 6,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_aluc"
+     },
+     {
+      "id": 243,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_lt"
+     },
+     {
+      "id": 244,
+      "width": 5,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_rd"
+     },
+     {
+      "id": 245,
+      "width": 32,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_pc"
+     },
+     {
+      "id": 246,
+      "width": 32,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_regdata1"
+     },
+     {
+      "id": 247,
+      "width": 32,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_regdata2"
+     },
+     {
+      "id": 248,
+      "width": 32,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_imm"
+     },
+     {
+      "id": 249,
+      "width": 32,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_p4"
+     },
+     {
+      "id": 250,
+      "width": 1,
+      "path": "cpu.core1.id_exe_pipeline_reg.o_exe_valid"
+     }
+    ]
+   },
+   {
+    "process": "process_3",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 264,
+       "width": 1,
+       "path": "cpu.core1.exe_mem_pipeline_reg.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 265,
+       "width": 1,
+       "path": "cpu.core1.exe_mem_pipeline_reg.i_resetn"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "cpu.i_resetn"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 277,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_mem2reg"
+     },
+     {
+      "id": 278,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_wmem"
+     },
+     {
+      "id": 279,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_wreg"
+     },
+     {
+      "id": 280,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_lsb"
+     },
+     {
+      "id": 281,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_lsh"
+     },
+     {
+      "id": 282,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_loadsignext"
+     },
+     {
+      "id": 283,
+      "width": 5,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_rd"
+     },
+     {
+      "id": 284,
+      "width": 32,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_data"
+     },
+     {
+      "id": 285,
+      "width": 32,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_dmem"
+     },
+     {
+      "id": 286,
+      "width": 1,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_valid"
+     },
+     {
+      "id": 287,
+      "width": 32,
+      "path": "cpu.core1.exe_mem_pipeline_reg.o_mem_pc"
+     }
+    ]
+   },
+   {
+    "process": "process_4",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 294,
+       "width": 1,
+       "path": "cpu.core1.mem_wb_pipeline_reg.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": false
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 295,
+       "width": 1,
+       "path": "cpu.core1.mem_wb_pipeline_reg.i_resetn"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "cpu.i_resetn"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 303,
+      "width": 1,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_mem2reg"
+     },
+     {
+      "id": 304,
+      "width": 1,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_wreg"
+     },
+     {
+      "id": 305,
+      "width": 5,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_rd"
+     },
+     {
+      "id": 306,
+      "width": 32,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_data"
+     },
+     {
+      "id": 307,
+      "width": 32,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_dmem"
+     },
+     {
+      "id": 308,
+      "width": 1,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_valid"
+     },
+     {
+      "id": 309,
+      "width": 32,
+      "path": "cpu.core1.mem_wb_pipeline_reg.o_wb_pc"
+     }
+    ]
+   },
+   {
+    "process": "process_5",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 310,
+       "width": 1,
+       "path": "cpu.core1.register_file.clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": true
+     },
+     {
+      "edge": "Negedge",
+      "signal": {
+       "id": 311,
+       "width": 1,
+       "path": "cpu.core1.register_file.resetn"
+      },
+      "primary": {
+       "id": 1,
+       "width": 1,
+       "path": "cpu.i_resetn"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 319,
+      "width": 1024,
+      "path": "cpu.core1.register_file.reg_file"
+     }
+    ]
+   },
+   {
+    "process": "process_6",
+    "events": [
+     {
+      "edge": "Posedge",
+      "signal": {
+       "id": 320,
+       "width": 1,
+       "path": "cpu.dmem.i_clk"
+      },
+      "primary": {
+       "id": 0,
+       "width": 1,
+       "path": "cpu.i_clk"
+      },
+      "inverted": false
+     }
+    ],
+    "writes": [
+     {
+      "id": 327,
+      "width": 1024,
+      "path": "cpu.dmem.ram"
+     }
+    ]
+   }
+  ],
+  "fires_on_rise": [
+   "process_0",
+   "process_1",
+   "process_2",
+   "process_3",
+   "process_4",
+   "process_6"
+  ],
+  "fires_on_fall": [
+   "process_5"
+  ],
+  "rf_write_edge": "fall",
+  "provenance": {
+   "source": "discovered",
+   "rule": "sequential process event specs (Posedge clk, Negedge resetn); clock/reset nets traced through copy/not comb wires to the primary inputs (tools/cpu_tmpl_edge.py nets); fire lists computed by simulating the polarities"
+  }
+ }
+}

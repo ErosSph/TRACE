@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "purpose": "Raw RTL-only pending discovery; no original INV or theorem bindings",
+  "designs": [
+    {"name": "darkriscv", "ast": "experiments/framework/generated/dark38-derived/DarkRISCV38DerivedAST.v", "ast_module": "Dark38.DarkRISCV38DerivedAST"},
+    {"name": "bzeeno", "ast": "experiments/framework/generated/bzeeno-load-use-jal/BzeenoLoadUseJalAST.v", "ast_module": "BzeenoLoadUseJal.BzeenoLoadUseJalAST"},
+    {"name": "picorv32", "ast": "experiments/framework/generated/pico-unknown-candidate-final/PicoUnknownInputAST.v", "ast_module": "PicoUnknown.PicoUnknownInputAST"},
+    {"name": "cv32e40p", "ast": "src/Ex/Generated/CV32E40PExtendedAST.v", "ast_module": "Ex.Generated.CV32E40PExtendedAST"}
+  ]
+}

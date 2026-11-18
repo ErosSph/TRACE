@@ -1,0 +1,792 @@
+{
+ "scalar_capture_roots": [
+  29,
+  64,
+  65
+ ],
+ "scalar_capture_library": "src/Ex/Generated/DarkRISCVGeneratedScalarCaptures.v",
+ "scalar_rhs_library": "src/Ex/Generated/DarkRISCVGeneratedScalarRHS.v",
+ "scalar_expression_library": "src/Ex/Generated/DarkRISCVGeneratedScalarExpressions.v",
+ "scalar_guard_library": "src/Ex/Generated/DarkRISCVGeneratedGuardBindings.v",
+ "rf_view_library": "src/Ex/Generated/DarkRISCVGeneratedRFView.v",
+ "rf_port_library": "src/Ex/Generated/DarkRISCVGeneratedRFPorts.v",
+ "bank_library": "src/Ex/Generated/DarkRISCVGeneratedBank.v",
+ "api": "cycle",
+ "coq_load_paths": [
+  {
+   "directory": "experiments/framework/generated/dark38-derived",
+   "namespace": "Dark38"
+  },
+  {
+   "directory": "experiments/framework/generated/dark-array-final",
+   "namespace": "DarkArray"
+  },
+  {
+   "directory": "experiments/framework/generated/bzeeno-native-full",
+   "namespace": "BzeenoNative"
+  }
+ ],
+ "evidence_origin": "existing_hand_proved_global_evidence",
+ "imports": [
+  "Ex.External.DarkRISCV38DerivedDesignTarget"
+ ],
+ "open_modules": [
+  "DarkRISCV38DerivedInfiniteITree",
+  "DarkRISCV38DerivedProgramDomain",
+  "DarkRISCV38DerivedJoint",
+  "DarkRISCV38DerivedWaitRank",
+  "DarkRISCV38DerivedStartupITree",
+  "DarkRISCV38DerivedStartupArchitecture",
+  "DarkRISCV38DerivedRuntimeReady",
+  "DarkRISCV38DerivedTarget.DarkRISCV38DerivedTarget"
+ ],
+ "binders": "image (HC : ClosedCFG image)",
+ "arguments": [
+  "image",
+  "HC"
+ ],
+ "fields": {
+  "state": "Runtime",
+  "cycle": "actual_cycle image",
+  "commits": "actual_observe",
+  "reset": "actual_reset",
+  "boot": "ready_boot image",
+  "isa_initial": "initial image",
+  "joint": "FullJoint image HC",
+  "wait_rank": "fun s _ => wait_rank s"
+ },
+ "evidence": {
+  "startup_checked": "exact (actual_startup_itree image).",
+  "initial_checked": "apply CPUProgramDomain.CPUProgramDomain.compose_initial. apply ready_boot_joint.",
+  "cycle_checked": "exact (all38_ordered_cycle_safety image HC).",
+  "progress_checked": "exact (all38_progress image HC)."
+ },
+ "joint_binding": {
+  "evidence_origin": "existing_local_component_proofs",
+  "proof_selection": "type_search",
+  "lemma_candidates": [
+   "DarkRISCVGeneratedJoint.physical_architecture",
+   "DarkRISCV38DerivedStartupITree.actual_startup_itree",
+   "eq_refl",
+   "DarkRISCVGeneratedJoint.actual_boot",
+   "DarkRISCVGeneratedJoint.actual_local_streaming",
+   "DarkRISCVGeneratedJoint.actual_bounded_progress"
+  ],
+  "transfer_mode": "streaming",
+  "imports": [
+   "Ex.External.DarkRISCVGeneratedJoint",
+   "Ex.External.DarkRISCV38DerivedProgramDomain",
+   "Ex.External.DarkRISCV38DerivedStartupITree",
+   "Ex.External.DarkRISCV38DerivedStartupArchitecture",
+   "Ex.External.DarkRISCV38DerivedDesignTarget"
+  ],
+  "open_modules": [
+   "DarkRISCV38DerivedProgramDomain"
+  ],
+  "coq_sources": [
+   "src/Ex/External/DarkRISCVGeneratedJoint.v"
+  ],
+  "binders": "image (HC : ClosedCFG image)",
+  "arguments": [
+   "image",
+   "HC"
+  ],
+  "target": {
+   "symbol": "DarkRISCV38DerivedDesignTarget.actual_ready_target",
+   "arguments": [
+    {
+     "binder": "image"
+    }
+   ]
+  },
+  "pending": {
+   "symbol": "DarkRISCVGeneratedJoint.pending"
+  },
+  "physical": {
+   "symbol": "DarkRISCVGeneratedJoint.Physical",
+   "arguments": [
+    {
+     "binder": "image"
+    }
+   ]
+  },
+  "search_fuel": 3,
+  "proofs": {
+   "architecture": {
+    "symbol": "DarkRISCVGeneratedJoint.physical_architecture",
+    "arguments": [
+     {
+      "binder": "image"
+     }
+    ]
+   },
+   "startup": {
+    "symbol": "DarkRISCV38DerivedStartupITree.actual_startup_itree",
+    "arguments": [
+     {
+      "binder": "image"
+     }
+    ]
+   },
+   "empty_queue": {
+    "symbol": "eq_refl"
+   },
+   "boot": {
+    "symbol": "DarkRISCVGeneratedJoint.actual_boot",
+    "arguments": [
+     {
+      "binder": "image"
+     },
+     {
+      "binder": "HC"
+     }
+    ]
+   },
+   "local_transfer": {
+    "symbol": "DarkRISCVGeneratedJoint.actual_local_streaming",
+    "arguments": [
+     {
+      "binder": "image"
+     },
+     {
+      "binder": "HC"
+     }
+    ]
+   },
+   "bounded_progress": {
+    "symbol": "DarkRISCVGeneratedJoint.actual_bounded_progress",
+    "arguments": [
+     {
+      "binder": "image"
+     },
+     {
+      "binder": "HC"
+     }
+    ]
+   }
+  }
+ },
+ "ast": {
+  "module": "Dark38.DarkRISCV38DerivedAST",
+  "file": "experiments/framework/generated/dark38-derived/DarkRISCV38DerivedAST.v",
+  "program": "DarkRISCV38DerivedAST.dark38_program",
+  "signals": 86,
+  "processes": 65,
+  "rf_root": 63,
+  "rf_writer_indices": [
+   7
+  ],
+  "xml": "experiments/framework/generated/dark38-derived/elaboration/elaborated.xml",
+  "metadata": "experiments/framework/generated/dark38-derived/report.json"
+ },
+ "pipeline_roles": {
+  "ast": {
+   "module": "Dark38.DarkRISCV38DerivedAST",
+   "file": "experiments/framework/generated/dark38-derived/DarkRISCV38DerivedAST.v",
+   "program": "DarkRISCV38DerivedAST.dark38_program",
+   "signal_table": "experiments/framework/generated/dark38-derived/report.json"
+  },
+  "fetch_slot": {
+   "word": {
+    "id": 29,
+    "width": 32,
+    "path": "darkriscv.XIDATA"
+   },
+   "pc": {
+    "id": 64,
+    "width": 32,
+    "path": "darkriscv.IDPC"
+   },
+   "capture_process": "process_5",
+   "validity": {
+    "kind": "kill_counter",
+    "counter": {
+     "id": 43,
+     "width": 2,
+     "path": "darkriscv.FLUSH"
+    },
+    "meaning": "slot valid iff FLUSH = 0 (OPCODE := |FLUSH ? 0 : XIDATA[6:0])",
+    "masked_output": {
+     "id": 47,
+     "width": 7,
+     "path": "darkriscv.OPCODE"
+    }
+   },
+   "stall": {
+    "id": 23,
+    "width": 1,
+    "path": "darkriscv.HLT"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table; validity/fetch-pair discovery: no pair (no valid companion, external instruction bus)"
+   },
+   "reset": {
+    "id": 22,
+    "width": 1,
+    "path": "darkriscv.XRES"
+   }
+  },
+  "stages": [],
+  "stages_note": "no tagged stages after the fetch slot; execute and RF write happen in process_7 at the same edge",
+  "pc": {
+   "register": {
+    "id": 65,
+    "width": 32,
+    "path": "darkriscv.PC"
+   },
+   "fetch_pc": {
+    "id": 24,
+    "width": 32,
+    "path": "darkriscv.IFPC"
+   },
+   "process": "process_7",
+   "branch_request": {
+    "id": 84,
+    "width": 1,
+    "path": "darkriscv.JREQ"
+   },
+   "branch_target": {
+    "id": 85,
+    "width": 32,
+    "path": "darkriscv.JVAL"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table"
+   }
+  },
+  "rf_write": {
+   "bank": {
+    "id": 63,
+    "width": 1024,
+    "path": "darkriscv.REGS"
+   },
+   "process": "process_7",
+   "index": {
+    "id": 44,
+    "width": 5,
+    "path": "darkriscv.DPTR"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table"
+   }
+  },
+  "forwarding": {
+   "selectors": [],
+   "note": "no forwarding: RF written before the next instruction reads it"
+  },
+  "controller": {
+   "opcode": {
+    "id": 47,
+    "width": 7,
+    "path": "darkriscv.OPCODE"
+   },
+   "funct3": {
+    "id": 48,
+    "width": 3,
+    "path": "darkriscv.FCT3"
+   },
+   "funct7": {
+    "id": 49,
+    "width": 7,
+    "path": "darkriscv.FCT7"
+   },
+   "rd": {
+    "id": 44,
+    "width": 5,
+    "path": "darkriscv.DPTR"
+   },
+   "rs1": {
+    "id": 45,
+    "width": 5,
+    "path": "darkriscv.S1PTR"
+   },
+   "rs2": {
+    "id": 46,
+    "width": 5,
+    "path": "darkriscv.S2PTR"
+   },
+   "imm_signed": {
+    "id": 50,
+    "width": 32,
+    "path": "darkriscv.SIMM"
+   },
+   "imm_upper": {
+    "id": 51,
+    "width": 32,
+    "path": "darkriscv.UIMM"
+   },
+   "operand_a": {
+    "id": 66,
+    "width": 32,
+    "path": "darkriscv.U1REG"
+   },
+   "operand_b": {
+    "id": 67,
+    "width": 32,
+    "path": "darkriscv.U2REG"
+   },
+   "branch_decision": {
+    "id": 82,
+    "width": 1,
+    "path": "darkriscv.BMUX"
+   },
+   "flush": {
+    "id": 43,
+    "width": 2,
+    "path": "darkriscv.FLUSH"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table"
+   }
+  },
+  "instruction_bus": {
+   "address": {
+    "id": 4,
+    "width": 32,
+    "path": "darkriscv.IADDR"
+   },
+   "data": {
+    "id": 5,
+    "width": 32,
+    "path": "darkriscv.IDATA"
+   },
+   "ack": {
+    "id": 6,
+    "width": 1,
+    "path": "darkriscv.IDACK"
+   },
+   "request": {
+    "id": 3,
+    "width": 1,
+    "path": "darkriscv.IDREQ"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table; environment input, not an internal ROM"
+   },
+   "environment_response": {
+    "module": "Ex.External.DarkRISCV38DerivedCycle",
+    "symbol": "DarkRISCV38DerivedCycle.response",
+    "note": "existing Dark final-theorem environment: after the rising edge the bus data input is set to rom(IADDR sampled); IDACK is held at 1 by the initial state",
+    "address_sample": "pre_edge"
+   },
+   "stall": {
+    "id": 23,
+    "width": 1,
+    "path": "darkriscv.HLT"
+   }
+  },
+  "data_bus": {
+   "address": {
+    "id": 9,
+    "width": 32,
+    "path": "darkriscv.DADDR"
+   },
+   "read_data": {
+    "id": 16,
+    "width": 32,
+    "path": "darkriscv.DATAI"
+   },
+   "write_data": {
+    "id": 15,
+    "width": 32,
+    "path": "darkriscv.DATAO"
+   },
+   "read": {
+    "id": 13,
+    "width": 1,
+    "path": "darkriscv.DRD"
+   },
+   "write": {
+    "id": 14,
+    "width": 1,
+    "path": "darkriscv.DWR"
+   },
+   "byte_enable": {
+    "id": 11,
+    "width": 4,
+    "path": "darkriscv.DBE"
+   },
+   "length": {
+    "id": 10,
+    "width": 3,
+    "path": "darkriscv.DLEN"
+   },
+   "ack": {
+    "id": 17,
+    "width": 1,
+    "path": "darkriscv.DDACK"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table; environment, no internal RAM bank"
+   }
+  },
+  "events": {
+   "clock": {
+    "id": 1,
+    "width": 1,
+    "path": "darkriscv.CLK"
+   },
+   "reset": {
+    "id": 2,
+    "width": 1,
+    "path": "darkriscv.RES"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "RTL signal names in experiments/framework/generated/dark38-derived/report.json signal_table"
+   }
+  }
+ },
+ "template_roles": {
+  "reset_reg": {
+   "id": 22,
+   "width": 1,
+   "path": "darkriscv.XRES",
+   "provenance": {
+    "source": "discovered",
+    "rule": "sequential register assigned directly from the reset input",
+    "process": "process_1"
+   }
+  },
+  "class_flags": {
+   "flags": [
+    {
+     "opcode": 55,
+     "reg": {
+      "id": 30,
+      "width": 1,
+      "path": "darkriscv.XLUI"
+     }
+    },
+    {
+     "opcode": 23,
+     "reg": {
+      "id": 31,
+      "width": 1,
+      "path": "darkriscv.XAUIPC"
+     }
+    },
+    {
+     "opcode": 111,
+     "reg": {
+      "id": 32,
+      "width": 1,
+      "path": "darkriscv.XJAL"
+     }
+    },
+    {
+     "opcode": 103,
+     "reg": {
+      "id": 33,
+      "width": 1,
+      "path": "darkriscv.XJALR"
+     }
+    },
+    {
+     "opcode": 99,
+     "reg": {
+      "id": 34,
+      "width": 1,
+      "path": "darkriscv.XBCC"
+     }
+    },
+    {
+     "opcode": 3,
+     "reg": {
+      "id": 35,
+      "width": 1,
+      "path": "darkriscv.XLCC"
+     }
+    },
+    {
+     "opcode": 35,
+     "reg": {
+      "id": 36,
+      "width": 1,
+      "path": "darkriscv.XSCC"
+     }
+    },
+    {
+     "opcode": 19,
+     "reg": {
+      "id": 37,
+      "width": 1,
+      "path": "darkriscv.XMCC"
+     }
+    },
+    {
+     "opcode": 51,
+     "reg": {
+      "id": 38,
+      "width": 1,
+      "path": "darkriscv.XRCC"
+     }
+    },
+    {
+     "opcode": 11,
+     "reg": {
+      "id": 39,
+      "width": 1,
+      "path": "darkriscv.XCUS"
+     }
+    },
+    {
+     "opcode": 115,
+     "reg": {
+      "id": 40,
+      "width": 1,
+      "path": "darkriscv.XSYS"
+     }
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "capture-process register F <= stall ? F : (opcode-constant == word[6:0])",
+    "process": "process_5"
+   }
+  },
+  "rf_read_ports": {
+   "ports": [
+    {
+     "id": 66,
+     "width": 32,
+     "path": "darkriscv.U1REG",
+     "index": 45
+    },
+    {
+     "id": 67,
+     "width": 32,
+     "path": "darkriscv.U2REG",
+     "index": 46
+    },
+    {
+     "id": 68,
+     "width": 32,
+     "path": "darkriscv.DREG",
+     "index": 44
+    }
+   ],
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb wire = bank[index * 32 +: 32]"
+   }
+  },
+  "targets": {
+   "rf_value": {
+    "process": "process_7",
+    "path": [
+     0,
+     1
+    ],
+    "root": 63,
+    "width": 1024
+   },
+   "next_flush": {
+    "process": "process_7",
+    "path": [
+     0,
+     0
+    ],
+    "root": 43,
+    "width": 2
+   },
+   "next_fetch_pc": {
+    "process": "process_7",
+    "path": [
+     0,
+     3
+    ],
+    "root": 24,
+    "width": 32
+   },
+   "next_exec_pc": {
+    "process": "process_7",
+    "path": [
+     0,
+     4
+    ],
+    "root": 65,
+    "width": 32
+   },
+   "next_slot_pc": {
+    "process": "process_7",
+    "path": [
+     0,
+     2
+    ],
+    "root": 64,
+    "width": 32
+   },
+   "provenance": {
+    "source": "discovered",
+    "rule": "unique assignment to the role register inside the role process"
+   }
+  },
+  "data_request": {
+   "id": 8,
+   "width": 1,
+   "path": "darkriscv.DDREQ",
+   "provenance": {
+    "source": "discovered",
+    "rule": "comb wire = OR of the read and write gate wires"
+   }
+  },
+  "target_binding": {
+   "imports": [
+    "Ex.External.DarkRISCV38DerivedTarget",
+    "Ex.External.DarkRISCV38DerivedProgramDomain"
+   ],
+   "open_modules": [
+    "DarkRISCV38DerivedTarget.DarkRISCV38DerivedTarget",
+    "DarkRISCV38DerivedProgramDomain"
+   ],
+   "extra_loadpaths": [
+    [
+     "experiments/framework/generated/dark-array-final",
+     "DarkArray"
+    ],
+    [
+     "experiments/framework/generated/bzeeno-native-full",
+     "BzeenoNative"
+    ]
+   ],
+   "runtime_rtl": "rtl",
+   "reset_state": "actual_reset",
+   "arch_relation": "ArchRelated image",
+   "isa_initial": "initial image",
+   "binders": "image",
+   "provenance": {
+    "source": "manual",
+    "evidence": "the framework-pinned target DarkRISCV38DerivedTarget.actual_target (target_arch_relation, target_reset); its environment is the existing final-theorem environment"
+   },
+   "dstep": {
+    "program_domain": "ClosedCFG image",
+    "binders": "(image:list Z)(HC:CPUJumpFamilyProgramDomain.check_program image=true)",
+    "args": "image HC",
+    "arch_clauses": [
+     "TmplDarkRF.DarkTmplRF.DarkTmplRF.RFZero(read_signal(rtl s){bank}%nat)isa",
+     "getInstMem isa=FormalSpec.formal_initial_imem(image_program image)",
+     "BytesRelated 128(ram s)(getDataMem isa)",
+     "holds(initial image)(jf_domain image HC)isa"
+    ],
+    "front_cursor": [
+     "architectural_cursor(rtl s)=word.unsigned(getPc f)",
+     "word.unsigned(getNextPc f)=norm 32(architectural_cursor(rtl s)+4)"
+    ],
+    "extra_requires": [
+     "Ex.External.CPUByteBankArchitecture",
+     "Ex.External.CPUJumpFamilyProgramDomain",
+     "Ex.External.CPUJumpFamilyProgramExecution",
+     "TmplDarkRF.DarkTmplRF"
+    ],
+    "extra_imports": [
+     "CPUByteBankArchitecture"
+    ],
+    "provenance": {
+     "source": "manual",
+     "evidence": "ArchRelated and closed_cfg_domain of DarkRISCV38DerivedTarget/ProgramDomain; the clauses are exactly the pinned target arch relation split into retired (RF, ROM, RAM, domain) and frontier (cursor) parts (v3: jump-family checked ROM domain CPUJumpFamilyProgramDomain.check_program instead of ClosedCFG; RFZero from the RF agent)"
+    }
+   }
+  },
+  "core_ids": {
+   "signals": {
+    "CLK": "darkriscv.CLK",
+    "RESIN": "darkriscv.RES",
+    "IBUS_REQ": "darkriscv.IDREQ",
+    "IBUS_ADDR": "darkriscv.IADDR",
+    "IBUS_DATA": "darkriscv.IDATA",
+    "IBUS_ACK": "darkriscv.IDACK",
+    "DBUS_REQ": "darkriscv.DDREQ",
+    "DBUS_RDATA": "darkriscv.DATAI",
+    "DBUS_ACK": "darkriscv.DDACK",
+    "RESET_REG": "darkriscv.XRES",
+    "STALL": "darkriscv.HLT",
+    "FETCH_PC": "darkriscv.IFPC",
+    "BUF_WORD": "darkriscv.IDATA1",
+    "STALL2": "darkriscv.HLT2",
+    "SEL_WORD": "darkriscv.IDATAX",
+    "SLOT_WORD": "darkriscv.XIDATA",
+    "IMM_S": "darkriscv.XSIMM",
+    "IMM_U": "darkriscv.XUIMM",
+    "VALID_CTR": "darkriscv.FLUSH",
+    "RS1": "darkriscv.S1PTR",
+    "RS2": "darkriscv.S2PTR",
+    "W_JAL": "darkriscv.JAL",
+    "W_JALR": "darkriscv.JALR",
+    "W_BCC": "darkriscv.BCC",
+    "BANK": "darkriscv.REGS",
+    "SLOT_PC": "darkriscv.IDPC",
+    "EXEC_PC": "darkriscv.PC",
+    "OPA": "darkriscv.U1REG",
+    "JREQ": "darkriscv.JREQ",
+    "JVAL": "darkriscv.JVAL",
+    "RD": "darkriscv.DPTR",
+    "DREG": "darkriscv.DREG"
+   },
+   "procs": {
+    "XRES_A": {
+     "process": "process_0",
+     "writes": "RESET_REG"
+    },
+    "XRES_B": {
+     "process": "process_1",
+     "writes": "RESET_REG"
+    },
+    "STALL2_A": {
+     "process": "process_2",
+     "writes": "STALL2"
+    },
+    "STALL2_B": {
+     "process": "process_4",
+     "writes": "STALL2"
+    },
+    "VALID_A": {
+     "process": "process_6",
+     "writes": "VALID_CTR"
+    },
+    "PCSEQ": {
+     "process": "process_7",
+     "writes": "VALID_CTR"
+    },
+    "STALL_COMB": {
+     "process": "process_63",
+     "writes": "STALL"
+    }
+   },
+   "idlists": {
+    "ENV_INPUTS": [
+     "CLK",
+     "RESIN",
+     "IBUS_DATA",
+     "IBUS_ACK",
+     "DBUS_RDATA",
+     "DBUS_ACK"
+    ],
+    "ENV_ACKS": [
+     "RESIN",
+     "IBUS_ACK",
+     "DBUS_ACK"
+    ]
+   },
+   "names": {
+    "program": "dark38_program",
+    "lfp_module": "DarkRISCV38DerivedLFP",
+    "gen_controls": "TmplDarkControls.DarkTmplControls.DarkTmplControls",
+    "gen_inv": "TmplDarkInv.DarkTmplInv.DarkTmplInv",
+    "gen_imm": "TmplDarkImm.DarkTmplImm.DarkTmplImm",
+    "gen_rf": "TmplDarkRF.DarkTmplRF.DarkTmplRF",
+    "label": "Dark"
+   },
+   "provenance": {
+    "source": "manual",
+    "evidence": "ids of the hand-written Dark cores (framework/template-sources/Dark*Core.v.in) named by role; signal paths from the dark38-derived signal table; process/role bindings verified against the AST by tools/cpu_tmpl_params.py; pipeline_roles cross-checked"
+   }
+  }
+ }
+}

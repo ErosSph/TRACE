@@ -1,0 +1,58 @@
+(** Fetch link of a unified-memory core: the registered read data after one cycle is the ROM word at the word index
+    (tools/cpu_tmpl_stfetch.py; ids from the manifest route.fetch).  proof_author: LLM-generated: Claude Code (claude-sonnet-5-5); external_llm_api_calls=0. *)
+From Coq Require Import ZArith List Bool Lia.
+Require Import Lang.ExtendedSV Lang.ExtendedSVWordInvariant Lang.ExtendedSVEmptyPipeline Lang.ExtendedSVSeqTree Lang.ExtendedSVSeqTreeFlat Lang.ExtendedSVHoldInv Lang.ExtendedSVBankAlignment @AST@
+ TmplSteelEdge.SteelTmplEdge TmplSteelStage.SteelTmplStage TmplSteelFrame.SteelTmplFrame TmplSteelTarget.SteelTmplTarget TmplSteelLfp.SteelTmplLfp TmplSteelCyc.SteelTmplCyc TmplSteelVal.SteelTmplVal.
+Import ListNotations ExtendedSV ExtendedSVHoldInv ExtendedSVBankAlignment.
+Local Open Scope Z_scope.
+Module @MOD@.
+Module CY := TmplSteelCyc.SteelTmplCyc.SteelTmplCyc.
+Module TG := TmplSteelTarget.SteelTmplTarget.SteelTmplTarget.
+Module VL := TmplSteelVal.SteelTmplVal.SteelTmplVal.
+Lemma tb_norm32 w m : Z.testbit (norm 32 w) m = if (0 <=? m) && (m <? 32) then Z.testbit w m else false.
+Proof.
+ destruct (Z.ltb_spec0 m 0) as [Hn|Hn]; [rewrite Z.testbit_neg_r by lia; destruct (0 <=? m) eqn:E; [lia|reflexivity]|].
+ rewrite norm_ones. change (Z.of_nat 32) with 32. rewrite Z.land_spec. 
+ destruct (Z.ltb_spec0 m 32).
+ - rewrite Z.testbit_ones_nonneg by lia. replace (m <? 32) with true by (symmetry; apply Z.ltb_lt; lia). destruct (0 <=? m) eqn:E; [|apply Z.leb_gt in E; lia]. cbn. rewrite andb_true_r. reflexivity.
+ - rewrite Z.testbit_ones_nonneg by lia. replace (m <? 32) with false by (symmetry; apply Z.ltb_ge; lia). rewrite andb_false_r. destruct (0 <=? m); cbn; rewrite ?andb_false_r; reflexivity.
+Qed.
+Lemma pack_bit (image : list Z) (i : nat) (k : Z) : 0 <= k < 32 ->
+  Z.testbit (TG.ram_pack image) (Z.of_nat i * 32 + k) = Z.testbit (nth i image 0) k.
+Proof.
+ intro Hk. revert i. induction image as [|w l IH]; intro i.
+ - cbn [TG.ram_pack fold_right]. rewrite Z.bits_0. destruct i; cbn; rewrite Z.bits_0; reflexivity.
+ - cbn [TG.ram_pack fold_right]. rewrite Z.lor_spec. rewrite Z.shiftl_spec by lia.
+   destruct i as [|i].
+   + cbn [nth]. rewrite Z.mul_0_l, Z.add_0_l. rewrite (Z.testbit_neg_r _ (k - 32)) by lia. rewrite orb_false_r.
+     rewrite tb_norm32. replace ((0 <=? k) && (k <? 32)) with true by (symmetry; apply andb_true_iff; split; [apply Z.leb_le | apply Z.ltb_lt]; lia). reflexivity.
+   + cbn [nth]. rewrite tb_norm32. 
+     replace ((0 <=? Z.of_nat (S i) * 32 + k) && (Z.of_nat (S i) * 32 + k <? 32)) with false
+       by (symmetry; destruct (Z.ltb_spec0 (Z.of_nat (S i) * 32 + k) 32); [lia|]; rewrite andb_false_r; reflexivity).
+     cbn [orb]. replace (Z.of_nat (S i) * 32 + k - 32) with (Z.of_nat i * 32 + k) by lia. apply IH.
+Qed.
+Lemma pack_word (image : list Z) (i : nat) :
+  norm 32 (Z.shiftr (TG.ram_pack image) (Z.of_nat i * 32)) = norm 32 (nth i image 0).
+Proof.
+ apply Z.bits_inj'. intros k Hk. rewrite !(tb_norm32 _ k).
+ destruct ((0 <=? k) && (k <? 32)) eqn:E; [|reflexivity].
+ apply andb_true_iff in E as [E1 E2]. apply Z.leb_le in E1. apply Z.ltb_lt in E2.
+ rewrite Z.shiftr_spec by lia. rewrite Z.add_comm. apply pack_bit. lia.
+Qed.
+Theorem fetch_link s (image : list Z) (i : nat) : CY.Pre s -> norm 1 (read_signal (CY.drv s) @C@%nat) = 0 -> norm 1 (read_signal (CY.drv s) @INV@%nat) = 0 ->
+ norm 7 (read_signal (CY.drv s) @IDX@%nat) = Z.of_nat i -> (i < @WORDS@)%nat -> read_signal (CY.drv s) @RAM@%nat = TG.ram_pack image ->
+ norm 32 (read_signal (TG.fall (TG.rise s)) @RD@%nat) = norm 32 (nth i image 0).
+Proof.
+ intros HP h16 h17 h18 Hi h15. rewrite (VL.val_11 s HP h16). cbn [eval_expr].
+ rewrite h17. cbn [Z.eqb]. rewrite h15.
+ rewrite <- (pack_word image i). 
+ rewrite h18. change (norm 14 32) with 32. repeat rewrite norm_idempotent.
+ assert (Hv : norm 14 (Z.of_nat i * 32) = Z.of_nat i * 32).
+ { rewrite norm_mod. apply Z.mod_small. change (2 ^ Z.of_nat 14) with 16384. lia. }
+ rewrite Hv. apply Z.bits_inj'. intros k Hk. rewrite !(tb_norm32 _ k).
+ destruct ((0 <=? k) && (k <? 32)) eqn:E; [|reflexivity].
+ apply andb_true_iff in E as [E1 E2]. apply Z.leb_le in E1. apply Z.ltb_lt in E2.
+ rewrite !Z.shiftr_spec by lia. rewrite norm_ones. rewrite Z.land_spec, Z.testbit_ones_nonneg by lia.
+ destruct (Z.ltb_spec0 (k + Z.of_nat i * 32) (Z.of_nat 4096)); [rewrite andb_true_r; reflexivity|]. exfalso. change (Z.of_nat 4096) with 4096 in *. lia.
+Qed.
+End @MOD@.

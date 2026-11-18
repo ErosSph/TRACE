@@ -1,0 +1,37 @@
+[
+  {
+    "package": "nerv-outcome",
+    "classes": 29,
+    "seeds": 12,
+    "instances": 17,
+    "proof_text_roundtrip": true
+  },
+  {
+    "package": "pipeline-outcome",
+    "classes": 29,
+    "seeds": 12,
+    "instances": 17,
+    "proof_text_roundtrip": true
+  },
+  {
+    "package": "steel-outcome",
+    "classes": 29,
+    "seeds": 5,
+    "instances": 24,
+    "proof_text_roundtrip": true
+  },
+  {
+    "package": "pipeline-decoder",
+    "classes": 29,
+    "seeds": 2,
+    "instances": 27,
+    "proof_text_roundtrip": true
+  },
+  {
+    "package": "pipeline-misalignment",
+    "classes": 8,
+    "seeds": 3,
+    "instances": 5,
+    "proof_text_roundtrip": true
+  }
+]

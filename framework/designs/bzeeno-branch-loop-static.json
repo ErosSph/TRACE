@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "design": "bzeeno-repaired-six-branch-static-proof-assembly",
+  "backend": "Same real branch cycle and architecture as bzeeno-branch-loop; common cycle-certificate constructor, no handwritten final wrapper import",
+  "translation_equivalence": "External RTL-to-AST translation remains unmechanized; repaired derived DUT",
+  "verification_scope": "Same six zero-seeded branch x1,x2,0 / JAL(-4) unbounded loop families as bzeeno-branch-loop. True flush/redirect, same physical/frontend invariant and complete architecture. Not arbitrary programs, nonzero-source regression or all38; this is another acceptance route, not another CPU or instruction family.",
+  "pinned_target": "BzeenoLoadUseJalNineProgramTarget.nine_target (CPUBranchJALLoopDomain.words (BzeenoLoadUseJalBranchProgram.metadata op))",
+  "certificate_harness": {
+    "certificate_interface": "cycle",
+    "imports": [
+      "Ex.External.CPUDesignTarget",
+      "Ex.External.BzeenoLoadUseJalBranchLoopSupport",
+      "Ex.External.BzeenoLoadUseJalNineProgramTarget",
+      "Ex.External.CPUBranchJALLoopDomain",
+      "Ex.External.BzeenoLoadUseJalBranchProgram",
+      "Ex.External.BzeenoLoadUseJalBranchISA"
+    ],
+    "open_modules": ["CPUDesignTarget"],
+    "binders": "(op : BzeenoLoadUseJalBranchISA.Op)",
+    "arguments": ["op"],
+    "provider_applications": {
+      "CPUDesignTarget.Build_Certificate": [
+        {"symbol": "BzeenoLoadUseJalNineProgramTarget.nine_target", "arguments": [
+          {"symbol": "CPUBranchJALLoopDomain.words", "arguments": [
+            {"symbol": "BzeenoLoadUseJalBranchProgram.metadata", "arguments": [{"binder": "op"}]}
+          ]}
+        ]},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.EventCut", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.event_rank", "arguments": []},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.event_cut_architecture", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.actual_startup", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.initial_event_cut", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.actual_event_safety", "arguments": [{"binder": "op"}]},
+        {"symbol": "BzeenoLoadUseJalBranchLoopSupport.actual_event_progress", "arguments": [{"binder": "op"}]}
+      ]
+    }
+  },
+  "coq_load_paths": [
+    {"directory": "experiments/framework/generated/bzeeno-native-full", "namespace": "BzeenoNative"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use", "namespace": "BzeenoLoadUse"},
+    {"directory": "experiments/framework/generated/bzeeno-load-use-jal", "namespace": "BzeenoLoadUseJal"}
+  ],
+  "proof_roots": ["src/Ex/External/BzeenoLoadUseJalBranchLoopSupport.v"],
+  "preserve_roots": ["src/Ex/External/BzeenoLoadUseJalCertifiedEvidenceLoop.v"],
+  "bindings": {
+    "architecture": "Unchanged original nine_target and ProgramArchRelated",
+    "assembly": "Registered symbol/binder application tree, no raw candidate Coq or CPU-specific tool branch"
+  },
+  "proof_providers": {
+    "certificate": "CPUDesignTarget.Build_Certificate",
+    "infinite": "CPUAcceptance.AcceptedCPU.acceptance_infinite_refinement"
+  }
+}

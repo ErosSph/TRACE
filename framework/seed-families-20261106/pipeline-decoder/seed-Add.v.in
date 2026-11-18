@@ -1,0 +1,13 @@
+Theorem ob_dec_@CLASS@ : OBL.Ob_dec_@CLASS@.
+Proof. intros @ARGS@ s w HC HD. pose proof (CI.inv_@CLASS@ w @ARGS@ HD) as [_ HB]. repeat match goal with H : _ /\ _ |- _ => destruct H end.
+ pose proof HC as (HP & _ & _ & _ & H136). destruct (CY.drv_lfp s HP) as [sd HL].
+ pose proof (w157 s w HP H136) as Hw. norm_hyps w.
+ assert (HF : FactsHold (CY.drv s) DEC.facts_@CLASS@) by (unfold DEC.facts_@CLASS@; facts_tac Hw).
+ pose proof (DEC.@CLASS@_dec sd _ HL HF) as HO.
+ assert (HFF : FHold (CY.drv s) (Fctl ++ o2f DEC.outs_@CLASS@)) by exact (fhold_app _ _ _ (fctl s w HC) (o2f_hold _ _ HO)).
+ unfold DecClass, TG.rd. refine (conj _ (conj _ (conj _ _))).
+ - rewrite (cap_168 s _ HP HFF ltac:(vm_compute; reflexivity)). vm_compute. reflexivity.
+ - rewrite (cap_167 s _ HP HFF ltac:(vm_compute; reflexivity)). vm_compute. reflexivity.
+ - rewrite (cap_169 s _ HP HFF ltac:(vm_compute; reflexivity)). vm_compute. reflexivity.
+ - rewrite (cap_165 s _ (EConst 32 0) HP HFF ltac:(vm_compute; reflexivity)). reflexivity.
+Qed.

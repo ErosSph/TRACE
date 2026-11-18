@@ -1,0 +1,220 @@
+{
+ "schema": "cv32e40p-auto-roles-v1",
+ "old_hand_proved_evidence_used": false,
+ "proof_author": "LLM-generated: Claude Code (claude-sonnet-5-5)",
+ "ast": {
+  "module": "Ex.Generated.CV32E40PExtendedAST",
+  "file": "src/Ex/Generated/CV32E40PExtendedAST.v",
+  "program": "CV32E40PExtendedAST.cv32e40p_program",
+  "signals": 1800,
+  "processes": 2001,
+  "lfp_fuel": 8,
+  "ast_sha256": "cb236dc3d203cb13f1ee6b423ddd81b0d5b9a081bc0e397d45225e920e678d23",
+  "signal_table": "framework/auto-contract-profiles/cv32e40p-signal-table.json",
+  "signal_table_origin": "Translator.translate() on the hash-matching elaborated XML (counts 1800/2001/fuel 8 match the AST)"
+ },
+ "fetch_slot": {
+  "word": {
+   "id": 337,
+   "width": 32,
+   "path": "cv32e40p_top.core_i.if_stage_i.instr_rdata_id_o"
+  },
+  "valid": {
+   "id": 336,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.if_stage_i.instr_valid_id_o"
+  },
+  "capture_source": {
+   "id": 377,
+   "width": 32,
+   "path": "cv32e40p_top.core_i.if_stage_i.instr_decompressed"
+  },
+  "process": "process_10",
+  "provenance": {
+   "source": "discovered",
+   "tool": "cpu_pending_synthesis",
+   "plan": "results/pending-synthesis-candidates-20261024-a4/cv32e40p/plan.json"
+  },
+  "capture_guard": "ECond reset(321) (ECond (if_valid 361 && instr_valid 374) capture hold) 0; clear_instr_valid 343 clears valid"
+ },
+ "stages": {
+  "IF": {
+   "pc": {
+    "id": 120,
+    "width": 32,
+    "path": "cv32e40p_top.core_i.pc_if"
+   },
+   "req": {
+    "id": 65,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.instr_req_o"
+   }
+  },
+  "ID": {
+   "pc": {
+    "id": 121,
+    "width": 32,
+    "path": "cv32e40p_top.core_i.pc_id"
+   },
+   "valid": {
+    "id": 107,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.instr_valid_id"
+   },
+   "ready": {
+    "id": 220,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.id_ready"
+   },
+   "stage_valid": {
+    "id": 222,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.id_valid"
+   },
+   "word": {
+    "id": 718,
+    "width": 32,
+    "path": "cv32e40p_top.core_i.id_stage_i.instr"
+   },
+   "is_decoding": {
+    "id": 122,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.is_decoding"
+   }
+  },
+  "EX": {
+   "pc": {
+    "id": 134,
+    "width": 32,
+    "path": "cv32e40p_top.core_i.pc_ex"
+   },
+   "ready": {
+    "id": 221,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.ex_ready"
+   },
+   "valid": {
+    "id": 223,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.ex_valid"
+   }
+  },
+  "WB": {
+   "valid": {
+    "id": 224,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.wb_valid"
+   },
+   "we": {
+    "id": 187,
+    "width": 1,
+    "path": "cv32e40p_top.core_i.regfile_we_wb"
+   },
+   "wdata": {
+    "id": 189,
+    "width": 32,
+    "path": "cv32e40p_top.core_i.regfile_wdata"
+   }
+  }
+ },
+ "stages_provenance": {
+  "source": "name_match_on_ast_signal_table",
+  "evidence": "stage names from RTL signal paths; real carriers/valid roles to be confirmed by cpu_phase_pending_commit",
+  "note": "data for generators only; not a proof premise"
+ },
+ "redirect": {
+  "pc_set": {
+   "id": 113,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.pc_set"
+  },
+  "branch_decision": {
+   "id": 129,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.branch_decision"
+  },
+  "halt_if": {
+   "id": 219,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.halt_if"
+  }
+ },
+ "obi": {
+  "instr_req": {
+   "id": 65,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.instr_req_o"
+  },
+  "data_req": {
+   "id": 70,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.data_req_o"
+  },
+  "data_rvalid": {
+   "id": 72,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.data_rvalid_i"
+  },
+  "data_misaligned": {
+   "id": 124,
+   "width": 1,
+   "path": "cv32e40p_top.core_i.data_misaligned"
+  }
+ },
+ "rf_write": {
+  "bank": {
+   "id": 902,
+   "width": 1024,
+   "path": "cv32e40p_top.core_i.id_stage_i.register_file_i.mem"
+  },
+  "writer_processes": [
+   44,
+   45,
+   46,
+   47,
+   48,
+   49,
+   50,
+   51,
+   52,
+   53,
+   54,
+   55,
+   56,
+   57,
+   58,
+   59,
+   60,
+   61,
+   62,
+   63,
+   64,
+   65,
+   66,
+   67,
+   68,
+   69,
+   70,
+   71,
+   72,
+   73,
+   74,
+   75
+  ],
+  "lanes": 32,
+  "provenance": {
+   "source": "name_match_on_ast_signal_table",
+   "evidence": "bank root 902 and 32 lane-writer processes 44..75 from framework/automatic-adapter-design-audit.md (AST analysis); singleton-writer assumption is false",
+   "note": "data for generators only; not a proof premise"
+  }
+ },
+ "retire_per_cycle": 2,
+ "retire_note": "WB load plus EX scalar",
+ "unresolved": [
+  "commit observer (valid/pc) for the two retirement slots",
+  "forwarding selectors",
+  "PC register enable/reset (pc_if update process)",
+  "data memory ram role (OBI single-word model)",
+  "per-stage tag carriers beyond IF/ID"
+ ]
+}
