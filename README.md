@@ -11,7 +11,7 @@ result with `coqc` and `coqchk`.
 |---|---|
 | `src/Lang/` | Verilog/SystemVerilog semantics: signal state, combinational logic as a least fixed point, clock-edge transitions, ITree lifting |
 | `src/Lib/` | shared helpers (finite maps, bit vectors) |
-| `src/Ex/RvCore/` | ISA reference (`FormalSpec.run1`: fetch, decode, execute) on `riscv-coq` |
+| `src/Ex/RvCore/` | ISA reference on `riscv-coq` |
 | `src/Ex/External/`, `src/Ex/Generated/` | shared proof library: state relations, per-instruction-family obligations (data-op, load, store, branch, jump), pipeline and cycle-composition lemmas |
 | `tools/` | Python framework: RTL frontends, design contracts, obligation and template generators, proof replay and checking, fault injection |
 | `framework/` | design contracts, contract profiles, pipeline skeletons, rule library and template sources used by the generators |
